@@ -39,13 +39,21 @@ pub fn run(after: bool) {
         "exit" => std::process::exit(i32::from(after)),
         "nonzero" => std::process::exit(7),
         "signal" => {
-            std::process::Command::new("/bin/kill")
+            use std::os::unix::process::CommandExt;
+            // Replace this process and use the shell builtin: a separate /bin/kill
+            // can outlive its parent and race the observer's process-group cleanup
+            // on macOS. Keep the same PID and actual terminating signal, no helper.
+            let error = std::process::Command::new("/bin/sh")
                 .args([
-                    if after { "-KILL" } else { "-TERM" },
-                    &std::process::id().to_string(),
+                    "-c",
+                    if after {
+                        "kill -KILL \"$$\""
+                    } else {
+                        "kill -TERM \"$$\""
+                    },
                 ])
-                .status()
-                .unwrap();
+                .exec();
+            panic!("signal fixture exec failed: {error}");
         }
         "timeout" | "one-timeout" => {
             println!("observed prefix");

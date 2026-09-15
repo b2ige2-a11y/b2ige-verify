@@ -1083,10 +1083,23 @@ fn p3a_c_stable_value_changes_preserve_each_exact_divergence() {
     ] {
         let case = Case::new(mode);
         let profile = p3_profile(&case);
-        assert!(profile
-            .observables
-            .iter()
-            .all(|item| item.stability == Stability::Stable));
+        for item in &profile.observables {
+            assert_eq!(
+                item.stability,
+                Stability::Stable,
+                "mode={mode}: {item:?}; observations={:?}",
+                profile
+                    .run_ids
+                    .iter()
+                    .map(|id| {
+                        let (value, _) = case.store().load(id).unwrap();
+                        serde_json::from_value::<AcquisitionResult>(value)
+                            .unwrap()
+                            .observation
+                    })
+                    .collect::<Vec<_>>()
+            );
+        }
         let result = p3_result(&case, &profile, BehaviorOutcome::DivergenceProven);
         assert_eq!(result.divergences.len(), 1);
         let difference = &result.divergences[0];
