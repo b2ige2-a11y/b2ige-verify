@@ -33,5 +33,5 @@ Exit 0 PASS, 1 FAIL, 2 INCONCLUSIVE, 3 ERROR; argument misuse 64. Doctor is read
 trusted and may expose hidden evidence; `--output agent --open` is refused. Use noninteractive
 commands when consuming a verdict exit code. No source/baseline/approval is updated by reports.
 
-[Behavior](../../examples/behavior/README.md) · [SideEffect](../../examples/sideeffect/README.md) ·
+[BehaviorSeal](../../examples/behavior/README.md) · [SideEffect](../../examples/sideeffect/README.md) ·
 [BlindTest](../../examples/blindtest/README.md) · [Benchmark reference](../../docs/BENCHMARKS.md).

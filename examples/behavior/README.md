@@ -1,6 +1,9 @@
-# Behavior (working name)
+# BehaviorSeal
 
 Did it change?
+
+BehaviorSeal is the public product name. The compatible CLI command remains
+`b2ige behavior verify`, and the internal `behavior` module and schema names are unchanged.
 
 Install [native binaries](../../docs/INSTALL.md). From the source workspace run
 `scripts/demo-behavior.sh` for setup, real verification, expected exit checks and sanitized output.

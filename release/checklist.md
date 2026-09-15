@@ -1,48 +1,45 @@
 # Final publication checklist — 0.1.0
 
 Current handoff: [FINAL-PUBLICATION-DECISIONS](../FINAL-PUBLICATION-DECISIONS.md).
-DONE records measured local completion, not permission to publish.
+`DONE` records measured completion; `PUBLICATION_READY=false` records public actions
+that have not yet happened.
 
 | Item | State | Evidence / remaining action |
 |---|---|---|
-| P1–P8 semantics, Cargo.lock, evidence schemas and baselines | DONE | Original file hashes preserved; no new verifier feature |
-| Clean public history | DONE | Unborn HEAD, zero commits; private history not imported or rewritten |
-| Public hygiene | DONE | No blockers; Git capture-tree findings are synthetic schemas/tests/scanner rules |
-| License and dependency notices | DONE | Apache-2.0; all 137 registry records checked; native Rust runtime notices retained |
-| Brand/package separation | DONE | RC_USABLE / OWNER_DECISION / CONFLICT / INCOMPLETE recorded; no unscoped blindtest package |
-| BehaviorSeal final use | OWNER_DECISION | Behavior remains working name; no legal clearance claim |
-| GitHub organization/repository | OWNER_DECISION | Real owner/name required; remote absent |
-| npm scope | OWNER_ACTION_REQUIRED | Control/create @b2ige; scoped wrapper remains private |
-| Rust/native CycloneDX SBOM | DONE | Six validated 1.5 documents cover all 143 locked packages; hashes in release index and SHA256SUMS |
-| npm CycloneDX SBOM | DONE | Separate wrapper-only SBOM; neither SBOM is a vulnerability scan |
-| npm download/integrity/process behavior | DONE | Version/platform archive, trusted dual hashes, bounded safe extraction, atomic cache, fail-closed errors; 28 tests |
-| Actual release host/assets/pins | EXTERNAL_EXECUTION | Selected GitHub repository and native CI outputs must supply reviewed host/pins; live delivery untested; publish guards retained |
-| Local macOS arm64 | DONE | VERIFIED_NATIVE; final installed product smoke including actual Docker |
-| Native macOS x86_64 | EXTERNAL_EXECUTION | NOT_RUN — REMOTE EXECUTION REQUIRED |
-| Native Linux x86_64 | EXTERNAL_EXECUTION | NOT_RUN — REMOTE EXECUTION REQUIRED |
-| CI matrix preparation | DONE | Read-only pinned actions/compiler, native architecture check, tests/build/package/SBOM/fresh smoke |
-| Supported versions / support | DONE | 0.1.x; best-effort community support; no SLA |
-| Private security channel | OWNER_ACTION_REQUIRED | Enable GitHub Private Vulnerability Reporting after repository creation and verify report submission |
-| Apple distribution policy | OWNER_DECISION | Choose Option A or B below; zero valid identities; neither selected |
-| Cryptographic provenance | DEFERRED_ACCEPTABLE | Attestation strategy documented; no signature/attestation claimed |
-| Full reproducible build proof | DEFERRED_ACCEPTABLE | No such proof claimed |
-| Linux arm64 / Windows / separate crates.io packages | DEFERRED_ACCEPTABLE | Outside 0.1.0 candidate publication scope |
-| Initial commit | OWNER_ACTION_REQUIRED | Command in final decisions; no commit made |
-| Final public approval | OWNER_DECISION | Required before any public operation; PUBLICATION_READY=false |
+| Reviewed product/code commit | DONE | `28315fd`; this final pass changes documentation only |
+| P1–P8 semantics, Cargo.lock, evidence schemas and baselines | DONE | No product or verifier logic changed |
+| Clean public source inventory and hygiene | DONE | No blocker in the reviewed public candidate |
+| License and dependency notices | DONE | Apache-2.0 + Open Core; required notices and SBOM checks passed |
+| BehaviorSeal public brand | DONE | Marketing/user-facing name confirmed; `b2ige behavior ...` compatibility CLI retained |
+| Official GitHub repository | SELECTED | `https://github.com/b2ige2-a11y/b2ige-verify`; repository remains private until publication |
+| Native Ubuntu 22.04 / x86_64 | DONE | Native verified; actual Docker tests and full fixed/reverse benchmark gate PASS |
+| Native macOS arm64 | DONE | Native verified; documented partial no-Docker scope PASS |
+| Native macOS Intel x86_64 | DONE | Native verified; documented partial no-Docker scope PASS; P3A cleanup-race fix covered |
+| Candidate checks | DONE | `34974411043` → SUCCESS |
+| Candidate validation and artifacts | DONE | `34991255871` → SUCCESS |
+| Release packaging / SBOM / manifest / npm archive checks | DONE | PASS; generated release artifacts were not hand-edited |
+| macOS distribution policy | DONE | Unsigned and unnotarized 0.1.0 selected; no Developer ID claim |
+| Private Vulnerability Reporting | PENDING_PUBLICATION | Activate and verify immediately after the repository becomes public; not active now |
+| npm package | DEFERRED | Final name `@b2ige/verify`; do not publish before actual `@b2ige` scope control |
+| `v0.1.0` tag and GitHub Release | PENDING_PUBLICATION | Create in the selected repository after the public conversion |
+| Final public operation | PENDING_PUBLICATION | Repository is still private; no public release action has been performed |
 
-## Signing choice — OWNER_DECISION
+## Signing decision
 
-**Option A: Unsigned 0.1.0.** Owner explicitly accepts unsigned/unnotarized distribution.
-Show the install/security warning in [INSTALL](../docs/INSTALL.md), authenticate delivery,
-and provide SHA-256 instructions. Never remove quarantine or bypass OS checks automatically.
-
-**Option B: Developer ID signing + notarization.** Requires the owner's Apple developer
-setup and real identity. Sign every executable, notarize, verify on clean macOS, then
-rehash, repackage and rerun the release checks. No identity is created or purchased here.
+**Selected: unsigned 0.1.0.** macOS binaries are intentionally unsigned and unnotarized.
+Installation documentation must identify the possible Gatekeeper warning and must not claim
+Developer ID signing or notarization. No installation script removes quarantine or bypasses
+OS controls automatically. Developer ID signing and notarization remain a future release
+improvement.
 
 ## Status meaning
 
-CLEAN_PUBLIC_REPO_READY concerns the clean local source handoff.
-TECHNICAL_PUBLICATION_READY remains false until native platform execution, live delivery,
-namespace ownership, private reporting and the selected signing policy are fulfilled.
-PUBLICATION_READY also requires the owner's explicit final approval.
+```text
+CLEAN_PUBLIC_REPO_READY=true
+TECHNICAL_PUBLICATION_READY=true
+PUBLICATION_READY=false
+```
+
+`PUBLICATION_READY=false` is not a technical blocker. It reflects that the repository is
+still private, Private Vulnerability Reporting is not activated, the `v0.1.0` tag/release
+has not been created, and npm is intentionally deferred pending scope control.

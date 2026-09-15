@@ -1,6 +1,6 @@
-# Trademarks (Draft)
+# Trademarks and brand use
 
-This is a draft brand-use notice for B2IGE Verify 0.1.0. It does not assert
+This brand-use notice covers B2IGE Verify 0.1.0. It does not assert
 that any listed term is registered, owned, or subject to exclusive rights.
 
 ## Names in scope
@@ -8,8 +8,12 @@ that any listed term is registered, owned, or subject to exclusive rights.
 - B2IGE
 - B2IGE Verify
 - BlindTest
-- BehaviorSeal (tentative name)
+- BehaviorSeal
 - SideEffect Proof
+
+BehaviorSeal is the public brand name for the Behavior product. The compatible
+CLI command remains `b2ige behavior`, and internal module, schema and API names
+remain unchanged.
 
 These names, related product names, logos, and other brand elements are
 separate from the source code. The source code is licensed under the Apache

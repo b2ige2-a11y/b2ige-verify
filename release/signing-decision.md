@@ -1,16 +1,15 @@
 # Signing decision — 0.1.0
 
-No Apple Developer ID identity is available in the current environment. No
-certificate was created, purchased or imported, and no notarization was performed.
+## Selected policy: unsigned macOS release
 
-The owner must choose one of these before public binary distribution:
+macOS 0.1.0 is released as an unsigned, unnotarized binary. No Developer ID
+signature or notarization claim is made. Gatekeeper may show a warning when a
+user opens the binary; the installation guidance calls this out explicitly.
 
-1. **Unsigned 0.1.0** — publish only with an explicit unsigned-build warning,
-   authenticated delivery and checksum instructions. This is an owner decision,
-   not an automatic default.
-2. **Developer ID signing + notarization** — sign every macOS executable, notarize
-   the distribution container, retain the notarization evidence, then recompute
-   hashes and re-run the release checks after signing.
+The current environment has no valid Apple Developer ID identity. No certificate
+was created, purchased or imported, and no notarization was performed. Ad-hoc
+linker signatures, if present, do not authenticate a publisher.
 
-Current status: **OWNER DECISION REQUIRED**. Ad-hoc linker signatures, if present,
-do not authenticate a publisher and do not select either option.
+Delivery must retain authenticated release-channel and SHA-256 instructions.
+No installation script removes quarantine or bypasses OS controls automatically.
+Developer ID signing and notarization are deferred improvements for a future release.

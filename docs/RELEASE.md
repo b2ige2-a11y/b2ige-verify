@@ -1,9 +1,13 @@
-# Local release candidate procedure — 0.1.0
+# B2IGE Verify 0.1.0 release procedure
 
-The publication readiness sweep changes release metadata, documentation, packaging,
-wrapper integrity checks and CI. P1–P8 verifier semantics and baselines are unchanged.
-Package version remains 0.1.0. The release manifest alone advances from v1 to **v3**;
-see [schema and provenance decisions](RELEASE-PROVENANCE.md).
+This procedure covers the final candidate and the boundary before public release.
+P1–P8 verifier semantics and baselines are unchanged. Package version remains 0.1.0.
+The reviewed product/code commit is `28315fd`; the release manifest alone advances from
+v1 to **v3**. See [schema and provenance decisions](RELEASE-PROVENANCE.md).
+
+Current state: `CLEAN_PUBLIC_REPO_READY=true`, `TECHNICAL_PUBLICATION_READY=true`,
+`PUBLICATION_READY=false`. The official target is
+[b2ige2-a11y/b2ige-verify](https://github.com/b2ige2-a11y/b2ige-verify), which is still private.
 
 ## Reproduce the local gate
 
@@ -77,9 +81,19 @@ npm wrapper receives its own separate CycloneDX SBOM.
 Manifest v3 records base commit, dirty state, compiler, supported targets separately from
 actually executed native targets, precise runtime scope, archive/binary/notice hashes,
 B2IGE Verify Bench v1 (31 explicit cases) and scoped metrics, licensing, SBOM, unsigned
-status, unresolved package names and owner authorization=false. Embedded manifests describe
+status, pending npm scope ownership and owner authorization=false. Embedded manifests describe
 the pre-smoke inputs; the external index records successful later smoke. No claim of a
 clean-tag or bit-for-bit reproducible build is made. See [provenance](RELEASE-PROVENANCE.md).
+
+## Final candidate evidence
+
+Candidate checks run `34974411043` and candidate validation and artifacts run `34991255871`
+both completed with **SUCCESS**. Native verification covers Ubuntu 22.04 /
+`x86_64-unknown-linux-gnu`, macOS arm64 and macOS Intel `x86_64`. Linux ran actual Docker
+tests and the full fixed/reverse benchmark gate; macOS passed its documented partial
+no-Docker scope. Release packaging, SBOM, manifest and npm archive checks passed. The
+previous P3A signal fixture flake was a fixture cleanup race; the fix was included in the
+final native Intel CI pass.
 
 ## CI and publication boundary
 
@@ -92,13 +106,15 @@ are retained for 14 days. Runner labels were checked against
 [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 
 All workflows use `contents: read`; checkout does not retain credentials. There is no publish,
-release creation, deployment, secret upload, signing credential or write permission.
-There is **no configured Git remote in this local repository**, so remote execution has not
-been dispatched. Configuration is not execution evidence: **REMOTE PLATFORM EXECUTION REQUIRED**.
+release creation, deployment, secret upload, signing credential or write permission. The
+successful candidate runs above are validation evidence only; they did not make the repository
+public or create a tag/release.
 
-Complete [the publication checklist](../release/checklist.md) and obtain explicit owner
-approval before any public action. Current Cargo registry publication remains disabled because
-individual crate packages need a deliberately reviewed full-workspace publication layout.
-The current npm wrapper implements guarded native delivery; the actual GitHub host,
-platform archive pins and live-host end-to-end evidence await external setup. The first
-public product/registry names, including Behavior's final brand, are owner decisions.
+Complete [the publication checklist](../release/checklist.md) before any public action.
+The public Behavior brand is BehaviorSeal, while the compatible CLI remains `b2ige behavior ...`.
+Current Cargo registry publication remains disabled because individual crate packages need a
+deliberately reviewed full-workspace publication layout. The final npm package name is
+`@b2ige/verify`, but npm publication is intentionally deferred until the `@b2ige` scope is
+actually controlled. GitHub Private Vulnerability Reporting is planned immediately after the
+repository becomes public and is not active at this stage. macOS 0.1.0 is unsigned and
+unnotarized; no Developer ID claim is made.

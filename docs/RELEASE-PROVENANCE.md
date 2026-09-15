@@ -1,6 +1,7 @@
-# Release provenance — 0.1.0 candidate
+# Release provenance — B2IGE Verify 0.1.0
 
-The current binaries have no publisher signature and are not Apple notarized.
+The selected 0.1.0 macOS policy is an unsigned, unnotarized release. The current binaries
+have no publisher signature and are not Apple notarized.
 macOS arm64 linkers may create an ad-hoc Mach-O signature; that does not authenticate
 a publisher. The local keychain reports **0 valid code-signing identities**.
 No certificate, identity, account setting, public tag or release was created.
@@ -8,27 +9,28 @@ No certificate, identity, account setting, public tag or release was created.
 | Mechanism | First 0.1.0 policy | Current evidence |
 |---|---|---|
 | SHA256SUMS for every distributed archive, SBOM and external manifest | REQUIRED | Generated and verified locally |
-| Reviewable Git commit/tag, clean checkout, locked dependencies | REQUIRED for public release | Unborn public HEAD: git_commit=null, dirty=true; public tag absent |
+| Reviewable Git commit/tag, clean checkout, locked dependencies | REQUIRED for public release | Reviewed product/code commit `28315fd`; `v0.1.0` tag absent until publication |
 | Source inventory, binary hashes, release manifest and benchmark corpus hash | REQUIRED | Manifest v3 and extracted-archive checks |
-| Authenticated delivery and owner approval | REQUIRED | Hosting and authorization unresolved |
+| Authenticated delivery and owner approval | REQUIRED | Official repository selected; repository remains private and public approval/action is pending |
 | GitHub Actions artifact attestation | RECOMMENDED; owner chooses before publication | Strategy only; no attestation emitted |
-| Apple Developer ID signing and notarization | RECOMMENDED for macOS public downloads; OWNER_DECISION | No valid identity; no notarization |
+| Apple Developer ID signing and notarization | FUTURE IMPROVEMENT | Intentionally not used for 0.1.0; no valid identity and no notarization |
 | Signed checksum file / offline release key | DEFERRED unless chosen as initial authentication mechanism | No key generated or signing claim |
 | Bit-for-bit reproducible builds | DEFERRED | Not established by matching source inventories |
 
 ## Binding and checksum layout
 
 Manifest schema **v3** replaces release-manifest v2 only. It permits `git_commit: null`
-for an unborn public repository, adds explicit clean/technical readiness and platform
-scope, and uses VERIFIED_NATIVE / CROSS_BUILD_ONLY / EMULATED / NOT_RUN. A null commit
-is never a clean-tag claim. The source inventory identifies this uncommitted snapshot.
+for an unbound pre-publication candidate, adds explicit clean/technical readiness and
+platform scope, and uses VERIFIED_NATIVE / CROSS_BUILD_ONLY / EMULATED / NOT_RUN. A null
+commit is never a clean-tag claim. The reviewed product/code commit is `28315fd`; a
+public tag is still pending.
 The npm distribution manifest independently advances to v2 for repository and archive
 pins. The private history-scan diagnostic report advances to v2 for nullable unborn
 HEAD. Product, evidence, Agent, benchmark and verifier schemas remain unchanged.
 
-After owner approval of the snapshot, the owner creates the initial commit. Public
-release artifacts must be rebuilt/retested from the reviewed committed revision and
-bound to the authorized version tag. This task creates neither commit nor tag.
+The reviewed product/code revision is `28315fd`. Public release artifacts must be
+bound to the reviewed final snapshot and authorized `v0.1.0` tag. This task creates
+neither the tag nor the GitHub Release.
 
 `source_inventory_sha256` hashes sorted relative paths, NUL, and each file's SHA-256.
 Only the mutable `release/release-manifest.json` is excluded to avoid recursion.
@@ -69,6 +71,6 @@ and package **after signing**; signing changes bytes. Notarization is Apple's ma
 checking/distribution mechanism and is not proof of verifier correctness.
 [Apple notarization guidance](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).
 
-If the owner instead elects an unsigned first release, document that decision explicitly
-and provide authenticated delivery and integrity instructions. This sweep does not grant
-that exception. No installation script removes quarantine or bypasses platform checks.
+The owner selected the unsigned first release. The public documentation must state the
+unsigned/unnotarized status, possible Gatekeeper warning, authenticated delivery and
+integrity instructions. No installation script removes quarantine or bypasses platform checks.

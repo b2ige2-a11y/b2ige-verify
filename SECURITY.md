@@ -14,11 +14,12 @@ versions are independent. Support is best-effort community support with no SLA.
 
 ## Private vulnerability reports
 
-**OWNER ACTION REQUIRED: Enable GitHub Private Vulnerability Reporting**
+**NOT ACTIVE YET: Enable GitHub Private Vulnerability Reporting after public conversion**
 
-The repository owner has not configured or verified a public private-reporting channel.
-**This is a publication blocker.** No security email or repository URL is invented here.
-Once the actual repository has GitHub private vulnerability reporting enabled, use its
+The repository is still private, so the owner has not configured or verified the public
+private-reporting channel. **This is a publication blocker, not a technical blocker.**
+No security email or repository URL is invented here. Immediately after the repository
+becomes public, enable GitHub private vulnerability reporting and use its
 **Security → Advisories → Report a vulnerability** action. A SECURITY.md file alone
 does not enable that feature; the owner must enable it and confirm a report can be submitted.
 See [GitHub private reporting instructions](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).

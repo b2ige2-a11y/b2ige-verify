@@ -1,32 +1,38 @@
 # Current State
 
-Date: 2026-09-15
-Phase: P9 RELEASE CANDIDATE PREP (gate preserved; no next phase started)
-Status: PUBLICATION FINALIZATION COMPLETE — OWNER / EXTERNAL GATES REMAIN
+Date: 2026-09-16
+Phase: P9 RELEASE CANDIDATE PREP (final publication handoff)
+Status: TECHNICAL GATE COMPLETE — PUBLIC OPERATIONS PENDING
 
-CLEAN_PUBLIC_REPO_READY = true
-LOCAL_RELEASE_CANDIDATE_READY = true (macOS arm64 measured scope)
-TECHNICAL_PUBLICATION_READY = false
-PUBLICATION_READY = false
+CLEAN_PUBLIC_REPO_READY=true
+TECHNICAL_PUBLICATION_READY=true
+PUBLICATION_READY=false
 
-- 대상은 B2IGE-Verify-Public만이다. Private repository는 수정하지 않았다.
-- P1–P8 verifier 소스, evidence schemas, Cargo.lock, benchmark baseline 보존 확인.
-- fmt/clippy/release build, Rust 376 tests, npm 28 tests 통과.
-- 공식 cargo-cyclonedx 0.5.9로 CycloneDX 1.5 SBOM 6개 생성: 143개 locked packages
-  전체 포함. 공식 schema, dependency references, registry checksum 대조 통과.
-- README/quickstart, fresh installed Docker/제품/report/MCP/npm smoke, archive 및
-  source inventory/checksum/hygiene 검증 통과. 별도 전체 benchmark 재실행 없음.
-- Public HEAD는 unborn, commits 0. Git capture tree/blob은 history commit이 아니다.
-  기존 private history blocker는 clean public strategy로 이 candidate에서 해결됐다.
-- Release manifest v3: git_commit=null, 플랫폼 status/scope 및 clean/technical 상태.
-  npm native-manifest v2: 향후 실제 GitHub repository + archive/binary pins. Verifier schema 변경 없음.
-- npm downloader 및 fail-closed integrity/version/안전 extraction/cache 구현·검증.
-  실제 release host/pins는 미설정이며 private/prepublish guard 유지.
-- macOS arm64 VERIFIED_NATIVE. Linux x86_64 / macOS x86_64 NOT_RUN:
-  REMOTE EXECUTION REQUIRED. Docker arm64 VM이나 Rosetta를 native x86 검증으로 표기하지 않았다.
-- 남은 항목: BehaviorSeal 승인, GitHub owner/repo, @b2ige scope, signing/notarization
-  선택, Private Vulnerability Reporting, remote native CI 및 실제 hosted delivery, 최종 공개 승인.
-- commit/push/publish/release/deploy/account 설정/인증서 생성/history rewrite 미수행.
+- Reviewed product/code commit: `28315fd`. This handoff changes documentation/readiness
+  records only; product code, verifier semantics, schemas, benchmark baselines and test
+  logic were not changed.
+- Candidate checks run `34974411043` and candidate validation/artifacts run `34991255871`
+  both completed with SUCCESS.
+- Native verified: Ubuntu 22.04 / `x86_64-unknown-linux-gnu`, macOS arm64 and macOS Intel
+  `x86_64`. Linux actual Docker tests and the full fixed/reverse benchmark gate PASS.
+  macOS documented partial no-Docker scope PASS.
+- Release packaging, SBOM, manifest and npm archive checks PASS. Existing generated release
+  artifacts, SBOMs and checksums were not hand-edited.
+- The previous P3A signal fixture flake was a fixture cleanup race; the fix was included in
+  the final native Intel CI PASS.
+- BehaviorSeal is the public Behavior brand. The compatibility CLI remains `b2ige behavior ...`;
+  internal module/schema/API names remain unchanged. License remains Apache-2.0 + Open Core.
+- Official repository: https://github.com/b2ige2-a11y/b2ige-verify. It is still private.
+  `v0.1.0` tag/release has not been created.
+- macOS 0.1.0 is intentionally unsigned and unnotarized; no Developer ID signing or
+  notarization claim is made. Gatekeeper warning is possible; signing is a future improvement.
+- Final npm package name is `@b2ige/verify`; npm publication is intentionally deferred until
+  the `@b2ige` scope is actually controlled. It is not a GitHub 0.1.0 blocker.
+- `SECURITY.md` remains. GitHub Private Vulnerability Reporting is not active and is planned
+  for activation immediately after the repository becomes public.
+- PUBLICATION_READY=false reflects only pending public operations: public repository conversion,
+  Private Vulnerability Reporting activation, `v0.1.0` tag/release creation and deferred npm.
+  No push or publication was performed.
 
 [Final decisions](../FINAL-PUBLICATION-DECISIONS.md) · [Checklist](../release/checklist.md) ·
 [Readiness](../PUBLIC-REPO-READINESS.md) · [Manifest](../release/release-manifest.json).

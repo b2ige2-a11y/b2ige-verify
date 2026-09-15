@@ -15,7 +15,7 @@ Run that command from the archive's top-level directory. Each invocation creates
 controller directory, prepares reviewed example configs and checks actual CLI exits and reports.
 The printed evidence path is trusted local data; do not upload it as a public issue or CI artifact.
 
-- [Behavior: hello / changed output](../examples/behavior/README.md)
+- [BehaviorSeal: hello / changed output](../examples/behavior/README.md)
 - [SideEffect: safe and unsafe SQLite retries](../examples/sideeffect/README.md)
 - [BlindTest: visible tests pass, hidden contract fails](../examples/blindtest/README.md)
 

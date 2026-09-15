@@ -1,9 +1,11 @@
-# @b2ige/verify — unpublished thin launcher
+# @b2ige/verify — deferred thin launcher
 
 The wrapper contains distribution and process-launch code only. All product verification
 runs in the version-matched native executable. No npm dependencies or postinstall hook.
-The package is private and `prepublishOnly` always fails until separately reviewed owner
-authorization. Unscoped npm `blindtest` is occupied and is not used by this project.
+The final package name is `@b2ige/verify`. The package is private and `prepublishOnly` always
+fails until the `@b2ige` scope is actually controlled and publication is separately authorized.
+Npm publication is intentionally deferred and is not required for the GitHub 0.1.0 release.
+Unscoped npm `blindtest` is occupied and is not used by this project.
 
 ## Native delivery
 
