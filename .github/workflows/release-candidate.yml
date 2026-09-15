@@ -1,0 +1,102 @@
+name: Candidate validation and artifacts (no publication)
+on:
+  workflow_dispatch:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-14
+            target: aarch64-apple-darwin
+            docker: false
+          - runner: macos-15-intel
+            target: x86_64-apple-darwin
+            docker: false
+          - runner: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            docker: true
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    env:
+      RUSTUP_TOOLCHAIN: "1.98.1"
+      RUST_TEST_THREADS: "4"
+      CARGO_TERM_COLOR: never
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, resolved 2026-09-15
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+      - name: Pinned compiler and library redistribution notices
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt,clippy,rust-docs
+          rustc -vV
+          test "$(rustc -vV | sed -n 's/^host: //p')" = '${{ matrix.target }}'
+          cargo fetch --locked
+      - name: Docker prerequisite (Linux only)
+        if: matrix.docker
+        run: |
+          docker info
+          docker pull node:24.18.1-bookworm-slim
+      - run: cargo fmt --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Full tests with actual Docker
+        if: matrix.docker
+        run: python3 scripts/platform-tests.py
+      - name: Explicit macOS tests without Docker (partial scope)
+        if: ${{ !matrix.docker }}
+        run: python3 scripts/platform-tests.py --without-docker
+      - run: cargo build --workspace --release --locked
+      - name: Full fixed/reverse benchmark gate
+        if: matrix.docker
+        run: python3 benchmarks/run-local.py "$RUNNER_TEMP/benchmark-gate"
+      - name: Publication metadata checks
+        run: |
+          python3 scripts/history-scan.py
+          python3 scripts/hygiene.py
+          python3 scripts/license-notices.py --check
+          python3 scripts/readme-bench.py
+          python3 scripts/test-release.py
+          python3 scripts/validate-workflows.py
+          npm --prefix npm/b2ige test
+      - name: Pinned release-only SBOM tooling
+        run: |
+          cargo install cargo-cyclonedx --version 0.5.9 --locked
+          python3 -m venv "$RUNNER_TEMP/sbom-python"
+          "$RUNNER_TEMP/sbom-python/bin/pip" install jsonschema==4.25.1
+          echo "B2IGE_SBOM_PYTHON=$RUNNER_TEMP/sbom-python/bin/python" >> "$GITHUB_ENV"
+      - name: Package public native/source/npm and full Cargo CycloneDX SBOMs
+        run: python3 scripts/package-rc.py
+      - name: Fresh full archive gate and record runtime scope
+        if: matrix.docker
+        run: python3 scripts/record-platform-gate.py
+      - name: Fresh macOS archive gate and record partial scope
+        if: ${{ !matrix.docker }}
+        run: python3 scripts/record-platform-gate.py --without-docker
+      - name: Final manifest and npm archive checks
+        run: |
+          cargo run --locked -p verify-cli --example validate_release -- release/release-manifest.schema.json release/release-manifest.json
+          python3 scripts/npm-archive-smoke.py
+          python3 scripts/validate-archive.py release/artifacts
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-${{ matrix.target }}
+          path: |
+            release/artifacts/*.tar.gz
+            release/artifacts/*.tgz
+            release/artifacts/*.manifest.json
+            release/artifacts/*.cdx.json
+            release/artifacts/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 14
+      # No raw evidence, private stores, logs, publishing, signing or write permissions.
+      # Embedded manifests are pre-smoke; the external manifest records subsequent runtime scope.

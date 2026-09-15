@@ -1,0 +1,181 @@
+{
+  "$defs": {
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_hash": {
+          "type": "string"
+        },
+        "evidence_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "evidence_id",
+        "evidence_hash"
+      ],
+      "type": "object"
+    },
+    "Operation": {
+      "enum": [
+        "verify",
+        "report",
+        "doctor"
+      ],
+      "type": "string"
+    },
+    "Product": {
+      "enum": [
+        "behavior",
+        "sideeffect",
+        "blindtest"
+      ],
+      "type": "string"
+    },
+    "ScopeSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "budget": {
+          "additionalProperties": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "coverage": {
+          "additionalProperties": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "coverage",
+        "budget"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    },
+    "Version": {
+      "enum": [
+        "1"
+      ],
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "evidence_refs": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "type": "array"
+    },
+    "expected": true,
+    "kind": {
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "observed": true,
+    "operation": {
+      "$ref": "#/$defs/Operation"
+    },
+    "other_failure_count": {
+      "format": "uint",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "product": {
+      "$ref": "#/$defs/Product"
+    },
+    "protocol_version": {
+      "$ref": "#/$defs/Version"
+    },
+    "reproduction": true,
+    "scope": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ScopeSummary"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    }
+  },
+  "required": [
+    "protocol_version",
+    "product",
+    "operation",
+    "verdict",
+    "kind",
+    "summary",
+    "reproduction",
+    "evidence_refs",
+    "limitations",
+    "next_action",
+    "other_failure_count"
+  ],
+  "title": "Response",
+  "type": "object"
+}

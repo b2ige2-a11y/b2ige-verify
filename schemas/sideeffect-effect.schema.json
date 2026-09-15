@@ -1,0 +1,32 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://b2ige.dev/schemas/verify/sideeffect-effect.v1.json",
+  "title":"SideEffect Effect Identity v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["effect_id","semantics","identity","commit_observation"],
+  "properties": {
+    "effect_id":{"type":"string","minLength":1},
+    "semantics":{"enum":["exactly_once","at_most_once","at_least_once","never","eventually_within","ordered_after","atomic_with"]},
+    "identity": {
+      "type":"object",
+      "required":["correlation_fields","dedupe_domain"],
+      "properties": {
+        "correlation_fields":{"type":"array","minItems":1,"items":{"type":"string"}},
+        "dedupe_domain":{"type":"string","minLength":1}
+      },
+      "additionalProperties":false
+    },
+    "commit_observation": {
+      "type":"object",
+      "required":["source","minimum_trust_class"],
+      "properties": {
+        "source":{"type":"string","minLength":1},
+        "minimum_trust_class":{"enum":["authoritative_external","authoritative_target_state","direct_runtime"]},
+        "eventual_window_ms":{"type":"integer","minimum":0}
+      },
+      "additionalProperties":false
+    },
+    "related_effect":{"type":["string","null"]}
+  }
+}

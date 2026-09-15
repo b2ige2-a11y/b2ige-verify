@@ -1,0 +1,1069 @@
+{
+  "$defs": {
+    "ApprovalStatus": {
+      "enum": [
+        "approved",
+        "unapproved"
+      ],
+      "type": "string"
+    },
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "ArtifactRef2": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "properties": {
+        "approval": {
+          "$ref": "#/$defs/BaselineApproval"
+        },
+        "baseline_id": {
+          "type": "string"
+        },
+        "created_by": {
+          "$ref": "#/$defs/BaselineCreator"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observation_contract_hash": {
+          "type": "string"
+        },
+        "stability_runs": {
+          "format": "uint64",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "target_revision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "target_revision",
+        "created_by",
+        "approval",
+        "observation_contract_hash"
+      ],
+      "type": "object"
+    },
+    "BaselineApproval": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ApprovalStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "BaselineCreator": {
+      "enum": [
+        "human",
+        "policy",
+        "imported"
+      ],
+      "type": "string"
+    },
+    "BehaviorCase": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "case_id": {
+          "type": "string"
+        },
+        "comparison_policy": {
+          "$ref": "#/$defs/ComparisonPolicy"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "fixture": {
+          "$ref": "#/$defs/LocalFixture"
+        },
+        "required_observers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case_id",
+        "args",
+        "environment",
+        "timeout_ms",
+        "fixture",
+        "comparison_policy",
+        "required_observers"
+      ],
+      "type": "object"
+    },
+    "BehaviorExperiment": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "baseline": {
+          "$ref": "#/$defs/Baseline"
+        },
+        "before": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "case": {
+          "$ref": "#/$defs/BehaviorCase"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "seed": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case",
+        "baseline",
+        "before",
+        "after",
+        "seed"
+      ],
+      "type": "object"
+    },
+    "BehaviorTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "type": "string"
+        },
+        "identity": {
+          "description": "SHA-256 of the actual executable bytes, not Git or a mutable label.",
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "executable",
+        "identity",
+        "input_identity"
+      ],
+      "type": "object"
+    },
+    "CommittedEffectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_effect_id": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "operation",
+        "external_effect_id",
+        "idempotency_identity",
+        "correlation_identity",
+        "commit_order"
+      ],
+      "type": "object"
+    },
+    "ComparisonPolicy": {
+      "enum": [
+        "process_byte_exact_v1"
+      ],
+      "type": "string"
+    },
+    "Divergence": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/ObservableValue"
+        },
+        "after_run_id": {
+          "type": "string"
+        },
+        "after_target_hash": {
+          "type": "string"
+        },
+        "before": {
+          "$ref": "#/$defs/ObservableValue"
+        },
+        "before_run_id": {
+          "type": "string"
+        },
+        "before_target_hash": {
+          "type": "string"
+        },
+        "case_identity": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array"
+        },
+        "observable": {
+          "$ref": "#/$defs/Observable"
+        }
+      },
+      "required": [
+        "case_identity",
+        "before_run_id",
+        "after_run_id",
+        "before_target_hash",
+        "after_target_hash",
+        "observable",
+        "before",
+        "after",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "EffectSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "committed": {
+          "format": "uint",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "effect_id": {
+          "type": "string"
+        },
+        "expectation": {
+          "$ref": "#/$defs/Expectation"
+        }
+      },
+      "required": [
+        "effect_id",
+        "expectation"
+      ],
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_hash": {
+          "type": "string"
+        },
+        "evidence_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "evidence_id",
+        "evidence_hash"
+      ],
+      "type": "object"
+    },
+    "Expectation": {
+      "enum": [
+        "exactly_once",
+        "at_most_once",
+        "at_least_once",
+        "never"
+      ],
+      "type": "string"
+    },
+    "Failure": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison_id": {
+          "type": "string"
+        },
+        "divergence": {
+          "$ref": "#/$defs/Divergence"
+        }
+      },
+      "required": [
+        "comparison_id",
+        "divergence"
+      ],
+      "type": "object"
+    },
+    "FaultPrimitive": {
+      "enum": [
+        "NONE",
+        "RETRY",
+        "DUPLICATE_DELIVERY",
+        "KILL_AFTER_COMMIT"
+      ],
+      "type": "string"
+    },
+    "FaultSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "primitives": {
+          "items": {
+            "$ref": "#/$defs/FaultPrimitive"
+          },
+          "type": "array"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "primitives"
+      ],
+      "type": "object"
+    },
+    "HistoryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/HistoryKind"
+        },
+        "logical_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_effect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommittedEffectIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "logical_order",
+        "run_id",
+        "kind",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "HistoryKind": {
+      "enum": [
+        "operation_started",
+        "attempt_started",
+        "effect_observed_committed",
+        "target_completed",
+        "target_killed",
+        "retry_started",
+        "duplicate_delivery_started",
+        "observer_failure",
+        "experiment_completed"
+      ],
+      "type": "string"
+    },
+    "LocalFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_identity": {
+          "description": "Content/mode/directory snapshot identity, checked before either execution.",
+          "type": "string"
+        },
+        "source": {
+          "description": "None creates an empty workspace. stdin remains P1's /dev/null.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_identity"
+      ],
+      "type": "object"
+    },
+    "Observable": {
+      "enum": [
+        "exit_code",
+        "signal",
+        "stdout",
+        "stderr"
+      ],
+      "type": "string"
+    },
+    "ObservableValue": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "status",
+              "type": "string"
+            },
+            "value": {
+              "format": "int32",
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "bytes",
+              "type": "string"
+            },
+            "length": {
+              "format": "uint",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "sha256",
+            "length"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ReductionStatus": {
+      "enum": [
+        "MINIMIZED",
+        "UNREDUCIBLE",
+        "BUDGET_EXHAUSTED",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    },
+    "ReductionStatus2": {
+      "enum": [
+        "LOCALLY_MINIMIZED",
+        "BUDGET_EXHAUSTED",
+        "UNREPRODUCED"
+      ],
+      "type": "string"
+    },
+    "ReductionTrial": {
+      "additionalProperties": false,
+      "properties": {
+        "preserved": {
+          "type": "boolean"
+        },
+        "result": {
+          "$ref": "#/$defs/ArtifactRef2"
+        },
+        "schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        }
+      },
+      "required": [
+        "schedule",
+        "result",
+        "preserved"
+      ],
+      "type": "object"
+    },
+    "Replayability": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "available",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "const": "unavailable",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ReportKind": {
+      "enum": [
+        "behavior_exact",
+        "behavior_stability",
+        "generated_suite",
+        "counterexample_reduction",
+        "side_effect_proof"
+      ],
+      "type": "string"
+    },
+    "Reproduction": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "experiment": {
+          "$ref": "#/$defs/BehaviorExperiment"
+        },
+        "label": {
+          "type": "string"
+        },
+        "minimality_claim": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "original_assignments": {
+          "format": "uint",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reduction_status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReductionStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retained_assignments": {
+          "format": "uint",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "comparison",
+        "experiment"
+      ],
+      "type": "object"
+    },
+    "RunRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "config_hash": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array"
+        },
+        "initial_snapshot_identity": {
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        },
+        "plan_hash": {
+          "type": "string"
+        },
+        "result_hash": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "working_directory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "result_hash",
+        "plan_hash",
+        "config_hash",
+        "input_identity",
+        "initial_snapshot_identity",
+        "working_directory",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "ScheduleSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/EffectSummary"
+          },
+          "type": "array"
+        },
+        "executed": {
+          "type": "boolean"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "attempts",
+        "executed",
+        "effects"
+      ],
+      "type": "object"
+    },
+    "SideEffectCounterexample": {
+      "additionalProperties": false,
+      "properties": {
+        "original_schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        },
+        "replayability": {
+          "type": "string"
+        },
+        "reproduction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef2"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retained_schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        },
+        "signature": {
+          "$ref": "#/$defs/ViolationSignature"
+        },
+        "status": {
+          "$ref": "#/$defs/ReductionStatus2"
+        },
+        "steps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "trials": {
+          "items": {
+            "$ref": "#/$defs/ReductionTrial"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "original_schedule",
+        "retained_schedule",
+        "signature",
+        "status",
+        "trials",
+        "steps",
+        "replayability"
+      ],
+      "type": "object"
+    },
+    "SideEffectReport": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "committed": {
+          "format": "uint",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "counterexample": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SideEffectCounterexample"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/EffectSummary"
+          },
+          "type": "array"
+        },
+        "focused_schedule": {
+          "type": "string"
+        },
+        "schedules": {
+          "items": {
+            "$ref": "#/$defs/ScheduleSummary"
+          },
+          "type": "array"
+        },
+        "timeline": {
+          "items": {
+            "$ref": "#/$defs/HistoryEvent"
+          },
+          "type": "array"
+        },
+        "violations": {
+          "items": {
+            "$ref": "#/$defs/Violation"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "focused_schedule",
+        "attempts",
+        "effects",
+        "schedules",
+        "timeline",
+        "violations"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    },
+    "Violation": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "expected": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ViolationKind"
+        },
+        "observed": {
+          "type": "string"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "effect_ids",
+        "kind",
+        "expected",
+        "observed",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "ViolationKind": {
+      "enum": [
+        "duplicate_committed_effect",
+        "missing_committed_effect",
+        "forbidden_committed_effect",
+        "commit_order",
+        "half_commit"
+      ],
+      "type": "string"
+    },
+    "ViolationSignature": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/ViolationKind"
+        }
+      },
+      "required": [
+        "effect_ids",
+        "kind"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/report-document.v2.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "coverage": true,
+    "evidence_summaries": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "type": "array"
+    },
+    "expected": true,
+    "headline": {
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/ReportKind"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "observed": true,
+    "other_failures": {
+      "items": {
+        "$ref": "#/$defs/Failure"
+      },
+      "type": "array"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "primary_failure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Failure"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "product": {
+      "type": "string"
+    },
+    "projection_version": {
+      "const": "2",
+      "type": "string"
+    },
+    "raw_artifact": {
+      "$ref": "#/$defs/ArtifactRef"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "related_artifacts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactRef"
+      },
+      "type": "array"
+    },
+    "replayability": {
+      "$ref": "#/$defs/Replayability"
+    },
+    "report_id": {
+      "type": "string"
+    },
+    "reproduction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Reproduction"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "run_references": {
+      "items": {
+        "$ref": "#/$defs/RunRecord"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "2",
+      "type": "string"
+    },
+    "sideeffect": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SideEffectReport"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "$ref": "#/$defs/ArtifactRef"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    }
+  },
+  "required": [
+    "schema_version",
+    "projection_version",
+    "report_id",
+    "product",
+    "kind",
+    "source",
+    "verdict",
+    "outcome",
+    "headline",
+    "reason",
+    "other_failures",
+    "coverage",
+    "evidence_summaries",
+    "run_references",
+    "limitations",
+    "replayability",
+    "related_artifacts",
+    "raw_artifact"
+  ],
+  "title": "ReportDocument",
+  "type": "object"
+}

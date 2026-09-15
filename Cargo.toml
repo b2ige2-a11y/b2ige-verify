@@ -1,0 +1,20 @@
+[workspace]
+members = ["crates/verify-core", "crates/verify-evidence", "crates/verify-runner", "crates/verify-replay", "crates/verify-cli", "crates/verify-mcp"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = "1"
+sha2 = "0.10"
+serde_json_canonicalizer = "=0.3.2"
+serde-value = "0.7"
+verify-evidence = { path = "crates/verify-evidence" }
+verify-runner = { path = "crates/verify-runner" }
+verify-replay = { path = "crates/verify-replay" }

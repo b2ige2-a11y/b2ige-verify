@@ -1,0 +1,225 @@
+{
+  "harness_schema_version": "1",
+  "policy": {
+    "plan": {
+      "plan_id": "bounded-plan",
+      "version": "1",
+      "target_revision": "sha256:32a767e148a99085b32630f1961736c2204e4cc5f6a1d932730c3f898060af45",
+      "seed": 42,
+      "required_observers": [
+        "state"
+      ],
+      "optional_observers": [
+        "optional"
+      ],
+      "reset_strategy": "synthetic fresh state",
+      "time_budget_ms": 100,
+      "scope": {
+        "contract_ids": [
+          "contract-1"
+        ],
+        "exploration_budget": {
+          "cases": 1
+        }
+      },
+      "claims": [
+        {
+          "id": "contract-1",
+          "observer": "state",
+          "accepted_trust": [
+            "authoritative_external"
+          ],
+          "predicate": {
+            "kind": "committed_count",
+            "provider": "provider",
+            "operation": "payment",
+            "idempotency_identity": "purchase-1",
+            "expected": 1
+          }
+        }
+      ],
+      "isolation": "none",
+      "product_contract": {
+        "product": "sideeffect",
+        "effect": {
+          "effect_id": "contract-1",
+          "semantics": "exactly_once",
+          "identity": {
+            "correlation_fields": [
+              "idempotency_identity"
+            ],
+            "dedupe_domain": "provider"
+          },
+          "commit_observation": {
+            "source": "state",
+            "minimum_trust_class": "authoritative_external",
+            "eventual_window_ms": 1000
+          }
+        }
+      }
+    },
+    "config": {
+      "fault_schedule": [],
+      "mode": "synthetic"
+    },
+    "approved_baselines": [
+      "sha256:5575dbfebb1137d78cb12297267a583c4e9773b3109be1b36147d6da198cea84"
+    ],
+    "approved_invariants": [],
+    "approved_checker_bindings": []
+  },
+  "run": {
+    "context": {
+      "run_id": "run-1",
+      "schema_version": "1",
+      "tool_version": "p1a-0.1.0",
+      "seed": 42,
+      "target_revision": "sha256:32a767e148a99085b32630f1961736c2204e4cc5f6a1d932730c3f898060af45",
+      "config_hash": "sha256:9f66bb49f61cfef9477bd7273a1ecc65a27dc5521981454bac1e780ba6223af8",
+      "plan_hash": "sha256:d82d6da118fb03c396ecab24f7b322819b48f9f4d429545c20ab3c8f8a697006",
+      "experiment_hash": "sha256:d82d6da118fb03c396ecab24f7b322819b48f9f4d429545c20ab3c8f8a697006",
+      "platform_runtime": "synthetic/rust",
+      "observer_versions": {
+        "state": "1"
+      },
+      "started_at": "2026-09-14T00:00:00Z",
+      "ended_at": "2026-09-14T00:00:01Z"
+    },
+    "execution": "completed",
+    "isolation": {
+      "available": "none",
+      "linux_backend": false,
+      "protected_artifacts_visible": false
+    },
+    "coverage": {
+      "state": {
+        "status": "complete",
+        "verdict_critical": true,
+        "reason": "entire declared synthetic observation domain"
+      }
+    },
+    "completed_checkers": [
+      "contract-1"
+    ],
+    "evidence": [
+      {
+        "evidence_id": "e-1",
+        "run_id": "run-1",
+        "source": "state",
+        "trust_class": "authoritative_external",
+        "order": 1,
+        "observation": {
+          "type": "committed_effects",
+          "effects": [
+            {
+              "provider": "provider",
+              "operation": "payment",
+              "external_effect_id": "payment-1",
+              "idempotency_identity": "purchase-1"
+            }
+          ]
+        },
+        "integrity_hash": "sha256:a39d2832a471f6906e7956377073ff84aeed714e321113bf71c28e8f7ef7c735",
+        "related_claim_ids": [
+          "contract-1"
+        ]
+      }
+    ],
+    "replay_inputs": {
+      "seed": 42,
+      "experiment_plan": {
+        "claims": [
+          {
+            "accepted_trust": [
+              "authoritative_external"
+            ],
+            "id": "contract-1",
+            "observer": "state",
+            "predicate": {
+              "expected": 1,
+              "idempotency_identity": "purchase-1",
+              "kind": "committed_count",
+              "operation": "payment",
+              "provider": "provider"
+            }
+          }
+        ],
+        "isolation": "none",
+        "optional_observers": [
+          "optional"
+        ],
+        "plan_id": "bounded-plan",
+        "product_contract": {
+          "effect": {
+            "commit_observation": {
+              "eventual_window_ms": 1000,
+              "minimum_trust_class": "authoritative_external",
+              "source": "state"
+            },
+            "effect_id": "contract-1",
+            "identity": {
+              "correlation_fields": [
+                "idempotency_identity"
+              ],
+              "dedupe_domain": "provider"
+            },
+            "semantics": "exactly_once"
+          },
+          "product": "sideeffect"
+        },
+        "required_observers": [
+          "state"
+        ],
+        "reset_strategy": "synthetic fresh state",
+        "scope": {
+          "contract_ids": [
+            "contract-1"
+          ],
+          "exploration_budget": {
+            "cases": 1
+          }
+        },
+        "seed": 42,
+        "target_revision": "sha256:32a767e148a99085b32630f1961736c2204e4cc5f6a1d932730c3f898060af45",
+        "time_budget_ms": 100,
+        "version": "1"
+      },
+      "config": {
+        "fault_schedule": [],
+        "mode": "synthetic"
+      },
+      "config_hash": "sha256:9f66bb49f61cfef9477bd7273a1ecc65a27dc5521981454bac1e780ba6223af8",
+      "fault_schedule": [],
+      "target_revision": "sha256:32a767e148a99085b32630f1961736c2204e4cc5f6a1d932730c3f898060af45"
+    }
+  },
+  "expected": {
+    "verdict": "PASS",
+    "scope": {
+      "contract_ids": [
+        "contract-1"
+      ],
+      "exploration_budget": {
+        "cases": 1
+      }
+    },
+    "coverage": {
+      "state": {
+        "status": "complete",
+        "verdict_critical": true,
+        "reason": "entire declared synthetic observation domain"
+      }
+    },
+    "counterexamples": [],
+    "replayability": {
+      "status": "available"
+    },
+    "isolation_claim": "none",
+    "limitations": [
+      "Bounded synthetic contract conformance; not exhaustive correctness proof.",
+      "Replay describes controllable inputs only; external world and outcome reproduction are not guaranteed.",
+      "No runner, observer, approval authentication or isolation enforcement is implemented in P1A."
+    ],
+    "reasons": []
+  }
+}

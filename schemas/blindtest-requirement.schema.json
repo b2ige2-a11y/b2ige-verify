@@ -1,0 +1,36 @@
+{
+  "$id": "https://b2ige.dev/schemas/verify/blindtest-requirement.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "content_hash": {
+      "type": "string"
+    },
+    "requirement_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "requirement_id",
+    "text",
+    "source",
+    "version",
+    "content_hash"
+  ],
+  "title": "RequirementArtifact",
+  "type": "object"
+}

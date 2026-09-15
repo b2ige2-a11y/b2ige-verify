@@ -1,0 +1,47 @@
+{
+  "$defs": {
+    "IsolationLevel": {
+      "enum": [
+        "NONE",
+        "WORKSPACE_SEPARATION",
+        "DOCKER_ISOLATION",
+        "HARDENED_LINUX"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/blindtest-isolation-attestation.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "after": true,
+    "before": true,
+    "container_id": {
+      "type": "string"
+    },
+    "controller_platform": {
+      "type": "string"
+    },
+    "observed": {
+      "$ref": "#/$defs/IsolationLevel"
+    },
+    "required": {
+      "$ref": "#/$defs/IsolationLevel"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "required",
+    "observed",
+    "controller_platform",
+    "container_id",
+    "before",
+    "after"
+  ],
+  "title": "BlindTestIsolationAttestation",
+  "type": "object"
+}

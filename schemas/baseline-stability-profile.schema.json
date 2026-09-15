@@ -1,0 +1,468 @@
+{
+  "$defs": {
+    "ApprovalStatus": {
+      "enum": [
+        "approved",
+        "unapproved"
+      ],
+      "type": "string"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "properties": {
+        "approval": {
+          "$ref": "#/$defs/BaselineApproval"
+        },
+        "baseline_id": {
+          "type": "string"
+        },
+        "created_by": {
+          "$ref": "#/$defs/BaselineCreator"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observation_contract_hash": {
+          "type": "string"
+        },
+        "stability_runs": {
+          "format": "uint64",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "target_revision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "target_revision",
+        "created_by",
+        "approval",
+        "observation_contract_hash"
+      ],
+      "type": "object"
+    },
+    "BaselineApproval": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ApprovalStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "BaselineCreator": {
+      "enum": [
+        "human",
+        "policy",
+        "imported"
+      ],
+      "type": "string"
+    },
+    "BehaviorCase": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "case_id": {
+          "type": "string"
+        },
+        "comparison_policy": {
+          "$ref": "#/$defs/ComparisonPolicy"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "fixture": {
+          "$ref": "#/$defs/LocalFixture"
+        },
+        "required_observers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case_id",
+        "args",
+        "environment",
+        "timeout_ms",
+        "fixture",
+        "comparison_policy",
+        "required_observers"
+      ],
+      "type": "object"
+    },
+    "BehaviorExperiment": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "baseline": {
+          "$ref": "#/$defs/Baseline"
+        },
+        "before": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "case": {
+          "$ref": "#/$defs/BehaviorCase"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "seed": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case",
+        "baseline",
+        "before",
+        "after",
+        "seed"
+      ],
+      "type": "object"
+    },
+    "BehaviorTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "type": "string"
+        },
+        "identity": {
+          "description": "SHA-256 of the actual executable bytes, not Git or a mutable label.",
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "executable",
+        "identity",
+        "input_identity"
+      ],
+      "type": "object"
+    },
+    "ComparisonPolicy": {
+      "enum": [
+        "process_byte_exact_v1"
+      ],
+      "type": "string"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_hash": {
+          "type": "string"
+        },
+        "evidence_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "evidence_id",
+        "evidence_hash"
+      ],
+      "type": "object"
+    },
+    "LocalFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_identity": {
+          "description": "Content/mode/directory snapshot identity, checked before either execution.",
+          "type": "string"
+        },
+        "source": {
+          "description": "None creates an empty workspace. stdin remains P1's /dev/null.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_identity"
+      ],
+      "type": "object"
+    },
+    "Observable": {
+      "enum": [
+        "exit_code",
+        "signal",
+        "stdout",
+        "stderr"
+      ],
+      "type": "string"
+    },
+    "ObservableStability": {
+      "additionalProperties": false,
+      "properties": {
+        "observable": {
+          "$ref": "#/$defs/Observable"
+        },
+        "observed_values": {
+          "description": "First-seen distinct values, including partial values if INCOMPLETE.\nClassification uses actual raw bytes, never equality of hashes alone.",
+          "items": {
+            "$ref": "#/$defs/ObservableValue"
+          },
+          "type": "array"
+        },
+        "stability": {
+          "$ref": "#/$defs/Stability"
+        }
+      },
+      "required": [
+        "observable",
+        "stability",
+        "observed_values"
+      ],
+      "type": "object"
+    },
+    "ObservableValue": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "status",
+              "type": "string"
+            },
+            "value": {
+              "format": "int32",
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "bytes",
+              "type": "string"
+            },
+            "length": {
+              "format": "uint",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "sha256",
+            "length"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ProfilingConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "repetitions": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "repetitions"
+      ],
+      "type": "object"
+    },
+    "RunRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "config_hash": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "type": "array"
+        },
+        "initial_snapshot_identity": {
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        },
+        "plan_hash": {
+          "type": "string"
+        },
+        "result_hash": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "working_directory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "result_hash",
+        "plan_hash",
+        "config_hash",
+        "input_identity",
+        "initial_snapshot_identity",
+        "working_directory",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "Stability": {
+      "enum": [
+        "STABLE",
+        "UNSTABLE",
+        "INCOMPLETE"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/baseline-stability-profile.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorization_hash": {
+      "type": "string"
+    },
+    "baseline_identity": {
+      "type": "string"
+    },
+    "baseline_target_identity": {
+      "type": "string"
+    },
+    "case_identity": {
+      "type": "string"
+    },
+    "config": {
+      "$ref": "#/$defs/ProfilingConfig"
+    },
+    "config_hash": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "type": "array"
+    },
+    "experiment": {
+      "$ref": "#/$defs/BehaviorExperiment",
+      "description": "Canonical baseline-only experiment: AFTER is an exact copy of BEFORE.\nCandidate changes neither alter the profile nor update baseline approval."
+    },
+    "experiment_hash": {
+      "type": "string"
+    },
+    "input_identity": {
+      "type": "string"
+    },
+    "observables": {
+      "items": {
+        "$ref": "#/$defs/ObservableStability"
+      },
+      "type": "array"
+    },
+    "profile_id": {
+      "type": "string"
+    },
+    "repetition_count": {
+      "format": "uint",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "run_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "runs": {
+      "items": {
+        "$ref": "#/$defs/RunRecord"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "profile_id",
+    "schema_version",
+    "case_identity",
+    "baseline_identity",
+    "baseline_target_identity",
+    "input_identity",
+    "repetition_count",
+    "run_ids",
+    "runs",
+    "observables",
+    "evidence_refs",
+    "experiment",
+    "experiment_hash",
+    "config",
+    "config_hash",
+    "authorization_hash"
+  ],
+  "title": "Baseline Stability Profile v1",
+  "type": "object"
+}

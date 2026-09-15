@@ -1,0 +1,126 @@
+{
+  "$defs": {
+    "CommittedEffectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_effect_id": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "operation",
+        "external_effect_id",
+        "idempotency_identity",
+        "correlation_identity",
+        "commit_order"
+      ],
+      "type": "object"
+    },
+    "HistoryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/HistoryKind"
+        },
+        "logical_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_effect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommittedEffectIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "logical_order",
+        "run_id",
+        "kind",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "HistoryKind": {
+      "enum": [
+        "operation_started",
+        "attempt_started",
+        "effect_observed_committed",
+        "target_completed",
+        "target_killed",
+        "retry_started",
+        "duplicate_delivery_started",
+        "observer_failure",
+        "experiment_completed"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/sideeffect-history.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/HistoryEvent"
+      },
+      "type": "array"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "events"
+  ],
+  "title": "SideEffectHistory",
+  "type": "object"
+}

@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "ValidationRun": {
+      "additionalProperties": false,
+      "properties": {
+        "expected": {
+          "$ref": "#/$defs/Verdict"
+        },
+        "label": {
+          "type": "string"
+        },
+        "observed": {
+          "$ref": "#/$defs/Verdict"
+        },
+        "run_hash": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "run_id",
+        "run_hash",
+        "expected",
+        "observed"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/blindtest-suite-validation-receipt.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "blindtest_validation_id": {
+      "type": "string"
+    },
+    "checker": {
+      "type": "string"
+    },
+    "limitation": {
+      "type": "string"
+    },
+    "matched": {
+      "type": "boolean"
+    },
+    "runs": {
+      "items": {
+        "$ref": "#/$defs/ValidationRun"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "suite_hash": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "blindtest_validation_id",
+    "suite_hash",
+    "checker",
+    "runs",
+    "matched",
+    "limitation"
+  ],
+  "title": "BlindTestSuiteValidationReceipt",
+  "type": "object"
+}

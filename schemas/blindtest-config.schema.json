@@ -1,0 +1,182 @@
+{
+  "$defs": {
+    "ApprovedInvariantRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_hash": {
+          "type": "string"
+        },
+        "checker_binding_hash": {
+          "type": "string"
+        },
+        "invariant_id": {
+          "type": "string"
+        },
+        "requirement_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "invariant_id",
+        "artifact_hash",
+        "requirement_hash",
+        "checker_binding_hash"
+      ],
+      "type": "object"
+    },
+    "IsolationLevel": {
+      "enum": [
+        "NONE",
+        "WORKSPACE_SEPARATION",
+        "DOCKER_ISOLATION",
+        "HARDENED_LINUX"
+      ],
+      "type": "string"
+    },
+    "ResourceBounds": {
+      "additionalProperties": false,
+      "properties": {
+        "memory_bytes": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "nano_cpus": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "pids": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tmpfs_bytes": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "timeout_ms",
+        "memory_bytes",
+        "nano_cpus",
+        "pids",
+        "tmpfs_bytes"
+      ],
+      "type": "object"
+    },
+    "TargetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_case_env": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "bounds": {
+          "$ref": "#/$defs/ResourceBounds"
+        },
+        "build_identity": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "image": {
+          "description": "A tag is resolved once to an immutable local content identity before create.",
+          "type": "string"
+        },
+        "max_case_args": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "workspace": {
+          "type": "string"
+        },
+        "workspace_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "command",
+        "args",
+        "environment",
+        "allowed_case_env",
+        "max_case_args",
+        "workspace",
+        "workspace_hash",
+        "build_identity",
+        "bounds"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/blindtest-config.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Safe in the agent workspace: no private filesystem locator or case inventory.",
+  "properties": {
+    "approved_invariants": {
+      "items": {
+        "$ref": "#/$defs/ApprovedInvariantRef"
+      },
+      "type": "array"
+    },
+    "max_cases": {
+      "description": "Must cover the complete manifest for PASS; a smaller budget is incomplete.",
+      "format": "uint",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "required_isolation": {
+      "$ref": "#/$defs/IsolationLevel"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "suite_hash": {
+      "type": "string"
+    },
+    "target": {
+      "$ref": "#/$defs/TargetSpec"
+    },
+    "validation_receipt": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "suite_hash",
+    "approved_invariants",
+    "target",
+    "required_isolation",
+    "max_cases"
+  ],
+  "title": "BlindTestConfig",
+  "type": "object"
+}

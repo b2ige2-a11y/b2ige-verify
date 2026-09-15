@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "AgentMode": {
+      "enum": [
+        "agent"
+      ],
+      "type": "string"
+    },
+    "Operation": {
+      "enum": [
+        "verify",
+        "report",
+        "doctor"
+      ],
+      "type": "string"
+    },
+    "Product": {
+      "enum": [
+        "behavior",
+        "sideeffect",
+        "blindtest"
+      ],
+      "type": "string"
+    },
+    "Version": {
+      "enum": [
+        "1"
+      ],
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "execution_budget": {
+      "description": "Unsupported overrides are rejected; product configs own execution budgets.",
+      "format": "uint64",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "identity": {
+      "description": "Trusted registry key, never an arbitrary path or command.",
+      "type": "string"
+    },
+    "operation": {
+      "$ref": "#/$defs/Operation"
+    },
+    "output": {
+      "$ref": "#/$defs/AgentMode"
+    },
+    "product": {
+      "$ref": "#/$defs/Product"
+    },
+    "protocol_version": {
+      "$ref": "#/$defs/Version"
+    }
+  },
+  "required": [
+    "protocol_version",
+    "product",
+    "operation",
+    "identity",
+    "output"
+  ],
+  "title": "Request",
+  "type": "object"
+}

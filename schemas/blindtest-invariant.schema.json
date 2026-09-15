@@ -1,0 +1,25 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://b2ige.dev/schemas/verify/blindtest-invariant.v1.json",
+  "title":"BlindTest Invariant Provenance v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["invariant_id","statement","origin","authority","required_observations"],
+  "properties": {
+    "invariant_id":{"type":"string","minLength":1},
+    "statement":{"type":"string","minLength":1},
+    "origin":{"enum":["machine_contract","human_authored","llm_candidate","generated_mutation"]},
+    "authority": {
+      "type":"object",
+      "required":["status"],
+      "properties": {
+        "status":{"enum":["authoritative","candidate","rejected"]},
+        "approved_by":{"type":["string","null"]},
+        "source_ref":{"type":["string","null"]}
+      },
+      "additionalProperties":false
+    },
+    "required_observations":{"type":"array","minItems":1,"items":{"type":"string"}},
+    "hidden":{"type":"boolean","default":true}
+  }
+}

@@ -1,0 +1,104 @@
+# Local release candidate procedure — 0.1.0
+
+The publication readiness sweep changes release metadata, documentation, packaging,
+wrapper integrity checks and CI. P1–P8 verifier semantics and baselines are unchanged.
+Package version remains 0.1.0. The release manifest alone advances from v1 to **v3**;
+see [schema and provenance decisions](RELEASE-PROVENANCE.md).
+
+## Reproduce the local gate
+
+Prerequisites: Rust 1.98.1 with rustfmt/clippy and rust-docs (library redistribution
+notices), Python 3.12+, Node/npm with `npm sbom`, Ruby's standard YAML library, a C
+toolchain, cargo-cyclonedx 0.5.9 and Python jsonschema 4.25.1 (isolated release tooling),
+and the [actual Docker prerequisites](INSTALL.md) for the full gate.
+
+```sh
+cargo fetch --locked
+cargo fmt --check
+cargo clippy --workspace --all-targets --locked -- -D warnings
+python3 scripts/platform-tests.py
+cargo build --workspace --release --locked
+python3 benchmarks/run-local.py "$(mktemp -d)/benchmark"
+python3 scripts/readme-bench.py
+python3 scripts/history-scan.py
+python3 scripts/hygiene.py
+python3 scripts/license-notices.py --check
+python3 scripts/test-release.py
+python3 scripts/validate-workflows.py
+npm --prefix npm/b2ige test
+python3 scripts/package-rc.py
+python3 scripts/record-platform-gate.py
+python3 scripts/npm-archive-smoke.py
+cargo run --locked -p verify-cli --example validate_release -- release/release-manifest.schema.json release/release-manifest.json
+python3 scripts/validate-archive.py release/artifacts
+```
+
+Heavy gates should run sequentially because some bounded timing tests are load-sensitive.
+The history scanner reports candidates privately for human classification; exit zero means
+the bounded scan finished, not that history is publishable. Review the findings and existing
+[history blockers](../release/public-hygiene-review.md). No tool rewrites history.
+
+Hosted macOS without Docker runs `platform-tests.py --without-docker` and
+`record-platform-gate.py --without-docker`. These are explicit partial gates. They do not
+stand in for the full 31-case benchmark or BlindTest runtime validation. Docker absence
+must never turn a Docker verification requirement into success.
+
+## Packaging and identity
+
+The packager uses locked builds with host/source path remapping. Native/source/npm tarballs,
+the npm-only CycloneDX SBOM, SHA256SUMS and the external target manifest are written to ignored
+`release/artifacts/`. It selects the reviewed Git public inventory, not ignored local native
+files or private runtime stores. Temporary npm staging supplies LICENSE/TRADEMARKS from the
+root and runs `npm pack --ignore-scripts`. It never enables publishing.
+
+Every archive is independently extracted; links, duplicate/unsafe paths, private files,
+checksums, native binary digests, source inventory and required notices are checked. Public
+synthetic examples/schemas remain public. Runtime hidden suites, canaries, raw Human evidence
+and local screenshots/logs are excluded. Native binary bytes receive the same sensitive-pattern
+scan. The npm archive smoke executes the extracted wrapper against the extracted native binary
+and tests checksum refusal offline.
+
+The packager requires pinned cargo-cyclonedx 0.5.9 and generates one CycloneDX 1.5
+SBOM per workspace crate. Offline schema/reference/inventory checks cover all 143
+locked packages. It fails if generation or validation fails. Install release-only tools:
+
+```sh
+cargo install cargo-cyclonedx --version 0.5.9 --locked
+B2IGE_TOOL_DIR="$(mktemp -d)"
+python3 -m venv "$B2IGE_TOOL_DIR/sbom-python"
+"$B2IGE_TOOL_DIR/sbom-python/bin/pip" install jsonschema==4.25.1
+export B2IGE_SBOM_PYTHON="$B2IGE_TOOL_DIR/sbom-python/bin/python"
+```
+
+`B2IGE_CYCLONEDX` may point to the pinned generator in an isolated tool directory.
+An SBOM inventories dependencies; it is not a vulnerability scan. The dependency-free
+npm wrapper receives its own separate CycloneDX SBOM.
+
+Manifest v3 records base commit, dirty state, compiler, supported targets separately from
+actually executed native targets, precise runtime scope, archive/binary/notice hashes,
+B2IGE Verify Bench v1 (31 explicit cases) and scoped metrics, licensing, SBOM, unsigned
+status, unresolved package names and owner authorization=false. Embedded manifests describe
+the pre-smoke inputs; the external index records successful later smoke. No claim of a
+clean-tag or bit-for-bit reproducible build is made. See [provenance](RELEASE-PROVENANCE.md).
+
+## CI and publication boundary
+
+PR/manual `check.yml` reuses `release-candidate.yml`. The candidate workflow is callable and
+manually dispatchable; each matrix target runs pinned setup actions, fmt, locked clippy,
+appropriate tests, release build, package checks, CLI/product/archive smoke and npm checks.
+Linux runs the actual Docker tests and fixed/reverse full benchmark. macOS runs the documented
+non-Docker tests and archive/product/MCP smoke. Only selected candidate archives/SBOM/manifests
+are retained for 14 days. Runner labels were checked against
+[GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+
+All workflows use `contents: read`; checkout does not retain credentials. There is no publish,
+release creation, deployment, secret upload, signing credential or write permission.
+There is **no configured Git remote in this local repository**, so remote execution has not
+been dispatched. Configuration is not execution evidence: **REMOTE PLATFORM EXECUTION REQUIRED**.
+
+Complete [the publication checklist](../release/checklist.md) and obtain explicit owner
+approval before any public action. Current Cargo registry publication remains disabled because
+individual crate packages need a deliberately reviewed full-workspace publication layout.
+The current npm wrapper implements guarded native delivery; the actual GitHub host,
+platform archive pins and live-host end-to-end evidence await external setup. The first
+public product/registry names, including Behavior's final brand, are owner decisions.

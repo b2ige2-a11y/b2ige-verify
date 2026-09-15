@@ -1,0 +1,287 @@
+{
+  "$defs": {
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "CommittedEffectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_effect_id": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "operation",
+        "external_effect_id",
+        "idempotency_identity",
+        "correlation_identity",
+        "commit_order"
+      ],
+      "type": "object"
+    },
+    "CommittedRow": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_id": {
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/CommittedEffectIdentity"
+        }
+      },
+      "required": [
+        "effect_id",
+        "identity"
+      ],
+      "type": "object"
+    },
+    "FaultPrimitive": {
+      "enum": [
+        "NONE",
+        "RETRY",
+        "DUPLICATE_DELIVERY",
+        "KILL_AFTER_COMMIT"
+      ],
+      "type": "string"
+    },
+    "FaultSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "primitives": {
+          "items": {
+            "$ref": "#/$defs/FaultPrimitive"
+          },
+          "type": "array"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "primitives"
+      ],
+      "type": "object"
+    },
+    "HistoryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/HistoryKind"
+        },
+        "logical_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_effect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommittedEffectIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "logical_order",
+        "run_id",
+        "kind",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "HistoryKind": {
+      "enum": [
+        "operation_started",
+        "attempt_started",
+        "effect_observed_committed",
+        "target_completed",
+        "target_killed",
+        "retry_started",
+        "duplicate_delivery_started",
+        "observer_failure",
+        "experiment_completed"
+      ],
+      "type": "string"
+    },
+    "ObservationCoverage": {
+      "enum": [
+        "complete",
+        "partial",
+        "unavailable",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "SQLiteSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/ObservationCoverage"
+        },
+        "database": {
+          "description": "Online-backup database bytes; re-queried when loading, not a request log.",
+          "items": {
+            "format": "uint8",
+            "maximum": 255,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "observer_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/CommittedRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "observer_id",
+        "coverage",
+        "reason",
+        "rows"
+      ],
+      "type": "object"
+    },
+    "SideEffectHistory": {
+      "additionalProperties": false,
+      "properties": {
+        "events": {
+          "items": {
+            "$ref": "#/$defs/HistoryEvent"
+          },
+          "type": "array"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "events"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/fault-schedule-result.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempts": {
+      "items": {
+        "$ref": "#/$defs/ArtifactRef"
+      },
+      "type": "array"
+    },
+    "committed": {
+      "items": {
+        "$ref": "#/$defs/CommittedRow"
+      },
+      "type": "array"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "executed_faults": {
+      "items": {
+        "$ref": "#/$defs/HistoryEvent"
+      },
+      "type": "array"
+    },
+    "history": {
+      "$ref": "#/$defs/SideEffectHistory"
+    },
+    "initial": {
+      "items": {
+        "$ref": "#/$defs/SQLiteSnapshot"
+      },
+      "type": "array"
+    },
+    "schedule": {
+      "$ref": "#/$defs/FaultSchedule"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "schedule",
+    "initial",
+    "attempts",
+    "executed_faults",
+    "complete",
+    "committed",
+    "history"
+  ],
+  "title": "FaultScheduleResult",
+  "type": "object"
+}

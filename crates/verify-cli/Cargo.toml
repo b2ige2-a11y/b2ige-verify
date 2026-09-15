@@ -1,0 +1,30 @@
+[package]
+name = "verify-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Deterministic local verification infrastructure for AI-written software"
+readme = "../../README.md"
+
+[[bin]]
+name = "b2ige"
+path = "src/main.rs"
+
+[dependencies]
+verify-core = { path = "../verify-core" }
+verify-evidence.workspace = true
+verify-replay.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+rusqlite = { version = "0.40.2", features = ["bundled", "backup"] }
+jsonschema = { version = "0.33", default-features = false }
+
+[[bin]]
+name = "b2ige-demo"
+path = "../../examples/setup.rs"
+
+[[bin]]
+name = "b2ige-demo-effect"
+path = "../../examples/sideeffect/target.rs"

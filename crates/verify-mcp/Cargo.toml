@@ -1,0 +1,22 @@
+[package]
+name = "verify-mcp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Deterministic local verification infrastructure for AI-written software"
+readme = "../../README.md"
+
+[[bin]]
+name = "b2ige-mcp"
+path = "src/main.rs"
+
+[dependencies]
+verify-cli = { path = "../verify-cli" }
+verify-core = { path = "../verify-core" }
+serde_json.workspace = true
+
+[dev-dependencies]
+serde.workspace = true
+jsonschema = { version = "0.33", default-features = false }
+verify-evidence.workspace = true

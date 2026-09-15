@@ -1,0 +1,469 @@
+{
+  "$defs": {
+    "ApprovedInvariantRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_hash": {
+          "type": "string"
+        },
+        "checker_binding_hash": {
+          "type": "string"
+        },
+        "invariant_id": {
+          "type": "string"
+        },
+        "requirement_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "invariant_id",
+        "artifact_hash",
+        "requirement_hash",
+        "checker_binding_hash"
+      ],
+      "type": "object"
+    },
+    "BlindTestHiddenCase": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "case_id": {
+          "type": "string"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "fixture": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BoundedFixture"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invariant_id": {
+          "type": "string"
+        },
+        "oracle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HiddenOracle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "public_failure_label": {
+          "type": "string"
+        },
+        "reproduction_template": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case_id",
+        "invariant_id",
+        "args",
+        "environment",
+        "public_failure_label",
+        "reproduction_template"
+      ],
+      "type": "object"
+    },
+    "BlindTestHiddenSuiteManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_invariants": {
+          "items": {
+            "$ref": "#/$defs/ApprovedInvariantRef"
+          },
+          "type": "array"
+        },
+        "case_hashes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "suite_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "suite_id",
+        "version",
+        "provenance",
+        "approved_invariants",
+        "case_hashes"
+      ],
+      "type": "object"
+    },
+    "BoundedFixture": {
+      "additionalProperties": false,
+      "description": "Only the current fixture bytes may be delivered. No suite file is copied.",
+      "properties": {
+        "bytes": {
+          "items": {
+            "format": "uint8",
+            "maximum": 255,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "bytes"
+      ],
+      "type": "object"
+    },
+    "HiddenOracle": {
+      "additionalProperties": false,
+      "properties": {
+        "checker": {
+          "type": "string"
+        },
+        "invariant_hash": {
+          "type": "string"
+        },
+        "predicates": {
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "checker",
+        "invariant_hash",
+        "predicates"
+      ],
+      "type": "object"
+    },
+    "InvariantArtifact": {
+      "additionalProperties": false,
+      "description": "Separate v2 executable artifact; P0 invariant v1 remains unchanged.",
+      "properties": {
+        "expected_semantic": {
+          "type": "string"
+        },
+        "invariant_id": {
+          "type": "string"
+        },
+        "predicates": {
+          "description": "A bounded AND. Exact bytes remain in trusted controller storage.",
+          "items": {
+            "$ref": "#/$defs/Predicate"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "public_summary": {
+          "type": "string"
+        },
+        "requirement_hash": {
+          "type": "string"
+        },
+        "requirement_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "invariant_id",
+        "requirement_id",
+        "requirement_hash",
+        "public_summary",
+        "expected_semantic",
+        "predicates",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "Predicate": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "exit_equals",
+              "type": "string"
+            },
+            "value": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "exit_not_equals",
+              "type": "string"
+            },
+            "value": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "bytes": {
+              "items": {
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "stdout_equals",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "bytes"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "bytes": {
+              "items": {
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "stderr_equals",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "bytes"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "bytes": {
+              "items": {
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "stdout_not_contains",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "bytes"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "bytes": {
+              "items": {
+                "format": "uint8",
+                "maximum": 255,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "stderr_not_contains",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "bytes"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ProvenanceStatus"
+        }
+      },
+      "required": [
+        "status",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ProvenanceStatus": {
+      "enum": [
+        "candidate",
+        "reviewed",
+        "approved",
+        "authoritative"
+      ],
+      "type": "string"
+    },
+    "RequirementArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "type": "string"
+        },
+        "requirement_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "requirement_id",
+        "text",
+        "source",
+        "version",
+        "content_hash"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/blindtest-sealed-suite.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/BlindTestHiddenCase"
+      },
+      "type": "array"
+    },
+    "invariants": {
+      "items": {
+        "$ref": "#/$defs/InvariantArtifact"
+      },
+      "type": "array"
+    },
+    "manifest": {
+      "$ref": "#/$defs/BlindTestHiddenSuiteManifest"
+    },
+    "private_canary": {
+      "description": "Never transmitted to the target or the agent projection.",
+      "type": "string"
+    },
+    "private_metadata": {
+      "type": "string"
+    },
+    "requirements": {
+      "items": {
+        "$ref": "#/$defs/RequirementArtifact"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "manifest",
+    "requirements",
+    "invariants",
+    "cases",
+    "private_canary",
+    "private_metadata"
+  ],
+  "title": "SealedSuite",
+  "type": "object"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@b2ige/verify",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Scoped B2IGE Verify launcher; unpublished public candidate",
+  "bin": { "b2ige": "bin/b2ige.cjs", "blindtest": "bin/blindtest.cjs" },
+  "files": ["bin", "native", "native-manifest.json", "README.md", "LICENSE", "TRADEMARKS.md"],
+  "engines": {"node": ">=18"},
+  "scripts": {"test": "node --test test.cjs download.test.cjs", "prepublishOnly": "node -e \"throw Error('Publication blocked: naming and hosting decisions pending')\""}
+}

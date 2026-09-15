@@ -1,0 +1,26 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://b2ige.dev/schemas/verify/behavior-baseline.v1.json",
+  "title":"Behavior Baseline Provenance v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["baseline_id","target_revision","created_by","approval","observation_contract_hash"],
+  "properties": {
+    "baseline_id":{"type":"string","minLength":1},
+    "target_revision":{"type":"string","minLength":1},
+    "created_by":{"enum":["human","policy","imported"]},
+    "approval": {
+      "type":"object",
+      "required":["status"],
+      "properties": {
+        "status":{"enum":["approved","unapproved"]},
+        "actor":{"type":["string","null"]},
+        "reason":{"type":["string","null"]}
+      },
+      "additionalProperties":false
+    },
+    "observation_contract_hash":{"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "stability_runs":{"type":"integer","minimum":1},
+    "notes":{"type":"array","items":{"type":"string"}}
+  }
+}

@@ -1,0 +1,314 @@
+{
+  "schema_version": "1",
+  "queries": [
+    {
+      "name": "b2ige",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/b2ige",
+      "checked_at": "2026-09-15T08:56:24.526997+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige",
+      "checked_at": "2026-09-15T08:56:24.527371+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige",
+      "registry": "PyPI",
+      "url": "https://pypi.org/pypi/b2ige/json",
+      "checked_at": "2026-09-15T08:56:24.527469+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige",
+      "registry": "GitHub search",
+      "url": "https://api.github.com/search/repositories?q=b2ige%20in%3Aname&per_page=5",
+      "checked_at": "2026-09-15T08:56:24.527536+00:00",
+      "http_status": 200,
+      "total_count": 0,
+      "examples": []
+    },
+    {
+      "name": "b2ige-verify",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/b2ige-verify",
+      "checked_at": "2026-09-15T08:56:24.527598+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-verify",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-verify",
+      "checked_at": "2026-09-15T08:56:24.810228+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-verify",
+      "registry": "PyPI",
+      "url": "https://pypi.org/pypi/b2ige-verify/json",
+      "checked_at": "2026-09-15T08:56:24.831971+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-verify",
+      "registry": "GitHub search",
+      "url": "https://api.github.com/search/repositories?q=b2ige-verify%20in%3Aname&per_page=5",
+      "checked_at": "2026-09-15T08:56:24.981028+00:00",
+      "http_status": 200,
+      "total_count": 0,
+      "examples": []
+    },
+    {
+      "name": "blindtest",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/blindtest",
+      "checked_at": "2026-09-15T08:56:25.025137+00:00",
+      "http_status": 200,
+      "details": {
+        "name": "blindtest",
+        "description": "A blinded discrimination trial between two language models, on your own prompts. Answers one question: can you actually tell them apart?",
+        "dist-tags": {
+          "latest": "0.1.0"
+        }
+      }
+    },
+    {
+      "name": "blindtest",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/blindtest",
+      "checked_at": "2026-09-15T08:56:25.122852+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "blindtest",
+      "registry": "PyPI",
+      "url": "https://pypi.org/pypi/blindtest/json",
+      "checked_at": "2026-09-15T08:56:25.255136+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "blindtest",
+      "registry": "GitHub search",
+      "url": "https://api.github.com/search/repositories?q=blindtest%20in%3Aname&per_page=5",
+      "checked_at": "2026-09-15T08:56:25.264043+00:00",
+      "http_status": 200,
+      "total_count": 482,
+      "examples": [
+        {
+          "name": "rogerlucena/blindtest-spotify",
+          "url": "https://github.com/rogerlucena/blindtest-spotify",
+          "description": "Simple blindtest app connected to Spotify"
+        },
+        {
+          "name": "mauricesvay/Blindtest",
+          "url": "https://github.com/mauricesvay/Blindtest",
+          "description": "Blindtest is a multiplayer musical game (up to 16 simultaneous players)"
+        },
+        {
+          "name": "Lucas-wcs/Blindtest",
+          "url": "https://github.com/Lucas-wcs/Blindtest",
+          "description": null
+        },
+        {
+          "name": "lmichelin/blindtest-spotify",
+          "url": "https://github.com/lmichelin/blindtest-spotify",
+          "description": null
+        },
+        {
+          "name": "s-vivien/BlindTesTwitch",
+          "url": "https://github.com/s-vivien/BlindTesTwitch",
+          "description": "\ud83c\udfb5 Play Blind-Test on Twitch with your viewers !"
+        }
+      ]
+    },
+    {
+      "name": "behaviorseal",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/behaviorseal",
+      "checked_at": "2026-09-15T08:56:25.295520+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "behaviorseal",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/behaviorseal",
+      "checked_at": "2026-09-15T08:56:25.384335+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "behaviorseal",
+      "registry": "PyPI",
+      "url": "https://pypi.org/pypi/behaviorseal/json",
+      "checked_at": "2026-09-15T08:56:25.546754+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "behaviorseal",
+      "registry": "GitHub search",
+      "url": "https://api.github.com/search/repositories?q=behaviorseal%20in%3Aname&per_page=5",
+      "checked_at": "2026-09-15T08:56:25.550664+00:00",
+      "http_status": 200,
+      "total_count": 0,
+      "examples": []
+    },
+    {
+      "name": "sideeffect-proof",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/sideeffect-proof",
+      "checked_at": "2026-09-15T08:56:25.685632+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "sideeffect-proof",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/sideeffect-proof",
+      "checked_at": "2026-09-15T08:56:25.696206+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "sideeffect-proof",
+      "registry": "PyPI",
+      "url": "https://pypi.org/pypi/sideeffect-proof/json",
+      "checked_at": "2026-09-15T08:56:25.855428+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "sideeffect-proof",
+      "registry": "GitHub search",
+      "url": "https://api.github.com/search/repositories?q=sideeffect-proof%20in%3Aname&per_page=5",
+      "checked_at": "2026-09-15T08:56:25.932138+00:00",
+      "http_status": 200,
+      "total_count": 0,
+      "examples": []
+    },
+    {
+      "name": "@b2ige/verify",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/%40b2ige%2Fverify",
+      "checked_at": "2026-09-15T08:56:25.967659+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "@b2ige/blindtest",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/%40b2ige%2Fblindtest",
+      "checked_at": "2026-09-15T08:56:26.147977+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "@b2ige/behaviorseal",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/%40b2ige%2Fbehaviorseal",
+      "checked_at": "2026-09-15T08:56:26.210247+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "@b2ige/sideeffect-proof",
+      "registry": "npm",
+      "url": "https://registry.npmjs.org/%40b2ige%2Fsideeffect-proof",
+      "checked_at": "2026-09-15T08:56:26.217006+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-core",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-core",
+      "checked_at": "2026-09-15T08:56:26.235820+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-cli",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-cli",
+      "checked_at": "2026-09-15T08:56:26.314698+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-evidence",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-evidence",
+      "checked_at": "2026-09-15T08:56:26.407617+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-runner",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-runner",
+      "checked_at": "2026-09-15T08:56:26.546213+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-replay",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-replay",
+      "checked_at": "2026-09-15T08:56:26.573851+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-mcp",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-mcp",
+      "checked_at": "2026-09-15T08:56:26.681491+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-blindtest",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-blindtest",
+      "checked_at": "2026-09-15T08:56:26.890169+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-behaviorseal",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-behaviorseal",
+      "checked_at": "2026-09-15T08:56:26.931021+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-sideeffect-proof",
+      "registry": "crates.io",
+      "url": "https://crates.io/api/v1/crates/b2ige-sideeffect-proof",
+      "checked_at": "2026-09-15T08:56:27.123613+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-labs/blindtest",
+      "registry": "GitHub repo",
+      "url": "https://api.github.com/repos/b2ige-labs/blindtest",
+      "checked_at": "2026-09-15T08:56:27.183120+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-labs/behaviorseal",
+      "registry": "GitHub repo",
+      "url": "https://api.github.com/repos/b2ige-labs/behaviorseal",
+      "checked_at": "2026-09-15T08:56:27.279700+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-labs/sideeffect-proof",
+      "registry": "GitHub repo",
+      "url": "https://api.github.com/repos/b2ige-labs/sideeffect-proof",
+      "checked_at": "2026-09-15T08:56:27.418460+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige-labs",
+      "registry": "GitHub namespace",
+      "url": "https://api.github.com/users/b2ige-labs",
+      "checked_at": "2026-09-15T08:56:27.489263+00:00",
+      "http_status": 404
+    },
+    {
+      "name": "b2ige",
+      "registry": "npm scope",
+      "url": "https://www.npmjs.com/org/b2ige",
+      "checked_at": "2026-09-15T08:56:27.506289+00:00",
+      "http_status": 403
+    }
+  ]
+}

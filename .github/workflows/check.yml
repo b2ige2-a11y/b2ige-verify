@@ -1,0 +1,9 @@
+name: Candidate checks
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate:
+    uses: ./.github/workflows/release-candidate.yml

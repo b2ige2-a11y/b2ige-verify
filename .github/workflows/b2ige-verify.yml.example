@@ -1,0 +1,43 @@
+name: B2IGE Verify
+on:
+  workflow_dispatch:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        product: [behavior, sideeffect, blindtest]
+    steps:
+      - uses: actions/checkout@v4
+      # This template runs in the verifier repository or a checkout containing it.
+      # For another repository, build a separately pinned verifier checkout first.
+      - name: Build local verifier
+        run: cargo build --workspace --release --locked
+      - name: Prepare reviewed project fixtures
+        run: |
+          rm -f b2ige-agent-report.json
+          test -f ".b2ige/${{ matrix.product }}.json"
+          # Build project binaries / seed local SQLite before this step.
+          # For BlindTest provision approved suite OUTSIDE the workspace and
+          # locally build the pinned target image. Never upload the private store.
+      - name: Require actual Docker for BlindTest
+        if: matrix.product == 'blindtest'
+        run: target/release/b2ige blindtest doctor
+      - name: Verify (only PASS returns zero)
+        env:
+          B2IGE_BLINDTEST_SEALED_ROOT: ${{ runner.temp }}/b2ige-sealed
+        run: >-
+          python3 scripts/ci-verify.py '${{ matrix.product }}'
+          '.b2ige/${{ matrix.product }}.json'
+          --authorization .b2ige/authorization.json
+          --report b2ige-agent-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b2ige-${{ matrix.product }}-sanitized
+          path: b2ige-agent-report.json
+          if-no-files-found: ignore

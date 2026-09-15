@@ -1,0 +1,252 @@
+{
+  "$defs": {
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_hash": {
+          "type": "string"
+        },
+        "evidence_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "evidence_id",
+        "evidence_hash"
+      ],
+      "type": "object"
+    },
+    "ObservableValue": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "status",
+              "type": "string"
+            },
+            "value": {
+              "format": "int32",
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "bytes",
+              "type": "string"
+            },
+            "length": {
+              "format": "uint",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "sha256": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "sha256",
+            "length"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ReductionStatus": {
+      "enum": [
+        "MINIMIZED",
+        "UNREDUCIBLE",
+        "BUDGET_EXHAUSTED",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    },
+    "Replayability": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "available",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "const": "unavailable",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ReportKind": {
+      "enum": [
+        "behavior_exact",
+        "behavior_stability",
+        "generated_suite",
+        "counterexample_reduction"
+      ],
+      "type": "string"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/agent-report.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Explicit allowlist, no raw artifact, paths, environment, inventory or oracle.\nFuture products must opt into a disclosure policy before agent export.",
+  "properties": {
+    "disclosure_policy": {
+      "type": "string"
+    },
+    "evidence_count": {
+      "format": "uint",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "evidence_refs": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "type": "array"
+    },
+    "expected": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ObservableValue"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "kind": {
+      "$ref": "#/$defs/ReportKind"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "observed": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ObservableValue"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "reduction_status": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReductionStatus"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "replayability": {
+      "$ref": "#/$defs/Replayability"
+    },
+    "reproduction": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/ArtifactRef"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    }
+  },
+  "required": [
+    "schema_version",
+    "disclosure_policy",
+    "source",
+    "verdict",
+    "kind",
+    "outcome",
+    "summary",
+    "evidence_refs",
+    "evidence_count",
+    "limitations",
+    "replayability"
+  ],
+  "title": "AgentReport",
+  "type": "object"
+}

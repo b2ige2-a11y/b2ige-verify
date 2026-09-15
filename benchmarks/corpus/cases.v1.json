@@ -1,0 +1,531 @@
+[
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.preserving",
+    "product": "behavior",
+    "category": "preserving",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.stdout",
+    "product": "behavior",
+    "category": "stdout",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.stderr",
+    "product": "behavior",
+    "category": "stderr",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.exit",
+    "product": "behavior",
+    "category": "exit",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.signal",
+    "product": "behavior",
+    "category": "signal",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.noise",
+    "product": "behavior",
+    "category": "noise",
+    "expected_classification": "NONDETERMINISTIC",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "INCONCLUSIVE"
+    ],
+    "tags": [
+      "noise"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.mixed",
+    "product": "behavior",
+    "category": "mixed",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "noise"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.generated",
+    "product": "behavior",
+    "category": "generated",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "generator"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "behavior.reducible",
+    "product": "behavior",
+    "category": "reducible",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "generator",
+      "reducer"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.normal",
+    "product": "sideeffect",
+    "category": "safe",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.retry",
+    "product": "sideeffect",
+    "category": "safe",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.delivery",
+    "product": "sideeffect",
+    "category": "safe",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.kill",
+    "product": "sideeffect",
+    "category": "safe",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.unsafe_retry",
+    "product": "sideeffect",
+    "category": "duplicate",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.unsafe_delivery",
+    "product": "sideeffect",
+    "category": "duplicate",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.unsafe_kill",
+    "product": "sideeffect",
+    "category": "duplicate",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.ordered",
+    "product": "sideeffect",
+    "category": "relationship",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.atomic",
+    "product": "sideeffect",
+    "category": "relationship",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.lost",
+    "product": "sideeffect",
+    "category": "lost",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.observer",
+    "product": "sideeffect",
+    "category": "missing_evidence",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "INCONCLUSIVE"
+    ],
+    "tags": [
+      "missing_evidence"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.fault",
+    "product": "sideeffect",
+    "category": "unexecuted_fault",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "INCONCLUSIVE"
+    ],
+    "tags": [
+      "missing_evidence"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "sideeffect.corrupt",
+    "product": "sideeffect",
+    "category": "corrupt_evidence",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "ERROR"
+    ],
+    "tags": [
+      "missing_evidence"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.correct",
+    "product": "blindtest",
+    "category": "correct",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [
+      "correct"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.mutant_a",
+    "product": "blindtest",
+    "category": "known_mutant",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "known_mutant"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.mutant_b",
+    "product": "blindtest",
+    "category": "known_mutant",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "known_mutant"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.noop",
+    "product": "blindtest",
+    "category": "noop",
+    "expected_classification": "BUGGY",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "FAIL"
+    ],
+    "tags": [
+      "noop"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.partial",
+    "product": "blindtest",
+    "category": "partial_suite",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "INCONCLUSIVE"
+    ],
+    "tags": [
+      "partial_suite"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.timeout",
+    "product": "blindtest",
+    "category": "timeout",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "INCONCLUSIVE"
+    ],
+    "tags": [
+      "timeout"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.isolation",
+    "product": "blindtest",
+    "category": "isolation_unavailable",
+    "expected_classification": "INFRA_ERROR_EXPECTED",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "ERROR"
+    ],
+    "tags": [
+      "isolation_unavailable"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.missing",
+    "product": "blindtest",
+    "category": "missing_evidence",
+    "expected_classification": "INCOMPLETE",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "ERROR"
+    ],
+    "tags": [
+      "missing_evidence"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  },
+  {
+    "schema_version": "1",
+    "benchmark_case_id": "blindtest.probe",
+    "product": "blindtest",
+    "category": "leakage",
+    "expected_classification": "CORRECT",
+    "fixture_identity": "source-pinned-at-load",
+    "config_identity": "definition-pinned-at-load",
+    "allowed_verdicts": [
+      "PASS"
+    ],
+    "tags": [
+      "leakage"
+    ],
+    "timeout_ms": 5000,
+    "execution_budget": 32,
+    "notes": ""
+  }
+]

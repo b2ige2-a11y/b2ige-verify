@@ -1,0 +1,45 @@
+name: False PASS report
+description: 'Priority: verification accepted a contract violation or missing evidence.'
+body:
+  - type: textarea
+    id: product
+    attributes:
+      label: Product
+      description: BlindTest, Behavior, SideEffect or Core
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Expected contract
+      description: What should be enforced? Use synthetic values.
+    validations:
+      required: true
+  - type: textarea
+    id: verdict
+    attributes:
+      label: Observed verdict
+      description: Exact verdict and exit code, or not applicable for a feature request.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal synthetic steps. Never attach hidden suites, oracle, raw private evidence or credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence availability
+      description: Say whether evidence is retained privately, missing, or sanitized. Do not upload private BlindTest evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: version
+    attributes:
+      label: Version and platform
+      description: b2ige --version, operating system, architecture and Docker version where relevant.
+    validations:
+      required: true

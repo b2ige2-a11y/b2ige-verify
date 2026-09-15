@@ -1,0 +1,371 @@
+{
+  "$defs": {
+    "Adapter": {
+      "enum": [
+        "sqlite"
+      ],
+      "type": "string"
+    },
+    "EffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/Adapter"
+        },
+        "authoritative_observer": {
+          "type": "string"
+        },
+        "effect_id": {
+          "type": "string"
+        },
+        "expectation": {
+          "$ref": "#/$defs/Expectation"
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityContract"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_id",
+        "provider",
+        "adapter",
+        "operation",
+        "identity",
+        "expectation",
+        "authoritative_observer"
+      ],
+      "type": "object"
+    },
+    "Expectation": {
+      "enum": [
+        "exactly_once",
+        "at_most_once",
+        "at_least_once",
+        "never"
+      ],
+      "type": "string"
+    },
+    "ExplorationBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "max_schedules": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reduction_executions": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_schedules",
+        "max_attempts",
+        "reduction_executions"
+      ],
+      "type": "object"
+    },
+    "ExternalIdentity": {
+      "enum": [
+        "provider_operation_external_id"
+      ],
+      "type": "string"
+    },
+    "FaultPrimitive": {
+      "enum": [
+        "NONE",
+        "RETRY",
+        "DUPLICATE_DELIVERY",
+        "KILL_AFTER_COMMIT"
+      ],
+      "type": "string"
+    },
+    "FaultSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "primitives": {
+          "items": {
+            "$ref": "#/$defs/FaultPrimitive"
+          },
+          "type": "array"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "primitives"
+      ],
+      "type": "object"
+    },
+    "IdentityContract": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_identity": {
+          "$ref": "#/$defs/ExternalIdentity"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "external_identity",
+        "idempotency_identity",
+        "correlation_identity"
+      ],
+      "type": "object"
+    },
+    "LedgerAuthority": {
+      "enum": [
+        "durable_append_only_committed_state"
+      ],
+      "type": "string"
+    },
+    "LocalFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_identity": {
+          "description": "Content/mode/directory snapshot identity, checked before either execution.",
+          "type": "string"
+        },
+        "source": {
+          "description": "None creates an empty workspace. stdin remains P1's /dev/null.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_identity"
+      ],
+      "type": "object"
+    },
+    "OperationIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_identity": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "idempotency_identity",
+        "correlation_identity"
+      ],
+      "type": "object"
+    },
+    "Relation": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "after": {
+              "type": "string"
+            },
+            "effect": {
+              "type": "string"
+            },
+            "semantics": {
+              "const": "ordered_after",
+              "type": "string"
+            }
+          },
+          "required": [
+            "semantics",
+            "effect",
+            "after"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "type": "string"
+            },
+            "other": {
+              "type": "string"
+            },
+            "semantics": {
+              "const": "atomic_with",
+              "type": "string"
+            }
+          },
+          "required": [
+            "semantics",
+            "effect",
+            "other"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "SQLiteEffectObserver": {
+      "additionalProperties": false,
+      "description": "Declares a durable, append-only committed ledger, never a request log.",
+      "properties": {
+        "authoritative_source": {
+          "$ref": "#/$defs/LedgerAuthority"
+        },
+        "commit_order_column": {
+          "description": "Integer, unique, increasing commit sequence in this table.",
+          "type": "string"
+        },
+        "correlation_column": {
+          "type": "string"
+        },
+        "db_path": {
+          "type": "string"
+        },
+        "external_effect_id_column": {
+          "type": "string"
+        },
+        "idempotency_column": {
+          "type": "string"
+        },
+        "observer_id": {
+          "type": "string"
+        },
+        "operation_column": {
+          "type": "string"
+        },
+        "table": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "observer_id",
+        "db_path",
+        "table",
+        "external_effect_id_column",
+        "idempotency_column",
+        "correlation_column",
+        "operation_column",
+        "commit_order_column",
+        "authoritative_source"
+      ],
+      "type": "object"
+    },
+    "Trigger": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "executable": {
+          "type": "string"
+        },
+        "executable_hash": {
+          "type": "string"
+        },
+        "fixture": {
+          "$ref": "#/$defs/LocalFixture"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "executable",
+        "executable_hash",
+        "args",
+        "environment",
+        "fixture",
+        "timeout_ms"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/sideeffect-contract.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "type": "string"
+    },
+    "effects": {
+      "items": {
+        "$ref": "#/$defs/EffectContract"
+      },
+      "type": "array"
+    },
+    "exploration_budget": {
+      "$ref": "#/$defs/ExplorationBudget"
+    },
+    "fault_schedules": {
+      "items": {
+        "$ref": "#/$defs/FaultSchedule"
+      },
+      "type": "array"
+    },
+    "operation": {
+      "$ref": "#/$defs/OperationIdentity"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/Relation"
+      },
+      "type": "array"
+    },
+    "required_observers": {
+      "items": {
+        "$ref": "#/$defs/SQLiteEffectObserver"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "trigger": {
+      "$ref": "#/$defs/Trigger"
+    }
+  },
+  "required": [
+    "contract_id",
+    "schema_version",
+    "operation",
+    "trigger",
+    "effects",
+    "relations",
+    "fault_schedules",
+    "exploration_budget",
+    "required_observers"
+  ],
+  "title": "SideEffectContract",
+  "type": "object"
+}

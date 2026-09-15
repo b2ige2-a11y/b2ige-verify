@@ -1,0 +1,11 @@
+/target/
+.DS_Store
+/.b2ige/
+/release/artifacts/
+**/__pycache__/
+*.pyc
+npm/**/native/
+npm/**/*.tgz
+node_modules/
+.env
+.env.*

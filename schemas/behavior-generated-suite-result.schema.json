@@ -1,0 +1,537 @@
+{
+  "$defs": {
+    "ApprovalStatus": {
+      "enum": [
+        "approved",
+        "unapproved"
+      ],
+      "type": "string"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_index": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "dimension_index": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "target": {
+          "$ref": "#/$defs/DimensionTarget"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dimension_index",
+        "candidate_index",
+        "target",
+        "value"
+      ],
+      "type": "object"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "properties": {
+        "approval": {
+          "$ref": "#/$defs/BaselineApproval"
+        },
+        "baseline_id": {
+          "type": "string"
+        },
+        "created_by": {
+          "$ref": "#/$defs/BaselineCreator"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observation_contract_hash": {
+          "type": "string"
+        },
+        "stability_runs": {
+          "format": "uint64",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "target_revision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "target_revision",
+        "created_by",
+        "approval",
+        "observation_contract_hash"
+      ],
+      "type": "object"
+    },
+    "BaselineApproval": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ApprovalStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "BaselineCreator": {
+      "enum": [
+        "human",
+        "policy",
+        "imported"
+      ],
+      "type": "string"
+    },
+    "BehaviorCase": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "case_id": {
+          "type": "string"
+        },
+        "comparison_policy": {
+          "$ref": "#/$defs/ComparisonPolicy"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "fixture": {
+          "$ref": "#/$defs/LocalFixture"
+        },
+        "required_observers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case_id",
+        "args",
+        "environment",
+        "timeout_ms",
+        "fixture",
+        "comparison_policy",
+        "required_observers"
+      ],
+      "type": "object"
+    },
+    "BehaviorExperiment": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "baseline": {
+          "$ref": "#/$defs/Baseline"
+        },
+        "before": {
+          "$ref": "#/$defs/BehaviorTarget"
+        },
+        "case": {
+          "$ref": "#/$defs/BehaviorCase"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "seed": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "case",
+        "baseline",
+        "before",
+        "after",
+        "seed"
+      ],
+      "type": "object"
+    },
+    "BehaviorTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "type": "string"
+        },
+        "identity": {
+          "description": "SHA-256 of the actual executable bytes, not Git or a mutable label.",
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "executable",
+        "identity",
+        "input_identity"
+      ],
+      "type": "object"
+    },
+    "ComparisonPolicy": {
+      "enum": [
+        "process_byte_exact_v1"
+      ],
+      "type": "string"
+    },
+    "ComparisonRef": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison_hash": {
+          "type": "string"
+        },
+        "comparison_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "comparison_id",
+        "comparison_hash"
+      ],
+      "type": "object"
+    },
+    "Dimension": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "target": {
+          "$ref": "#/$defs/DimensionTarget"
+        }
+      },
+      "required": [
+        "target",
+        "candidates"
+      ],
+      "type": "object"
+    },
+    "DimensionTarget": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "index": {
+              "format": "uint64",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "kind": {
+              "const": "argument",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "index"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "environment",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "GeneratedCaseIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "assignment": {
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          },
+          "type": "array"
+        },
+        "case_identity": {
+          "type": "string"
+        },
+        "generated_case_id": {
+          "type": "string"
+        },
+        "generation_spec_hash": {
+          "type": "string"
+        },
+        "input_identity": {
+          "type": "string"
+        },
+        "parent_case_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "generated_case_id",
+        "parent_case_identity",
+        "generation_spec_hash",
+        "assignment",
+        "input_identity",
+        "case_identity"
+      ],
+      "type": "object"
+    },
+    "GenerationCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "completed_pairs": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "expected_cases": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verified_comparisons": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "expected_cases",
+        "verified_comparisons",
+        "completed_pairs",
+        "complete"
+      ],
+      "type": "object"
+    },
+    "GenerationMode": {
+      "enum": [
+        "ONE_AT_A_TIME",
+        "CARTESIAN"
+      ],
+      "type": "string"
+    },
+    "GenerationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "$ref": "#/$defs/BehaviorExperiment",
+          "description": "Includes the approved baseline and immutable execution/observation contract."
+        },
+        "dimensions": {
+          "items": {
+            "$ref": "#/$defs/Dimension"
+          },
+          "type": "array"
+        },
+        "generation_id": {
+          "type": "string"
+        },
+        "max_cases": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mode": {
+          "$ref": "#/$defs/GenerationMode"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "generation_id",
+        "schema_version",
+        "base",
+        "mode",
+        "dimensions",
+        "max_cases"
+      ],
+      "type": "object"
+    },
+    "LocalFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_identity": {
+          "description": "Content/mode/directory snapshot identity, checked before either execution.",
+          "type": "string"
+        },
+        "source": {
+          "description": "None creates an empty workspace. stdin remains P1's /dev/null.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_identity"
+      ],
+      "type": "object"
+    },
+    "OutcomeCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "divergence_proven": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "error": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "inconclusive": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "no_divergence_found": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "no_divergence_found",
+        "divergence_proven",
+        "inconclusive",
+        "error"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/behavior-generated-suite-result.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "aggregate_verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "authorization_hash": {
+      "type": "string"
+    },
+    "comparisons": {
+      "items": {
+        "$ref": "#/$defs/ComparisonRef"
+      },
+      "type": "array"
+    },
+    "coverage": {
+      "$ref": "#/$defs/GenerationCoverage"
+    },
+    "generated_cases": {
+      "items": {
+        "$ref": "#/$defs/GeneratedCaseIdentity"
+      },
+      "type": "array"
+    },
+    "generation_budget": {
+      "format": "uint64",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "generation_spec": {
+      "$ref": "#/$defs/GenerationSpec"
+    },
+    "generation_spec_hash": {
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "outcome_counts": {
+      "$ref": "#/$defs/OutcomeCounts"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "suite_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "suite_id",
+    "schema_version",
+    "generation_spec",
+    "generation_spec_hash",
+    "generated_cases",
+    "comparisons",
+    "authorization_hash",
+    "outcome_counts",
+    "aggregate_verdict",
+    "generation_budget",
+    "coverage",
+    "limitations"
+  ],
+  "title": "BehaviorGeneratedSuiteResult",
+  "type": "object"
+}

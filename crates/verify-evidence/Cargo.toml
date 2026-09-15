@@ -1,0 +1,16 @@
+[package]
+name = "verify-evidence"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Deterministic local verification infrastructure for AI-written software"
+readme = "../../README.md"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+sha2.workspace = true
+serde_json_canonicalizer.workspace = true
+serde-value.workspace = true

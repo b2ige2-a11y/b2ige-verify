@@ -1,0 +1,290 @@
+{
+  "schema_version": "3",
+  "manifest_role": "release-index",
+  "version": "0.1.0",
+  "git_commit": null,
+  "working_tree_dirty": true,
+  "rust_toolchain": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "built_target": "aarch64-apple-darwin",
+  "supported_platforms": [
+    "aarch64-apple-darwin",
+    "x86_64-apple-darwin",
+    "x86_64-unknown-linux-gnu"
+  ],
+  "actually_verified_platforms": [
+    "aarch64-apple-darwin"
+  ],
+  "platform_validation_scope": {
+    "aarch64-apple-darwin": "Native CLI/init/doctor/Behavior/SideEffect/BlindTest/reports/MCP; Docker actual engine; full benchmark NOT RERUN, unchanged baseline retained",
+    "x86_64-apple-darwin": "No runtime execution recorded for this artifact",
+    "x86_64-unknown-linux-gnu": "No runtime execution recorded for this artifact"
+  },
+  "platform_validation": {
+    "aarch64-apple-darwin": "VERIFIED_NATIVE",
+    "x86_64-apple-darwin": "NOT_RUN",
+    "x86_64-unknown-linux-gnu": "NOT_RUN"
+  },
+  "binary_sha256": {
+    "b2ige": "d043c8b393d62ad49aa90c57f9d1b8eed0677e4e941764adcef77ce58984cccb",
+    "b2ige-mcp": "f80d04bf7d5094e320e4434d5430a95f0c3c92ef3583b2c3da0e8c63ad28fcfd",
+    "b2ige-demo": "804387c94c96d618cc77c3a007af9b0cff385a49f47c9306107412fcdb32582b",
+    "b2ige-demo-effect": "9cba71964344b9bff863a4a8491329a070fd10053c096d4843d9506b418c5232",
+    "p5-effect-fixture": "3b30d3d23eb7887dbd5511f048447e1594bb9d811943b539e10672b68dc976c8"
+  },
+  "artifact_sha256": {
+    "b2ige-0.1.0-aarch64-apple-darwin.tar.gz": "05bb8c8fa09b3322a535e277316629cd4d53c61e0f2be1f5c39fc74d23aa351a",
+    "b2ige-0.1.0-source.tar.gz": "dc6ddae493aa68495f3ac4fbb4b25ab28d5e1ef05ede7b60a7838a1b5325072e",
+    "b2ige-verify-0.1.0.tgz": "80eb7204d07556b1650d38a84df7ebc652870b1d7733be2f71b961f44aaaaf47",
+    "b2ige-0.1.0-npm.cdx.json": "dba788221ee4ee9c67c9ccdeb849f589f1b412a78a3906f6e6192de539b88c02",
+    "b2ige-0.1.0-native-verify-cli.cdx.json": "0c814c27134a68dcc04d0c375583a9ff69eaa0b7ba718f9ced8d1ad8da03de7b",
+    "b2ige-0.1.0-native-verify-core.cdx.json": "00cf5053d86077d11042e20376229184fa8d6fd035ae2fc5e47c92a2e3df2e0e",
+    "b2ige-0.1.0-native-verify-evidence.cdx.json": "fb1a9a628aaec46c1ccd9a1c05c697f442161ad05df72634437ed08c5fe20923",
+    "b2ige-0.1.0-native-verify-mcp.cdx.json": "c7b8d0d7bc0584d6114001e1ddd97654767dc74d68d013adcdddd4b6980ba564",
+    "b2ige-0.1.0-native-verify-replay.cdx.json": "602ec5f643cabcd2ad59a1b088aaba17f10dca1a32a28efad10eb128e3259bb7",
+    "b2ige-0.1.0-native-verify-runner.cdx.json": "de717ff151eb8e8f30ee5acb6054dbb6c3a4561d3074e1d9e10c2775e6719c85"
+  },
+  "license": "Apache-2.0",
+  "license_notices_sha256": "433a3872372c0c17bc0f600a441c44860bd97dc85bc94600cd0fef96d39b8180",
+  "rust_runtime_notices_sha256": "68129500b616d5838629e68f55ff3aed5e096dacf60ce9eb41bbe599a563afa6",
+  "signing": {
+    "publisher_signed": false,
+    "apple_notarized": false,
+    "status": "OWNER_DECISION"
+  },
+  "sbom": {
+    "status": "GENERATED",
+    "format": "CycloneDX",
+    "spec_version": "1.5",
+    "generator": "cargo-cyclonedx-cyclonedx 0.5.9",
+    "files": {
+      "b2ige-0.1.0-native-verify-cli.cdx.json": "0c814c27134a68dcc04d0c375583a9ff69eaa0b7ba718f9ced8d1ad8da03de7b",
+      "b2ige-0.1.0-native-verify-core.cdx.json": "00cf5053d86077d11042e20376229184fa8d6fd035ae2fc5e47c92a2e3df2e0e",
+      "b2ige-0.1.0-native-verify-evidence.cdx.json": "fb1a9a628aaec46c1ccd9a1c05c697f442161ad05df72634437ed08c5fe20923",
+      "b2ige-0.1.0-native-verify-mcp.cdx.json": "c7b8d0d7bc0584d6114001e1ddd97654767dc74d68d013adcdddd4b6980ba564",
+      "b2ige-0.1.0-native-verify-replay.cdx.json": "602ec5f643cabcd2ad59a1b088aaba17f10dca1a32a28efad10eb128e3259bb7",
+      "b2ige-0.1.0-native-verify-runner.cdx.json": "de717ff151eb8e8f30ee5acb6054dbb6c3a4561d3074e1d9e10c2775e6719c85"
+    },
+    "scope": "All 143 Cargo.lock packages: 6 workspace and 137 registry packages; all targets, transitive/build/dev dependencies. Not an OS image or compiler SBOM; not a vulnerability scan.",
+    "npm": {
+      "status": "GENERATED",
+      "file": "b2ige-0.1.0-npm.cdx.json",
+      "sha256": "dba788221ee4ee9c67c9ccdeb849f589f1b412a78a3906f6e6192de539b88c02",
+      "scope": "npm wrapper only; no Rust/native dependencies",
+      "generator": "npm sbom"
+    }
+  },
+  "name_clearance": {
+    "status": "INCOMPLETE",
+    "review": "release/name-clearance-review.md",
+    "final_package_names": null
+  },
+  "benchmark": {
+    "benchmark_version": "b2ige-bench-v1",
+    "corpus_hash": "sha256:a27f578338c6b24d9c8c337a697b4eb1156f3d864fd1de189922ac40e997b778",
+    "semantic_hash": "sha256:fe4f3c2b57f18233c7d910e2d6d2a00eed83fa5f6b2e58d078dc74997ac995cb",
+    "summary": {
+      "agent_leakage": 0,
+      "blockers": [],
+      "execution_ms": 43720,
+      "false_fail": 0,
+      "false_pass": 0,
+      "gate_pass": true,
+      "hidden_leakage": 0,
+      "mismatches": 0,
+      "rates": {
+        "Mutation adequacy on benchmark corpus": {
+          "denominator": 2,
+          "fraction": 1,
+          "numerator": 2
+        },
+        "attested_case_coverage": {
+          "denominator": 27,
+          "fraction": 0.8148148148148148,
+          "numerator": 22
+        },
+        "committed_effect_confirmation_coverage": {
+          "denominator": 13,
+          "fraction": 0.9230769230769231,
+          "numerator": 12
+        },
+        "correct_acceptance": {
+          "denominator": 7,
+          "fraction": 1,
+          "numerator": 7
+        },
+        "correct_blindtest_false_fail": {
+          "denominator": 2,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "deterministic_generation": {
+          "denominator": 2,
+          "fraction": 1,
+          "numerator": 2
+        },
+        "deterministic_replay": {
+          "denominator": 5,
+          "fraction": 1,
+          "numerator": 5
+        },
+        "duplicate_detection": {
+          "denominator": 3,
+          "fraction": 1,
+          "numerator": 3
+        },
+        "error": {
+          "denominator": 31,
+          "fraction": 0.0967741935483871,
+          "numerator": 3
+        },
+        "evidence_validity": {
+          "denominator": 31,
+          "fraction": 1,
+          "numerator": 31
+        },
+        "false_fail": {
+          "denominator": 7,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "false_pass": {
+          "denominator": 24,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "generator_bug_discovery": {
+          "denominator": 2,
+          "fraction": 1,
+          "numerator": 2
+        },
+        "inconclusive": {
+          "denominator": 31,
+          "fraction": 0.16129032258064516,
+          "numerator": 5
+        },
+        "isolation_unattested_pass": {
+          "denominator": 1,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "known_bug_false_pass": {
+          "denominator": 16,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "known_unsafe_false_pass": {
+          "denominator": 6,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "local_minimization": {
+          "denominator": 7,
+          "fraction": 1,
+          "numerator": 7
+        },
+        "minimal_reproduction_availability": {
+          "denominator": 16,
+          "fraction": 0.4375,
+          "numerator": 7
+        },
+        "missing_evidence_pass": {
+          "denominator": 6,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "negative_evidence_rejection": {
+          "denominator": 2,
+          "fraction": 1,
+          "numerator": 2
+        },
+        "noise_handling": {
+          "denominator": 2,
+          "fraction": 1,
+          "numerator": 2
+        },
+        "observation_coverage": {
+          "denominator": 60,
+          "fraction": 0.85,
+          "numerator": 51
+        },
+        "partial_hidden_suite_pass": {
+          "denominator": 1,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "reduction_success": {
+          "denominator": 7,
+          "fraction": 1,
+          "numerator": 7
+        },
+        "relationship_or_lost_detection": {
+          "denominator": 3,
+          "fraction": 1,
+          "numerator": 3
+        },
+        "requested_fault_execution_coverage": {
+          "denominator": 20,
+          "fraction": 0.9,
+          "numerator": 18
+        },
+        "safe_control_false_fail": {
+          "denominator": 7,
+          "fraction": 0,
+          "numerator": 0
+        },
+        "suite_quality_receipt_accuracy": {
+          "denominator": 4,
+          "fraction": 1,
+          "numerator": 4
+        },
+        "true_bug_detection": {
+          "denominator": 16,
+          "fraction": 1,
+          "numerator": 16
+        },
+        "verified_reload": {
+          "denominator": 31,
+          "fraction": 1,
+          "numerator": 31
+        },
+        "verified_reproduction": {
+          "denominator": 16,
+          "fraction": 1,
+          "numerator": 16
+        }
+      },
+      "schema_version": "1",
+      "setup_ms": 891,
+      "total_cases": 31,
+      "verdict_counts": {
+        "ERROR": 3,
+        "FAIL": 16,
+        "INCONCLUSIVE": 5,
+        "PASS": 7
+      }
+    }
+  },
+  "benchmark_scope": "B2IGE Verify Bench v1; 31 explicit cases; metrics on the benchmark corpus",
+  "build_timestamp_nonsemantic": "2026-09-15T10:50:50.922226+00:00",
+  "local_release_candidate_ready": true,
+  "clean_public_repo_ready": true,
+  "technical_publication_ready": false,
+  "publication_ready": false,
+  "owner_publication_authorized": false,
+  "known_limitations": [
+    "Fresh native full smoke passed for built_target only; other targets require native CI",
+    "Remote native platforms, real release host/pins, namespace ownership, private security reporting and owner decisions pending",
+    "Unsigned by a publisher and not notarized; checksums do not authenticate",
+    "Bounded corpus; trusted controller; no same-host-user/admin/root secrecy",
+    "Linux arm64 and Windows unsupported in this candidate"
+  ],
+  "source_inventory_sha256": "f519d3526dc8854d27156fe63a35e769b6d51a98b15fb9f6c37613aa739c4284",
+  "ci_provenance": {
+    "GITHUB_REPOSITORY": null,
+    "GITHUB_SHA": null,
+    "GITHUB_REF": null,
+    "GITHUB_RUN_ID": null,
+    "GITHUB_RUN_ATTEMPT": null,
+    "GITHUB_WORKFLOW": null
+  }
+}

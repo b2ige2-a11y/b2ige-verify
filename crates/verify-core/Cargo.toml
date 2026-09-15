@@ -1,0 +1,46 @@
+[package]
+name = "verify-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Deterministic local verification infrastructure for AI-written software"
+readme = "../../README.md"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+verify-evidence.workspace = true
+verify-runner.workspace = true
+verify-replay.workspace = true
+sha2.workspace = true
+rusqlite = { version = "0.40.2", features = ["bundled", "backup"] }
+tempfile = "3"
+
+[dev-dependencies]
+jsonschema = { version = "0.33", default-features = false }
+
+[[test]]
+name = "conformance"
+path = "../../tests/conformance/main.rs"
+
+[[bin]]
+name = "p1b-process-fixture"
+path = "../../tests/fixtures/process.rs"
+
+[[bin]]
+name = "p1c-replay-fixture"
+path = "../../tests/fixtures/replay.rs"
+
+[[bin]]
+name = "p2-behavior-before"
+path = "../../tests/fixtures/behavior_before.rs"
+
+[[bin]]
+name = "p2-behavior-after"
+path = "../../tests/fixtures/behavior_after.rs"
+
+[[bin]]
+name = "p5-effect-fixture"
+path = "../../tests/fixtures/sideeffect.rs"

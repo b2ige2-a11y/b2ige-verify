@@ -1,0 +1,135 @@
+B2IGE VERIFY BENCH
+b2ige-bench-v1 · macos-aarch64
+
+Overall
+Cases                 31
+Known bugs detected   16 / 16 (100.0%)
+False PASS            0
+False FAIL            0
+Release gate          PASS
+Elapsed               45703 ms
+
+behavior — PASS
+correct_acceptance: 1 / 1 (100.0%)
+correct_blindtest_false_fail: N/A
+deterministic_generation: 2 / 2 (100.0%)
+deterministic_replay: 5 / 5 (100.0%)
+error: 0 / 9 (0.0%)
+evidence_validity: 9 / 9 (100.0%)
+false_fail: 0 / 1 (0.0%)
+false_pass: 0 / 8 (0.0%)
+generator_bug_discovery: 2 / 2 (100.0%)
+inconclusive: 1 / 9 (11.1%)
+isolation_unattested_pass: N/A
+known_bug_false_pass: 0 / 7 (0.0%)
+known_unsafe_false_pass: N/A
+local_minimization: 1 / 1 (100.0%)
+minimal_reproduction_availability: 1 / 7 (14.3%)
+missing_evidence_pass: N/A
+negative_evidence_rejection: N/A
+noise_handling: 2 / 2 (100.0%)
+observation_coverage: 20 / 20 (100.0%)
+partial_hidden_suite_pass: N/A
+reduction_success: 1 / 1 (100.0%)
+safe_control_false_fail: 0 / 1 (0.0%)
+true_bug_detection: 7 / 7 (100.0%)
+verified_reload: 9 / 9 (100.0%)
+verified_reproduction: 7 / 7 (100.0%)
+Hidden leakage: 0
+Agent leakage: 0
+
+blindtest — PASS
+Mutation adequacy on benchmark corpus: 2 / 2 (100.0%)
+attested_case_coverage: 22 / 27 (81.5%)
+correct_acceptance: 2 / 2 (100.0%)
+correct_blindtest_false_fail: 0 / 2 (0.0%)
+deterministic_replay: N/A
+error: 2 / 9 (22.2%)
+evidence_validity: 9 / 9 (100.0%)
+false_fail: 0 / 2 (0.0%)
+false_pass: 0 / 7 (0.0%)
+inconclusive: 2 / 9 (22.2%)
+isolation_unattested_pass: 0 / 1 (0.0%)
+known_bug_false_pass: 0 / 3 (0.0%)
+known_unsafe_false_pass: N/A
+local_minimization: N/A
+minimal_reproduction_availability: 0 / 3 (0.0%)
+missing_evidence_pass: 0 / 3 (0.0%)
+negative_evidence_rejection: 1 / 1 (100.0%)
+observation_coverage: 19 / 27 (70.4%)
+partial_hidden_suite_pass: 0 / 1 (0.0%)
+safe_control_false_fail: 0 / 2 (0.0%)
+suite_quality_receipt_accuracy: 4 / 4 (100.0%)
+true_bug_detection: 3 / 3 (100.0%)
+verified_reload: 9 / 9 (100.0%)
+verified_reproduction: 3 / 3 (100.0%)
+Hidden leakage: 0
+Agent leakage: 0
+
+sideeffect — PASS
+committed_effect_confirmation_coverage: 12 / 13 (92.3%)
+correct_acceptance: 4 / 4 (100.0%)
+correct_blindtest_false_fail: N/A
+deterministic_replay: N/A
+duplicate_detection: 3 / 3 (100.0%)
+error: 1 / 13 (7.7%)
+evidence_validity: 13 / 13 (100.0%)
+false_fail: 0 / 4 (0.0%)
+false_pass: 0 / 9 (0.0%)
+inconclusive: 2 / 13 (15.4%)
+isolation_unattested_pass: N/A
+known_bug_false_pass: 0 / 6 (0.0%)
+known_unsafe_false_pass: 0 / 6 (0.0%)
+local_minimization: 6 / 6 (100.0%)
+minimal_reproduction_availability: 6 / 6 (100.0%)
+missing_evidence_pass: 0 / 3 (0.0%)
+negative_evidence_rejection: 1 / 1 (100.0%)
+observation_coverage: 12 / 13 (92.3%)
+partial_hidden_suite_pass: N/A
+reduction_success: 6 / 6 (100.0%)
+relationship_or_lost_detection: 3 / 3 (100.0%)
+requested_fault_execution_coverage: 18 / 20 (90.0%)
+safe_control_false_fail: 0 / 4 (0.0%)
+true_bug_detection: 6 / 6 (100.0%)
+verified_reload: 13 / 13 (100.0%)
+verified_reproduction: 6 / 6 (100.0%)
+Hidden leakage: 0
+Agent leakage: 0
+
+behavior.preserving: Correct → Some(Pass)
+behavior.stdout: Buggy → Some(Fail)
+behavior.stderr: Buggy → Some(Fail)
+behavior.exit: Buggy → Some(Fail)
+behavior.signal: Buggy → Some(Fail)
+behavior.noise: Nondeterministic → Some(Inconclusive)
+behavior.mixed: Buggy → Some(Fail)
+behavior.generated: Buggy → Some(Fail)
+behavior.reducible: Buggy → Some(Fail)
+sideeffect.normal: Correct → Some(Pass)
+sideeffect.retry: Correct → Some(Pass)
+sideeffect.delivery: Correct → Some(Pass)
+sideeffect.kill: Correct → Some(Pass)
+sideeffect.unsafe_retry: Buggy → Some(Fail)
+sideeffect.unsafe_delivery: Buggy → Some(Fail)
+sideeffect.unsafe_kill: Buggy → Some(Fail)
+sideeffect.ordered: Buggy → Some(Fail)
+sideeffect.atomic: Buggy → Some(Fail)
+sideeffect.lost: Buggy → Some(Fail)
+sideeffect.observer: Incomplete → Some(Inconclusive)
+sideeffect.fault: Incomplete → Some(Inconclusive)
+sideeffect.corrupt: Incomplete → Some(Error)
+blindtest.correct: Correct → Some(Pass)
+blindtest.mutant_a: Buggy → Some(Fail)
+blindtest.mutant_b: Buggy → Some(Fail)
+blindtest.noop: Buggy → Some(Fail)
+blindtest.partial: Incomplete → Some(Inconclusive)
+blindtest.timeout: Incomplete → Some(Inconclusive)
+blindtest.isolation: InfraErrorExpected → Some(Error)
+blindtest.missing: Incomplete → Some(Error)
+blindtest.probe: Correct → Some(Pass)
+
+Limitations
+- Small explicit bounded corpus; no exhaustive proof, generalized mutation score, or performance release threshold
+- Trusted local controller; same-user host access is outside Docker secrecy boundary
+- Rates with denominator zero are null / N/A. Expected corrupted artifacts are measured as loader rejections; intact pre-corruption artifacts are schema/reload checked
+- Use --reverse in a separate fresh run to measure order dependence; immutable Docker image layers may be reused, never run evidence

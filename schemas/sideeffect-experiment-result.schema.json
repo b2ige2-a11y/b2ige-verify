@@ -1,0 +1,880 @@
+{
+  "$defs": {
+    "Adapter": {
+      "enum": [
+        "sqlite"
+      ],
+      "type": "string"
+    },
+    "ArtifactRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "integrity_hash"
+      ],
+      "type": "object"
+    },
+    "CommittedEffectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_effect_id": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "operation",
+        "external_effect_id",
+        "idempotency_identity",
+        "correlation_identity",
+        "commit_order"
+      ],
+      "type": "object"
+    },
+    "CommittedRow": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_id": {
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/CommittedEffectIdentity"
+        }
+      },
+      "required": [
+        "effect_id",
+        "identity"
+      ],
+      "type": "object"
+    },
+    "EffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/Adapter"
+        },
+        "authoritative_observer": {
+          "type": "string"
+        },
+        "effect_id": {
+          "type": "string"
+        },
+        "expectation": {
+          "$ref": "#/$defs/Expectation"
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityContract"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_id",
+        "provider",
+        "adapter",
+        "operation",
+        "identity",
+        "expectation",
+        "authoritative_observer"
+      ],
+      "type": "object"
+    },
+    "Expectation": {
+      "enum": [
+        "exactly_once",
+        "at_most_once",
+        "at_least_once",
+        "never"
+      ],
+      "type": "string"
+    },
+    "ExplorationBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "max_schedules": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "reduction_executions": {
+          "format": "uint",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_schedules",
+        "max_attempts",
+        "reduction_executions"
+      ],
+      "type": "object"
+    },
+    "ExternalIdentity": {
+      "enum": [
+        "provider_operation_external_id"
+      ],
+      "type": "string"
+    },
+    "FaultPrimitive": {
+      "enum": [
+        "NONE",
+        "RETRY",
+        "DUPLICATE_DELIVERY",
+        "KILL_AFTER_COMMIT"
+      ],
+      "type": "string"
+    },
+    "FaultSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "primitives": {
+          "items": {
+            "$ref": "#/$defs/FaultPrimitive"
+          },
+          "type": "array"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "primitives"
+      ],
+      "type": "object"
+    },
+    "FaultScheduleResult": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          },
+          "type": "array"
+        },
+        "committed": {
+          "items": {
+            "$ref": "#/$defs/CommittedRow"
+          },
+          "type": "array"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "executed_faults": {
+          "items": {
+            "$ref": "#/$defs/HistoryEvent"
+          },
+          "type": "array"
+        },
+        "history": {
+          "$ref": "#/$defs/SideEffectHistory"
+        },
+        "initial": {
+          "items": {
+            "$ref": "#/$defs/SQLiteSnapshot"
+          },
+          "type": "array"
+        },
+        "schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "schedule",
+        "initial",
+        "attempts",
+        "executed_faults",
+        "complete",
+        "committed",
+        "history"
+      ],
+      "type": "object"
+    },
+    "HistoryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/HistoryKind"
+        },
+        "logical_order": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_effect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommittedEffectIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "logical_order",
+        "run_id",
+        "kind",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "HistoryKind": {
+      "enum": [
+        "operation_started",
+        "attempt_started",
+        "effect_observed_committed",
+        "target_completed",
+        "target_killed",
+        "retry_started",
+        "duplicate_delivery_started",
+        "observer_failure",
+        "experiment_completed"
+      ],
+      "type": "string"
+    },
+    "IdentityContract": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_identity": {
+          "type": "string"
+        },
+        "external_identity": {
+          "$ref": "#/$defs/ExternalIdentity"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "external_identity",
+        "idempotency_identity",
+        "correlation_identity"
+      ],
+      "type": "object"
+    },
+    "LedgerAuthority": {
+      "enum": [
+        "durable_append_only_committed_state"
+      ],
+      "type": "string"
+    },
+    "LocalFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_identity": {
+          "description": "Content/mode/directory snapshot identity, checked before either execution.",
+          "type": "string"
+        },
+        "source": {
+          "description": "None creates an empty workspace. stdin remains P1's /dev/null.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_identity"
+      ],
+      "type": "object"
+    },
+    "ObservationCoverage": {
+      "enum": [
+        "complete",
+        "partial",
+        "unavailable",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "OperationIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_identity": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "idempotency_identity",
+        "correlation_identity"
+      ],
+      "type": "object"
+    },
+    "ReductionStatus": {
+      "enum": [
+        "LOCALLY_MINIMIZED",
+        "BUDGET_EXHAUSTED",
+        "UNREPRODUCED"
+      ],
+      "type": "string"
+    },
+    "ReductionTrial": {
+      "additionalProperties": false,
+      "properties": {
+        "preserved": {
+          "type": "boolean"
+        },
+        "result": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        }
+      },
+      "required": [
+        "schedule",
+        "result",
+        "preserved"
+      ],
+      "type": "object"
+    },
+    "Relation": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "after": {
+              "type": "string"
+            },
+            "effect": {
+              "type": "string"
+            },
+            "semantics": {
+              "const": "ordered_after",
+              "type": "string"
+            }
+          },
+          "required": [
+            "semantics",
+            "effect",
+            "after"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "type": "string"
+            },
+            "other": {
+              "type": "string"
+            },
+            "semantics": {
+              "const": "atomic_with",
+              "type": "string"
+            }
+          },
+          "required": [
+            "semantics",
+            "effect",
+            "other"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Replayability": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "available",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "const": "unavailable",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "SQLiteEffectObserver": {
+      "additionalProperties": false,
+      "description": "Declares a durable, append-only committed ledger, never a request log.",
+      "properties": {
+        "authoritative_source": {
+          "$ref": "#/$defs/LedgerAuthority"
+        },
+        "commit_order_column": {
+          "description": "Integer, unique, increasing commit sequence in this table.",
+          "type": "string"
+        },
+        "correlation_column": {
+          "type": "string"
+        },
+        "db_path": {
+          "type": "string"
+        },
+        "external_effect_id_column": {
+          "type": "string"
+        },
+        "idempotency_column": {
+          "type": "string"
+        },
+        "observer_id": {
+          "type": "string"
+        },
+        "operation_column": {
+          "type": "string"
+        },
+        "table": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "observer_id",
+        "db_path",
+        "table",
+        "external_effect_id_column",
+        "idempotency_column",
+        "correlation_column",
+        "operation_column",
+        "commit_order_column",
+        "authoritative_source"
+      ],
+      "type": "object"
+    },
+    "SQLiteSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "$ref": "#/$defs/ObservationCoverage"
+        },
+        "database": {
+          "description": "Online-backup database bytes; re-queried when loading, not a request log.",
+          "items": {
+            "format": "uint8",
+            "maximum": 255,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "observer_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/CommittedRow"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "observer_id",
+        "coverage",
+        "reason",
+        "rows"
+      ],
+      "type": "object"
+    },
+    "SideEffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/EffectContract"
+          },
+          "type": "array"
+        },
+        "exploration_budget": {
+          "$ref": "#/$defs/ExplorationBudget"
+        },
+        "fault_schedules": {
+          "items": {
+            "$ref": "#/$defs/FaultSchedule"
+          },
+          "type": "array"
+        },
+        "operation": {
+          "$ref": "#/$defs/OperationIdentity"
+        },
+        "relations": {
+          "items": {
+            "$ref": "#/$defs/Relation"
+          },
+          "type": "array"
+        },
+        "required_observers": {
+          "items": {
+            "$ref": "#/$defs/SQLiteEffectObserver"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "trigger": {
+          "$ref": "#/$defs/Trigger"
+        }
+      },
+      "required": [
+        "contract_id",
+        "schema_version",
+        "operation",
+        "trigger",
+        "effects",
+        "relations",
+        "fault_schedules",
+        "exploration_budget",
+        "required_observers"
+      ],
+      "type": "object"
+    },
+    "SideEffectCounterexample": {
+      "additionalProperties": false,
+      "properties": {
+        "original_schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        },
+        "replayability": {
+          "type": "string"
+        },
+        "reproduction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retained_schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        },
+        "signature": {
+          "$ref": "#/$defs/ViolationSignature"
+        },
+        "status": {
+          "$ref": "#/$defs/ReductionStatus"
+        },
+        "steps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "trials": {
+          "items": {
+            "$ref": "#/$defs/ReductionTrial"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "original_schedule",
+        "retained_schedule",
+        "signature",
+        "status",
+        "trials",
+        "steps",
+        "replayability"
+      ],
+      "type": "object"
+    },
+    "SideEffectHistory": {
+      "additionalProperties": false,
+      "properties": {
+        "events": {
+          "items": {
+            "$ref": "#/$defs/HistoryEvent"
+          },
+          "type": "array"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "events"
+      ],
+      "type": "object"
+    },
+    "Trigger": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "environment": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "executable": {
+          "type": "string"
+        },
+        "executable_hash": {
+          "type": "string"
+        },
+        "fixture": {
+          "$ref": "#/$defs/LocalFixture"
+        },
+        "timeout_ms": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "executable",
+        "executable_hash",
+        "args",
+        "environment",
+        "fixture",
+        "timeout_ms"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    },
+    "Violation": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "expected": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ViolationKind"
+        },
+        "observed": {
+          "type": "string"
+        },
+        "schedule_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schedule_id",
+        "effect_ids",
+        "kind",
+        "expected",
+        "observed",
+        "evidence_refs"
+      ],
+      "type": "object"
+    },
+    "ViolationKind": {
+      "enum": [
+        "duplicate_committed_effect",
+        "missing_committed_effect",
+        "forbidden_committed_effect",
+        "commit_order",
+        "half_commit"
+      ],
+      "type": "string"
+    },
+    "ViolationSignature": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/ViolationKind"
+        }
+      },
+      "required": [
+        "effect_ids",
+        "kind"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/sideeffect-experiment-result.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract": {
+      "$ref": "#/$defs/SideEffectContract"
+    },
+    "counterexample": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SideEffectCounterexample"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "reasons": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "replayability": {
+      "$ref": "#/$defs/Replayability"
+    },
+    "schedules": {
+      "items": {
+        "$ref": "#/$defs/FaultScheduleResult"
+      },
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "sideeffect_result_id": {
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "violations": {
+      "items": {
+        "$ref": "#/$defs/Violation"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sideeffect_result_id",
+    "contract",
+    "schedules",
+    "verdict",
+    "violations",
+    "reasons",
+    "limitations",
+    "replayability"
+  ],
+  "title": "SideEffectExperimentResult",
+  "type": "object"
+}

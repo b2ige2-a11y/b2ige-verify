@@ -1,0 +1,1020 @@
+{
+  "$defs": {
+    "ApprovalStatus": {
+      "enum": [
+        "approved",
+        "unapproved"
+      ],
+      "type": "string"
+    },
+    "Baseline": {
+      "additionalProperties": false,
+      "properties": {
+        "approval": {
+          "$ref": "#/$defs/BaselineApproval"
+        },
+        "baseline_id": {
+          "type": "string"
+        },
+        "created_by": {
+          "$ref": "#/$defs/BaselineCreator"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observation_contract_hash": {
+          "type": "string"
+        },
+        "stability_runs": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "target_revision": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "baseline_id",
+        "target_revision",
+        "created_by",
+        "approval",
+        "observation_contract_hash"
+      ],
+      "type": "object"
+    },
+    "BaselineApproval": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ApprovalStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "BaselineCreator": {
+      "enum": [
+        "human",
+        "policy",
+        "imported"
+      ],
+      "type": "string"
+    },
+    "Claim": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_trust": {
+          "items": {
+            "$ref": "#/$defs/TrustClass"
+          },
+          "type": "array"
+        },
+        "id": {
+          "type": "string"
+        },
+        "observer": {
+          "type": "string"
+        },
+        "predicate": {
+          "$ref": "#/$defs/Predicate"
+        }
+      },
+      "required": [
+        "id",
+        "observer",
+        "accepted_trust",
+        "predicate"
+      ],
+      "type": "object"
+    },
+    "CommitObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "eventual_window_ms": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "minimum_trust_class": {
+          "$ref": "#/$defs/TrustClass"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "minimum_trust_class"
+      ],
+      "type": "object"
+    },
+    "Counterexample": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "expected": true,
+        "observed": true,
+        "replay_reference": {
+          "type": "string"
+        },
+        "replayability": {
+          "$ref": "#/$defs/Replayability"
+        }
+      },
+      "required": [
+        "contract_id",
+        "expected",
+        "observed",
+        "evidence_refs",
+        "replay_reference",
+        "replayability"
+      ],
+      "type": "object"
+    },
+    "Coverage": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ObservationCoverage"
+        },
+        "verdict_critical": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "status",
+        "verdict_critical",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "EffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_observation": {
+          "$ref": "#/$defs/CommitObservation"
+        },
+        "effect_id": {
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityRule"
+        },
+        "related_effect": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "semantics": {
+          "$ref": "#/$defs/EffectSemantics"
+        }
+      },
+      "required": [
+        "effect_id",
+        "semantics",
+        "identity",
+        "commit_observation"
+      ],
+      "type": "object"
+    },
+    "EffectIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "external_effect_id": {
+          "type": "string"
+        },
+        "idempotency_identity": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "operation",
+        "external_effect_id",
+        "idempotency_identity"
+      ],
+      "type": "object"
+    },
+    "EffectSemantics": {
+      "enum": [
+        "exactly_once",
+        "at_most_once",
+        "at_least_once",
+        "never",
+        "eventually_within",
+        "ordered_after",
+        "atomic_with"
+      ],
+      "type": "string"
+    },
+    "Evaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "counterexamples": {
+          "items": {
+            "$ref": "#/$defs/Counterexample"
+          },
+          "type": "array"
+        },
+        "coverage": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "type": "object"
+        },
+        "isolation_claim": {
+          "$ref": "#/$defs/IsolationLevel"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "replayability": {
+          "$ref": "#/$defs/Replayability"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "verdict": {
+          "$ref": "#/$defs/Verdict"
+        }
+      },
+      "required": [
+        "verdict",
+        "scope",
+        "coverage",
+        "counterexamples",
+        "replayability",
+        "isolation_claim",
+        "limitations",
+        "reasons"
+      ],
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "integrity_hash": {
+          "type": "string"
+        },
+        "observation": {
+          "$ref": "#/$defs/Observation"
+        },
+        "order": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "related_claim_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "trust_class": {
+          "$ref": "#/$defs/TrustClass"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "run_id",
+        "source",
+        "trust_class",
+        "order",
+        "observation",
+        "integrity_hash",
+        "related_claim_ids"
+      ],
+      "type": "object"
+    },
+    "ExecutionStatus": {
+      "enum": [
+        "completed",
+        "runner_crash",
+        "invalid_authoritative_config",
+        "observer_initialization_failure",
+        "corrupted_evidence_store"
+      ],
+      "type": "string"
+    },
+    "ExperimentPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "claims": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "type": "array"
+        },
+        "isolation": {
+          "$ref": "#/$defs/IsolationLevel"
+        },
+        "optional_observers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "plan_id": {
+          "type": "string"
+        },
+        "product_contract": {
+          "$ref": "#/$defs/ProductContract"
+        },
+        "required_observers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "reset_strategy": {
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "seed": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "target_revision": {
+          "type": "string"
+        },
+        "time_budget_ms": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "plan_id",
+        "version",
+        "target_revision",
+        "seed",
+        "required_observers",
+        "optional_observers",
+        "reset_strategy",
+        "time_budget_ms",
+        "scope",
+        "claims",
+        "isolation",
+        "product_contract"
+      ],
+      "type": "object"
+    },
+    "IdentityRule": {
+      "additionalProperties": false,
+      "properties": {
+        "correlation_fields": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dedupe_domain": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "correlation_fields",
+        "dedupe_domain"
+      ],
+      "type": "object"
+    },
+    "Invariant": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "$ref": "#/$defs/InvariantAuthority"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "invariant_id": {
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/InvariantOrigin"
+        },
+        "required_observations": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "statement": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "invariant_id",
+        "statement",
+        "origin",
+        "authority",
+        "required_observations"
+      ],
+      "type": "object"
+    },
+    "InvariantAuthority": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/InvariantStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "InvariantOrigin": {
+      "enum": [
+        "machine_contract",
+        "human_authored",
+        "llm_candidate",
+        "generated_mutation"
+      ],
+      "type": "string"
+    },
+    "InvariantStatus": {
+      "enum": [
+        "authoritative",
+        "candidate",
+        "rejected"
+      ],
+      "type": "string"
+    },
+    "IsolationAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "$ref": "#/$defs/IsolationLevel"
+        },
+        "linux_backend": {
+          "type": "boolean"
+        },
+        "protected_artifacts_visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "available",
+        "linux_backend",
+        "protected_artifacts_visible"
+      ],
+      "type": "object"
+    },
+    "IsolationLevel": {
+      "enum": [
+        "none",
+        "workspace_separation",
+        "container_isolation",
+        "hardened_linux"
+      ],
+      "type": "string"
+    },
+    "Observation": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "value",
+              "type": "string"
+            },
+            "value": true
+          },
+          "required": [
+            "type",
+            "value"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "request_id": {
+              "type": "string"
+            },
+            "type": {
+              "const": "attempt",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "request_id"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "description": "Complete committed-state snapshot; empty means observed zero, not missing evidence.",
+          "properties": {
+            "effects": {
+              "items": {
+                "$ref": "#/$defs/EffectIdentity"
+              },
+              "type": "array"
+            },
+            "type": {
+              "const": "committed_effects",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "effects"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ObservationCoverage": {
+      "enum": [
+        "complete",
+        "partial",
+        "unavailable",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "Predicate": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "expected": true,
+            "kind": {
+              "const": "equals",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "expected"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "format": "uint64",
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "idempotency_identity": {
+              "type": "string"
+            },
+            "kind": {
+              "const": "committed_count",
+              "type": "string"
+            },
+            "operation": {
+              "type": "string"
+            },
+            "provider": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "provider",
+            "operation",
+            "idempotency_identity",
+            "expected"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ProductContract": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "baseline": {
+              "$ref": "#/$defs/Baseline"
+            },
+            "product": {
+              "const": "behavior",
+              "type": "string"
+            },
+            "stable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "product",
+            "baseline",
+            "stable"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "effect": {
+              "$ref": "#/$defs/EffectContract"
+            },
+            "product": {
+              "const": "sideeffect",
+              "type": "string"
+            }
+          },
+          "required": [
+            "product",
+            "effect"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "invariants": {
+              "items": {
+                "$ref": "#/$defs/Invariant"
+              },
+              "type": "array"
+            },
+            "product": {
+              "const": "blindtest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "product",
+            "invariants"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "ReplayInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "config": true,
+        "config_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experiment_plan": true,
+        "fault_schedule": {
+          "items": true,
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "seed": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "target_revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Replayability": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "available",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "const": "unavailable",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Run": {
+      "additionalProperties": false,
+      "properties": {
+        "completed_checkers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "context": {
+          "$ref": "#/$defs/RunContext"
+        },
+        "coverage": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "type": "object"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "type": "array"
+        },
+        "execution": {
+          "$ref": "#/$defs/ExecutionStatus"
+        },
+        "isolation": {
+          "$ref": "#/$defs/IsolationAssessment"
+        },
+        "replay_inputs": {
+          "$ref": "#/$defs/ReplayInputs"
+        }
+      },
+      "required": [
+        "context",
+        "execution",
+        "isolation",
+        "coverage",
+        "completed_checkers",
+        "evidence",
+        "replay_inputs"
+      ],
+      "type": "object"
+    },
+    "RunContext": {
+      "additionalProperties": false,
+      "properties": {
+        "config_hash": {
+          "type": "string"
+        },
+        "ended_at": {
+          "type": "string"
+        },
+        "experiment_hash": {
+          "type": "string"
+        },
+        "observer_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "plan_hash": {
+          "description": "Existing v1 name retained; experiment_hash is an explicit equal alias.",
+          "type": "string"
+        },
+        "platform_runtime": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "schema_version": {
+          "type": "string"
+        },
+        "seed": {
+          "format": "uint64",
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "started_at": {
+          "type": "string"
+        },
+        "target_revision": {
+          "type": "string"
+        },
+        "tool_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "schema_version",
+        "tool_version",
+        "seed",
+        "target_revision",
+        "config_hash",
+        "plan_hash",
+        "experiment_hash",
+        "platform_runtime",
+        "observer_versions",
+        "started_at",
+        "ended_at"
+      ],
+      "type": "object"
+    },
+    "Scope": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "exploration_budget": {
+          "additionalProperties": {
+            "format": "uint64",
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "contract_ids",
+        "exploration_budget"
+      ],
+      "type": "object"
+    },
+    "TrustClass": {
+      "enum": [
+        "authoritative_external",
+        "authoritative_target_state",
+        "direct_runtime",
+        "derived",
+        "advisory"
+      ],
+      "type": "string"
+    },
+    "TrustedPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_baselines": {
+          "description": "Canonical hashes pinned by human/policy outside the coding-agent workspace.\nNo API automatically adds candidate artifacts to these authorization sets.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "approved_checker_bindings": {
+          "default": [],
+          "description": "Independently approved bindings between an artifact and its executable claim.\nMissing bindings fail closed; evaluation never creates or updates approvals.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "approved_invariants": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "config": true,
+        "plan": {
+          "$ref": "#/$defs/ExperimentPlan"
+        }
+      },
+      "required": [
+        "plan",
+        "config",
+        "approved_baselines",
+        "approved_invariants"
+      ],
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "ERROR"
+      ],
+      "type": "string"
+    }
+  },
+  "$id": "https://b2ige.dev/schemas/verify/conformance-fixture.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Fixtures are test-owned. This envelope must never be used as an untrusted policy import API.",
+  "properties": {
+    "expected": {
+      "$ref": "#/$defs/Evaluation"
+    },
+    "harness_schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/TrustedPolicy"
+    },
+    "run": {
+      "$ref": "#/$defs/Run"
+    }
+  },
+  "required": [
+    "harness_schema_version",
+    "policy",
+    "run",
+    "expected"
+  ],
+  "title": "ConformanceFixture",
+  "type": "object"
+}

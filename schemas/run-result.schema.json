@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://b2ige.dev/schemas/verify/run-result.v1.json",
+  "title": "B2IGE Verify Run Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version","run_id","product","verdict","scope","coverage","seed","plan_hash","config_hash"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "run_id": {"type":"string","minLength":1},
+    "product": {"enum":["behavior","sideeffect","blindtest"]},
+    "verdict": {"enum":["PASS","FAIL","INCONCLUSIVE","ERROR"]},
+    "seed": {"type":"integer","minimum":0},
+    "plan_hash": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "config_hash": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"},
+    "scope": {
+      "type":"object",
+      "required":["contract_ids","exploration_budget"],
+      "properties": {
+        "contract_ids":{"type":"array","items":{"type":"string"}},
+        "exploration_budget":{"type":"object"}
+      },
+      "additionalProperties":true
+    },
+    "coverage": {
+      "type":"object",
+      "additionalProperties": {
+        "type":"object",
+        "required":["status","verdict_critical"],
+        "properties": {
+          "status":{"enum":["complete","partial","unavailable","failed"]},
+          "verdict_critical":{"type":"boolean"},
+          "reason":{"type":"string"}
+        },
+        "additionalProperties":false
+      }
+    },
+    "failure": {"type":["object","null"]},
+    "limitations":{"type":"array","items":{"type":"string"}},
+    "receipt_hash":{"type":["string","null"],"pattern":"^sha256:[0-9a-f]{64}$"}
+  }
+}

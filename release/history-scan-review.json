@@ -1,0 +1,3874 @@
+{
+  "schema_version": "1",
+  "head": "83db19326e830b733e6a83393996e7961442bb83",
+  "commits_refs_and_reflogs": 24,
+  "objects": {
+    "commit": 24,
+    "blob": 388,
+    "tree": 251
+  },
+  "scanned_bytes": 3105855,
+  "skipped": [],
+  "findings": [
+    {
+      "object": "0b7a726370247b8a1b9bed80fd2890519b21e3d4",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "schemas/blindtest-sealed-suite.schema.json"
+      ],
+      "line": 440,
+      "rule": "private_evidence_marker",
+      "match_sha256": "1de8e98eabe56de0da43e471cd81627562ef85bbd0d240afd68544206e5f9f52",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "0b7a726370247b8a1b9bed80fd2890519b21e3d4",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "schemas/blindtest-sealed-suite.schema.json"
+      ],
+      "line": 444,
+      "rule": "private_evidence_marker",
+      "match_sha256": "ab77ff3bd84416c8e59124ec1ae74ee2a67d726a362cf0950ee5ee5193dcbcac",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "18dcfbdca79d2a20138ca7331322e6ff5e21ac88",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "schemas/report-document.schema.json"
+      ],
+      "line": 238,
+      "rule": "private_evidence_marker",
+      "match_sha256": "d3d38068b88b6629d782cac6b220f8647dbd569e822c0ce72fac0def0eba3e4b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 60,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 60,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 61,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 61,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 62,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 64,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 66,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 60,
+      "rule": "codex_worktree",
+      "match_sha256": "4738de8faaf86bea18ddbe36b5e769db9c334669e8b31f3ca33f81f1903eab7f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 60,
+      "rule": "codex_worktree",
+      "match_sha256": "6f6ee285652d13bc46682c3acfca4b0a307e13c4b21bd11591aa308a3b1b1106",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 61,
+      "rule": "codex_worktree",
+      "match_sha256": "7ed8a95d3fe35fc2f9585b0cfadd8fce2ebb2092de8d3a2592d24385c2dcbd1d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 61,
+      "rule": "codex_worktree",
+      "match_sha256": "3bc5afd1f6c39384faaf91f66e115549360b4f459f18dcdbe71ab3e3ecbeaa8a",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 62,
+      "rule": "codex_worktree",
+      "match_sha256": "b6dd86e36445b4b426ea89db381b1aa08406f1ffcb111e989d08fe5764802044",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 64,
+      "rule": "codex_worktree",
+      "match_sha256": "3e213c70d680763cab6ec4cde519a58d260f74cc6f3f4c0320ced7d6221d248f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "31b451b94b5e0e5fa4d90b783e2edebe76e731cc",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-REPAIR-RESULT.md"
+      ],
+      "line": 66,
+      "rule": "codex_worktree",
+      "match_sha256": "9eeaab432b2b905dc19a2d4768520d4fb3426eab13197c13fd8c65adbcd75dc7",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 188,
+      "rule": "temp_path",
+      "match_sha256": "18f444cea89878369e244217cf574a9eb02a9dd3c12fe039069b33d6f1e31d61",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 189,
+      "rule": "temp_path",
+      "match_sha256": "0cb8996d50bfd11ca9e6448637602596ff431ebfd4fccf0d0f55f03936dc1498",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 191,
+      "rule": "temp_path",
+      "match_sha256": "37a32c8f8438c8de6efc2be814b145abf564c59aa3f0549ecdf8eb2ff6ad350b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 192,
+      "rule": "temp_path",
+      "match_sha256": "7ee51d5d538f3895dbff3d14a2e0bbe0003999454cf1c9b74f8a331dedf24550",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 193,
+      "rule": "temp_path",
+      "match_sha256": "ae0e53e8972b5fd807f2b6ac2829c0f3a386035727dd251c9c09fc4930deb776",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 194,
+      "rule": "temp_path",
+      "match_sha256": "16ef5c3348db05156d649128a5024bce9f4768a383280738008dd91a2117c59d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "6e86c0598c88cc9b5174f824e885c83d2a507389",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "docs/BLINDTEST.md"
+      ],
+      "line": 195,
+      "rule": "temp_path",
+      "match_sha256": "16ef5c3348db05156d649128a5024bce9f4768a383280738008dd91a2117c59d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "31e2f1307de11b97ea5a45082fd1b5c90559fffd5f3794969bf94f40c909715b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8c6ae42b2a062e39a5dd50b67844be5cf3b064398c037224f379685addd1713d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9bd28e5b28021d7c8ef8f90f17d8a36726351fc3d0eb49d465424a16aa49f706",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "bce5bbbcaf25d52f5c0a21b6b18c562a74252a40518847a071da1c9b16702963",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "39e91eca97a544706a3009c9f259018c9e0ac53ee0ab05f82cd44b934ea60599",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "befc02eab322735b1c91091a6334271172fd81f174615706ee4d03ee3938fe64",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "ca7325beebca7611e14a7bd2e46e969bfd46d66937f4acedee3a9815a855a13a",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "d68edaeb19a5e5bfccd4ffdad0aed8919f58a92bc777e217304f74028344fd82",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "80c11cde3a4f0bc5a29d9b9862017e0d39737bcb8cc5fe9bf944fe4eddf9d731",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "4edae8edb485701e5fb19f8e50745274c696def48b4b75f909612b365cd42d41",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "f65717de801db2b093b094e993415425d80c96eef354c59c74ceb74ee2ad77db",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "1168c9f4a0c2e6e960358e7613f39b0fe311d04ad4a00fdb26848492d34e745d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "e56894a680c8cb5103318ac5502b969d50331a9424fced73cbd837da96b3980e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "65c13c547c53ff51db2e996252f330f8a3efc406b7ddeb3772e2177a9f34e473",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8e13ed0a8c43916dd30fe8c193e6d3320bfbc2c3e0ea0939321426bde8e6f9b1",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "70f2ac88838b9a1adcb841fb5ed0a907813c6d32aa96ba67e5f762b6d2dcd97f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "ffe1131cda93880ab6457a41ffa1c3819c4aa7553af4d887147775183f610608",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "114a99be5daa8cfffc2f4438296ca5698506ab7eab38d24ff81288c3fb630a22",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "db6fdb06f0b058d157b187251f6c35faad20d9cccbf04a2fe18951c918124237",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "35f91b533894f3d31bd3b791fe1e17881f9eb01e07405604e063fbb39e305743",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9de29e1891ff775731f9edc42902d3fbcb87492be2f8ec407c2ea8d16ceb7d9b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "48bd7ff63e33fd53886bb71d66a3a339ab11777fe74b60851a52bae2c39bf92d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "13d85de1d8fb009a50f903140db3f12724394662bae09845d9b84f9d9b679926",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "ff3cf255fcf400b4858fff11629ec122a540795afdb274e50a9de592456ebbd6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "97e42e698638cfe15e5ac4771af4863291cd0c3cc6925508774540c79ee15cbf",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "e0e49f0ad83deb88fad535585f7191733722bf566787f7989e909fef2689d966",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "6fe53c8e6495c2e8d46a99ee7b9744727f6a25cd437596dfa969d750857968f0",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "3bd4d342bb575c2bf86f0701b779a87c0c0ebbb580df20114e0d1ca08747927c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a8dc2090c93974bf6a6fc1457d7fc50abe90a4abc0d643cabc315badd71b3399",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "373b9fe2167cf4f660207c983e1700fa5daabbbfc366aad0e5b8d262655a787f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "6a2d01f5df1a188d3766ee9fe77561b9a6cc5feabbe0b50d9ac3dc1ff1f73660",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8939cd468dfd1c5de0dfb4f75c4f043f85ef278c6546bb1dd3821ea99e57986b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "7acd0d88c007ec230c8941daa06f5509f7e798e41405765bcfcc29d2ce31cc24",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "229b6a3b1182fc7b48f80d0f6ff39a920afe19b80add94f9db740fdb875d8573",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b2a9255aaf0d2a9228e3d6700d74da813b274a42b2bee3547896fae527cb2007",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "258961c07cb0dc11e46527c97ebcbbbc5f426ec68194005db5fd13c1ae63c3ad",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a8b6ada50898ecd78d7b5e7119b272efd7481892bbb6120d6e0e59aa86dc6a37",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "e708d8b94bafe9c3127d33ae8c868ba44ba35120db881fe33482c5dbe155471d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "820ab5fa2bcd731c303bf43751c58d57c392030f3f5b7c21b214ed70844d9d48",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "479359f26cc8d230f1b88ae84dfda58608ad8b90d7045f523f6b1a26a624a91d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "faa02a35ab9111cd3ace96e5876d0cb92f4f69bdbef05a6fcb29e261d5aee288",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "fa8cda55bda6954b00c6e4183964d1c71627324468537a10b413ae9ee0afe59d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "23e7d6187f495a097dd3f28490a0e44391bf472f114abfae12e967963af1987d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "318d87cdf5167a6acb4f6a2b1af27c4db46fc664052d9c4571b715be9c4a76ef",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "cc5e1239e26aaa68b91574008b024b004cb5e21cf8180e4c9e4e124a9767ba26",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "60ff285e3d53b284f1f6fe6d471dd0e03e5a061fe8a2a27e7f363be3c2df2a46",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8571ab27c72c5c3217d38ac0fdf7531ff57e67705810ce26965a1a6e17d08556",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "69b65b96e7d474e3b9f410a2a9484aa6ad6f76aad7037a56566211422549cc86",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "4c8e2758761574045d358a1fb17f1dc6e421c2590cc1ad3319843a73959183bc",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "238f3749ce11726c2592f9935b24cf6ac8a55c255cf9b52e6de143074208ba1d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a16a90a90ce052cbe0cac41e6378f12251693dc01697e785faddf8b785106fec",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9ff1e703acef3c213690a6f3e4f1d25220fd786397a68dfb973573bc8ff04bac",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9ea5383541a0c8553f7e8601f3ed1a9fb384119825f7761df0de1b77bffedd6f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "1a4f7fbd76b0559ec94b5d096073b55f330c805d1b3d47b5ff87a420355260b7",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "aa026262c1e73bf213028c6eeb03bf888eb4406441131c7b272bd55e899f098c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "2db1345730aeedf21d56fa15a38a0f8c70a46ded6b4bae1f626a1696acee6f21",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "bcf94096ff8edfe4c36cbe08186daaf9781b08f16d6b276e10f6de057a659273",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b03ffddd27af8960a87a3846c5c38f321f5665418a20f22ece54bb0b51cbedae",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "734dcc6212f3b9a39668dc370ad52cc55b415c89",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "0fe47b3fac4a0ff90e83685af26e94f660aa8945e87ba1f547598ce2d5ad81a1",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 36,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 37,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 38,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 39,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 40,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 41,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 42,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 43,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 44,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 45,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 46,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 47,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 48,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 49,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 50,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 51,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 52,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 53,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 54,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 55,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 56,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 57,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 58,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 59,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 60,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 61,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 62,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 63,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 64,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 65,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 66,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 67,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 68,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 69,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 70,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 71,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "76fe13eb1feb0754817d5ed21c0131d0159b0185",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-RESULT.md"
+      ],
+      "line": 72,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "86cf29981ea0ed0c7d2ac8ff01042dea65b03ca1",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "crates/verify-mcp/tests/workflow.rs"
+      ],
+      "line": 212,
+      "rule": "temp_path",
+      "match_sha256": "1d7061c44ea4f7891708de4939a3efbec55876b84244e963751c689feae6349e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "SAFE_SYNTHETIC",
+      "risk": "None identified",
+      "reason": "Documented example path or literal negative-test injection, not a recorded private runtime location",
+      "recommended_action": "Keep public synthetic context explicit"
+    },
+    {
+      "object": "a6d6938448ab4790510c0997dad4451d1f86dc92",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "scripts/hygiene.py"
+      ],
+      "line": 10,
+      "rule": "temp_path",
+      "match_sha256": "e5d71558a699b0e4e4ea46ff4e9cad6a3ee5a648b8e40cd36bdaaf6aa82f91ff",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "ad6c006d239a44997cee896ec29526998ae68f68",
+      "kind": "blob",
+      "commit": "3e94ec87452ca4bfd5210cb78f243e5fa13238ca",
+      "paths": [
+        ".DS_Store"
+      ],
+      "line": 0,
+      "rule": "private_file_path",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "REVIEW",
+      "risk": "Low metadata privacy",
+      "reason": "Historical Finder metadata, not current public inventory; no secret pattern found",
+      "recommended_action": "Include these blobs/paths in any separately approved history cleanup"
+    },
+    {
+      "object": "af51c0a2c93363a6e795e1b06d40d48fe7b7965b",
+      "kind": "blob",
+      "commit": "607fec7c3028ce6a36f0f33a721d36d465a06837",
+      "paths": [
+        ".DS_Store"
+      ],
+      "line": 0,
+      "rule": "private_file_path",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "REVIEW",
+      "risk": "Low metadata privacy",
+      "reason": "Historical Finder metadata, not current public inventory; no secret pattern found",
+      "recommended_action": "Include these blobs/paths in any separately approved history cleanup"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b35b469442fa34d62cf5e0527338cd7d1cf9cab43e43500090f34c7b34f3b73a",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "10c51bfec79f75c236a2cba16e1e43ecb3882991b32a7ec7f6d5e516b510a8a3",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8d22b5b5f18ee24a7628200f7f6f84581fc5116644818d2195aedbc68e0287b8",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a0edb2bb61dc6ed90dc5150ab91278dbe8e715b748ceb595966a16c37b52bbb9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "3ccba60618490831eea5989b327adb966188d6664b417a79df5e2bc995747144",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a45c81c8382a3829e3eaa76d34b16d1f5cf9151236a181a6def3edfd0095078b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "c697d6344c58619dfcacc8c6740a3b2b2bd2f89fdd6d02f908adbdf46a011c7d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "805734efda97faae7eda8f600a11c279ec509c919fd884356b880db6cc1fad7e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "67e8275f2d972394adc592fbe365491756aa09dbb708caaed6f3560446d5bc74",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "ef9a4a004800768622583028e0a3a47cc140c222325fc4fc2f25de7108c85cf4",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "2c6ceffdfea7926b12b8f9491361a5dff5843447adf0d9875f652676bd077e1e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "7cc91d8b8bacceb914ed6b1f7804af18dcedf8aa455b501e5997fe77b5c02b97",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "4d44582b60d35c0569e0755ef142c02f6e60676bfece7aa22ea5be955b00f085",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "d2d96807164702518985735318bde24681bbff32246d58c07d9df1bb4161f325",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "91c7bcf5ccd5697ae4c8cce9413ef126c6391e1f6fcabe86c8c9b48179aa00ab",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a91f5a98a9affb2bdfd1e6f16aa547f8c8e228ab77b82849c9188a4ff88e5d69",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "c2957f0fecbd6ea523f7798cac3c7904a33bf39a41735d3dc9d4ccb90b50cc80",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "732220eb1cb2414d6c65131c1a7f295e96449130f40c47eb81e79fe9c20d666c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "3b99e2aebfc8983c8eb940018735c2bcf65c60e51c16b55cfd0b7153bf9eaa75",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "24c376651d105e070efb0d60431c6bef0788ec399497b8b69f48352d4b65f45b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8912c6ebcdf72096190db2734b6ccb9edb27fa7c59fedb5a4005f394418b620d",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "638843165ffa7d2102253cc3819520ab7c683e9957783da7a2a37e0cccd28458",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "1423fa7394cca0e8fb6460a33e9064f3f2a4af46569be321e75703cc69ce9a5a",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "e03fe0adb075005f2dc84830d26cbedfd1694086636054815dc48f0f94caf3d6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "8e3a3e3a9aeb0430592194876af0b0a5bccd4e68afc4d710a1ebf707c3ca38c9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "0a9b98e420c09157af62d753c024c987c2be77f87586cf5be9ff793ed226cad0",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "f1fea9a7859748781cd87aee780cf1f2e50177428ccc9e7f859c2771453f1ffe",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "2655987019c49bc49f6bed8bab958881074a7f54d29e31e8fb901b8c9fcc7a80",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b28b82db471c170c87367eaaad969be65fb1baaa15f90f8f6561aa5e0f93edb9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "e4968a80c85030d7b5bf8415d242be8b0beae90ff35a3f767774fd22fe3d0864",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "eaba01b81f4627e7de70d67c6614c2beeac01f5fa688a20386256ccd46c923d1",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "90ef2e8a18b872c3ed30e9bac220c5c4f9c952e0abb1e6ebfa0b48bfafe4ea42",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9485e82fa3df2d874340e7e0c925eb6357fed57e04b0138f1adad1d0d787fbdf",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "74f5f9d9da4eb5b096b7b3b5388782b7e6492e50b5be53796652991b6685d5fc",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b23b9339e1c75941d02a88ea59482d5395f6ebdca62c33bd8ec883406a7b43b7",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "6d06c4a0a3b8790c88adc9534f890796bb61e82515ac922105546fc0b0f0fa65",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "c91fa340c58f606cbf597d35b5fd48ee92b76200be5eeb85f20bd53947106763",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "5bbb128f3df1e56f8c71aa19dd0ed21c23e26c1f0fc72a952836d1842e863ea2",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "306a222678153dc763950ede39528b05283fd82bf41b4ebdd72fd63a516b0fe8",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "94cfd355126ebcdb960771966370664dc247986a033fdbc59be6108b179c6ab0",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a7a10c905a1f23a9ca4ac3cbeba93d910a939632412506ffb2516fe9c009899e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "6a10d5413b098dbfa5b0277af30bd99715591b61f9adecf5fd52bac37bc0100c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "ba99aa5ca05f8ef8bf7f1b627251d376daa792c9ec5a21987ae43fd406af23b6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "d750234978960684858777f72189075014bec618ade45fb3db6e1eb5f64046d6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "1cfa7d85d8a3a17b0260a4d9eca1feb7c6d56aaf1d5b6ebbe541f5d3f70443a9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "3f1974298270c31fe9650dd3346783ee92e194ec05a7343df70997c9c83e18a2",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "a86b1240223719df7df363720b5dafb017372e11ff374c80c7bab0aad9f08a4e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "9bf324894fe7ed8bcf899671769391d72dc970a97e725bf0eb27c13885875931",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "4050e67697feb22879ba3f70c7ef74090c2856148a2536be675f6e162b306773",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "c7d52fe6835a3a6dba4cc87e948ba1f2aebd833f6efd670f5d99fd0b189f98ca",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "0eb1ed5a707e90257661b02f014757f77d30603c8edd91b05ef886e9afa18676",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "28ab73e6e98bafdb9b4440c00f49de49b5a9e667da3d7801e2241290825cdbc6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "5cfd28563ce63c7bebf9afe75de0d0758ad9058fee13c0d383444e7a24be8742",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b692bfbb4ccb4a5b909c041869ecb44b4409e4051504e5c58ef85f93168c3967",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "b00f15fc84a7f88cf84ec8944a1e247f689dd26b00fb18f6092b1650edbbc4b5",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "d6fe19db0782318e32f563711c8b0706e6d6460e12c72024d255454953c6d210",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "630f6d500c1d390913cf36f2f1713fc115468a12ff5bbc196a3496672af403ef",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "6aafd3bcbf0b63041a637a9ea49a94c8ced4e2fa23b1e3788611ceb527b4c1f0",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "afff4703dae17b5df173b114605963f7bd607f05",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "benchmarks/baseline-v1/reverse-result.json"
+      ],
+      "line": 1,
+      "rule": "temp_path",
+      "match_sha256": "f9ac3d342f8be65a5c3d8089c4e13a1ca1e615b11abe467edc8d39a88b3375a6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "b164b085b199855af5d17e6be51bf73fb9725257",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P6-RESULT.md"
+      ],
+      "line": 57,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "b164b085b199855af5d17e6be51bf73fb9725257",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P6-RESULT.md"
+      ],
+      "line": 57,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "b164b085b199855af5d17e6be51bf73fb9725257",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P6-RESULT.md"
+      ],
+      "line": 59,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "ddb55140715c53c19a0bd8dcdb40be560507bc4b",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "schemas/blindtest-run-result.schema.json"
+      ],
+      "line": 702,
+      "rule": "private_evidence_marker",
+      "match_sha256": "1de8e98eabe56de0da43e471cd81627562ef85bbd0d240afd68544206e5f9f52",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "ddb55140715c53c19a0bd8dcdb40be560507bc4b",
+      "kind": "blob",
+      "commit": "83db19326e830b733e6a83393996e7961442bb83",
+      "paths": [
+        "schemas/blindtest-run-result.schema.json"
+      ],
+      "line": 706,
+      "rule": "private_evidence_marker",
+      "match_sha256": "ab77ff3bd84416c8e59124ec1ae74ee2a67d726a362cf0950ee5ee5193dcbcac",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "FALSE_POSITIVE",
+      "risk": "None identified",
+      "reason": "Schema field declaration or scanner regular expression; no private runtime value",
+      "recommended_action": "No removal needed"
+    },
+    {
+      "object": "ebeb0b961ec3fcd30c5f1be499472cca9350a545",
+      "kind": "blob",
+      "commit": "0ead049136079524c98ede0cc67fe1eb042ba813",
+      "paths": [
+        ".DS_Store"
+      ],
+      "line": 0,
+      "rule": "private_file_path",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "REVIEW",
+      "risk": "Low metadata privacy",
+      "reason": "Historical Finder metadata, not current public inventory; no secret pattern found",
+      "recommended_action": "Include these blobs/paths in any separately approved history cleanup"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 47,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 48,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 67,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 68,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 69,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 86,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 87,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 88,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 108,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 109,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 110,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 126,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 128,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 129,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 149,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 150,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 151,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 166,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 167,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 168,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 184,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 185,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 186,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 187,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 188,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 202,
+      "rule": "host_home",
+      "match_sha256": "a9ae5833cd150845f01a4dc70cd5aec3e9e419166ceebefa743368a40619fb3c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 47,
+      "rule": "codex_worktree",
+      "match_sha256": "ac9dfddd6d16ab9cc53b9c15cf68f1a34f1953af40e64ecf392eabc91dc405e9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 48,
+      "rule": "codex_worktree",
+      "match_sha256": "5866cde27456b47883afab7f3480261702902634dbc60949fa7d430603e12e4b",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 67,
+      "rule": "codex_worktree",
+      "match_sha256": "6ff21f2c346ea300f48ced1ece91ec741a29d26e820f8f63d58900214cb2f267",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 68,
+      "rule": "codex_worktree",
+      "match_sha256": "d85aa5d04a0cbfafa0b6039a42832e9883bfb422952846235601a8891ecf8bd5",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 69,
+      "rule": "codex_worktree",
+      "match_sha256": "7f0f150bb5b6c42d68991047bcfaa2c77e5f0c2c1ae615a2b13ab672e508b76e",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 86,
+      "rule": "codex_worktree",
+      "match_sha256": "327993a993443934341e9cbfb68f9112fe7da4331563822d74ec9c7c232edfd0",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 87,
+      "rule": "codex_worktree",
+      "match_sha256": "c9d1d52c5d0670a8a4829da59ac863b7c88e0232c8a3aedba91819d01eabffef",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 88,
+      "rule": "codex_worktree",
+      "match_sha256": "fdfc5cbe57e9d195c9bd9a047cb65019a6cf6c842a4dbf1dbcf4e5ced1131fd6",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 108,
+      "rule": "codex_worktree",
+      "match_sha256": "e8f356c79649f6120e3b73d9273b54393224b708a70ba9abfa266222e1f60261",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 109,
+      "rule": "codex_worktree",
+      "match_sha256": "6139d655b180692aa843b06418624090bb46c4ac65852a6a2fe17d31be21cb7c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 110,
+      "rule": "codex_worktree",
+      "match_sha256": "0e12f972f85e7e32b870b0bec92202b0e46e4d84097ccca066591bdde57aded9",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 126,
+      "rule": "codex_worktree",
+      "match_sha256": "5e4b8535db987ea5695cb02f5fd84d709459c51884fde966d19b0dc610db3232",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 128,
+      "rule": "codex_worktree",
+      "match_sha256": "e5bbb80020a09cd5cb792196df1f798140379620d5d7f6d41eab3a49c77d2572",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 129,
+      "rule": "codex_worktree",
+      "match_sha256": "194c409c5538bf70a7675761da51cb68ca878a4868ad53da91a4b6181dfc5e80",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 149,
+      "rule": "codex_worktree",
+      "match_sha256": "e641f0135387e0d7cb3a77e355b0df6ecde210c9a400f04e4dd13317cb7e775c",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 150,
+      "rule": "codex_worktree",
+      "match_sha256": "b2e2aaaa802a1dd59362380061c249faff6f55dc78b9aa3dc23df7992ce594ac",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 151,
+      "rule": "codex_worktree",
+      "match_sha256": "ce56fd1af122549031d1b2c72b0f5283c7338d2530cdc78055b28c8ec7d80472",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 166,
+      "rule": "codex_worktree",
+      "match_sha256": "7f3a4dbeaefe211432151c95eab499643c82abfb168bbab36ef42698b00c9c84",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 167,
+      "rule": "codex_worktree",
+      "match_sha256": "0d32843eece803bd72d43490f0467eb33236aeb46d67831aaaedc526abcb3b94",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 168,
+      "rule": "codex_worktree",
+      "match_sha256": "86cd8c402c48496dc0a745398d375681d781290cfc05b4d9c3471ce0f9598639",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 184,
+      "rule": "codex_worktree",
+      "match_sha256": "002e2334f692023a37bcaeaf432c80448a0ea176969d81581f152b13f88db10f",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 185,
+      "rule": "codex_worktree",
+      "match_sha256": "6016f0277d97c51236c0b994ac67a7e14573223d25e070b3930bb8ded8453157",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 186,
+      "rule": "codex_worktree",
+      "match_sha256": "ce9f76241977f92a2cd2410f6948957ae5a2ee166cbcb200454fd0bcd43c9a2a",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 187,
+      "rule": "codex_worktree",
+      "match_sha256": "837c7d2c5570e79ce5661eebbe4bd8978733715d15152245350dad3d88106a93",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 188,
+      "rule": "codex_worktree",
+      "match_sha256": "34a82921ec40ce222a6648a451f970a84c27bc85801035dc26196af83e2a4d70",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    },
+    {
+      "object": "edfc9db373b692337502d0171e62edbf0aae958a",
+      "kind": "blob",
+      "commit": "47343edacf49d12a824e2f7cd53f08926474a30f",
+      "paths": [
+        "P1A-INDEPENDENT-GATE.md"
+      ],
+      "line": 202,
+      "rule": "codex_worktree",
+      "match_sha256": "8e069b10eeea048a960d3ce9c5abd9bf366ffde39e17b3b07177b2a29e5d5747",
+      "reachable_from_refs_or_reflogs": true,
+      "classification": "BLOCKER",
+      "risk": "Medium privacy / publication hygiene",
+      "reason": "Historical machine-specific home/worktree or captured runtime location; no credential material observed",
+      "recommended_action": "Owner-approved separate history sanitization, or an authorized new clean public repository from the reviewed snapshot; re-scan before exposure"
+    }
+  ],
+  "classification": "COMPLETED_WITH_BLOCKERS",
+  "finding_counts": {
+    "FALSE_POSITIVE": 6,
+    "BLOCKER": 224,
+    "SAFE_SYNTHETIC": 8,
+    "REVIEW": 3
+  }
+}
