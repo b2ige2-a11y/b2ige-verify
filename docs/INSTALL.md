@@ -1,13 +1,14 @@
 # Installation — B2IGE Verify 0.1.0
 
-0.1.0 is prepared for the official [GitHub repository](https://github.com/b2ige2-a11y/b2ige-verify),
-but the repository is still private and no `v0.1.0` tag or GitHub Release exists yet. The
-instructions below apply to a supplied candidate archive. Verify its SHA-256 against the
-accompanying SHA256SUMS from a trusted channel; a checksum alone does not authenticate the publisher.
+0.1.0 is released in the official [GitHub repository](https://github.com/b2ige2-a11y/b2ige-verify).
+Use the [v0.1.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0)
+and its public archives and SHA256SUMS. The instructions below apply to a release archive.
+Verify its SHA-256 against the accompanying SHA256SUMS from a trusted channel; a checksum alone
+does not authenticate the publisher.
 The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred
 until the `@b2ige` scope is actually controlled.
 
-| Platform | Target | Candidate support |
+| Platform | Target | Release support |
 |---|---|---|
 | macOS Apple Silicon | aarch64-apple-darwin | VERIFIED_NATIVE; documented partial no-Docker scope PASS |
 | macOS Intel | x86_64-apple-darwin | VERIFIED_NATIVE; documented partial no-Docker scope PASS |

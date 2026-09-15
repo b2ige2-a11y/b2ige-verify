@@ -3,13 +3,14 @@
 ```text
 CLEAN_PUBLIC_REPO_READY=true
 TECHNICAL_PUBLICATION_READY=true
-PUBLICATION_READY=false
+PUBLICATION_READY=true
 ```
 
-This is the reviewed source candidate for the official
+This is the post-release status for the official
 [b2ige2-a11y/b2ige-verify](https://github.com/b2ige2-a11y/b2ige-verify) repository.
-The repository is still private, so no public release is claimed. The reviewed
-product/code commit is `28315fd`; this finalization pass changes documentation only.
+The repository is public and the [v0.1.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0)
+was created from final release source commit `57c6977`. The reviewed product/code
+commit is `28315fd`; this post-release pass changes documentation only.
 
 ## Source and policy
 
@@ -21,8 +22,7 @@ product/code commit is `28315fd`; this finalization pass changes documentation o
   until the `@b2ige` scope is actually controlled; it is not a GitHub release blocker.
 - macOS 0.1.0 is intentionally unsigned and unnotarized. No Developer ID claim is made;
   Gatekeeper warnings may appear.
-- `SECURITY.md` remains. Private Vulnerability Reporting is not active and is planned for
-  activation immediately after the repository becomes public.
+- `SECURITY.md` remains. GitHub Private Vulnerability Reporting is enabled.
 
 ## Technical gates
 
@@ -39,9 +39,9 @@ product/code commit is `28315fd`; this finalization pass changes documentation o
 The existing generated release artifacts, SBOMs, checksums and release manifest were not
 hand-edited in this documentation pass.
 
-## Publication boundary
+## Public release state
 
-`PUBLICATION_READY=false` does not indicate a technical blocker. It records that the
-actual public operations remain pending: make the repository public, activate and verify
-Private Vulnerability Reporting, create the `v0.1.0` tag/GitHub Release, and later publish
-npm only after scope control. No push or public operation was performed by this task.
+`PUBLICATION_READY=true` records that the repository is public, Private Vulnerability
+Reporting is enabled, and the fixed `v0.1.0` tag/GitHub Release and release assets are
+public. The release includes Linux x86_64, macOS arm64 and macOS Intel archives, platform
+manifests and SHA256SUMS. npm publication remains intentionally deferred until scope control.

@@ -1,13 +1,13 @@
 # B2IGE Verify 0.1.0 — Publication Readiness Result
 
-Final pre-publication status for the reviewed source at code commit `28315fd`.
-This documentation pass does not change product code, verifier semantics, schemas,
-benchmark baselines or test logic.
+Final post-release status for the reviewed source at final release commit `57c6977`
+(product/code commit `28315fd`). This documentation pass does not change product
+code, verifier semantics, schemas, benchmark baselines or test logic.
 
 ```text
 CLEAN_PUBLIC_REPO_READY=true
 TECHNICAL_PUBLICATION_READY=true
-PUBLICATION_READY=false
+PUBLICATION_READY=true
 ```
 
 ## Technical result
@@ -35,16 +35,18 @@ not manually modified.
   not claimed; Gatekeeper warnings are possible and signing is deferred to a future release.
 - The final npm package name is `@b2ige/verify`, but npm publication is deferred until
   the `@b2ige` scope is actually controlled. It does not block GitHub 0.1.0.
-- `SECURITY.md` remains. Private Vulnerability Reporting is planned immediately after
-  the repository becomes public and is not active at this stage.
+- `SECURITY.md` remains. GitHub Private Vulnerability Reporting is enabled.
 
-## Why publication is not ready
+## Public release state
 
-The remaining state is the result of public operations not yet being performed:
+The public release operations are complete:
 
-1. The repository is still private.
-2. Private Vulnerability Reporting is not activated.
-3. The `v0.1.0` tag and GitHub Release do not yet exist.
-4. npm is intentionally deferred pending scope control.
+- The repository is public: [b2ige2-a11y/b2ige-verify](https://github.com/b2ige2-a11y/b2ige-verify).
+- The fixed `v0.1.0` tag and [GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0)
+  were created from final release source commit `57c6977`.
+- Linux x86_64, macOS arm64 and macOS Intel archives, platform manifests and SHA256SUMS are public.
+- macOS binaries are unsigned and unnotarized.
+- npm publication remains intentionally deferred pending scope control.
 
-No push or publication was performed by this task.
+This post-release documentation commit does not modify the tag, GitHub Release, generated
+release artifacts, or npm.

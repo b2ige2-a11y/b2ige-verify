@@ -1,13 +1,17 @@
 # B2IGE Verify 0.1.0 release procedure
 
-This procedure covers the final candidate and the boundary before public release.
+This procedure covers final candidate validation and post-release verification.
 P1–P8 verifier semantics and baselines are unchanged. Package version remains 0.1.0.
-The reviewed product/code commit is `28315fd`; the release manifest alone advances from
-v1 to **v3**. See [schema and provenance decisions](RELEASE-PROVENANCE.md).
+The reviewed product/code commit is `28315fd`; the final release source commit is
+`57c6977`. The release manifest alone advances from v1 to **v3**. See [schema and
+provenance decisions](RELEASE-PROVENANCE.md).
 
 Current state: `CLEAN_PUBLIC_REPO_READY=true`, `TECHNICAL_PUBLICATION_READY=true`,
-`PUBLICATION_READY=false`. The official target is
-[b2ige2-a11y/b2ige-verify](https://github.com/b2ige2-a11y/b2ige-verify), which is still private.
+`PUBLICATION_READY=true`. The official target is public:
+[b2ige2-a11y/b2ige-verify](https://github.com/b2ige2-a11y/b2ige-verify). The
+[v0.1.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0)
+was created from `57c6977` and includes the public native archives, platform manifests
+and SHA256SUMS. GitHub Private Vulnerability Reporting is enabled.
 
 ## Reproduce the local gate
 
@@ -110,11 +114,11 @@ release creation, deployment, secret upload, signing credential or write permiss
 successful candidate runs above are validation evidence only; they did not make the repository
 public or create a tag/release.
 
-Complete [the publication checklist](../release/checklist.md) before any public action.
+Use [the publication checklist](../release/checklist.md) to verify the completed public
+release state and any future release-specific actions.
 The public Behavior brand is BehaviorSeal, while the compatible CLI remains `b2ige behavior ...`.
 Current Cargo registry publication remains disabled because individual crate packages need a
 deliberately reviewed full-workspace publication layout. The final npm package name is
 `@b2ige/verify`, but npm publication is intentionally deferred until the `@b2ige` scope is
-actually controlled. GitHub Private Vulnerability Reporting is planned immediately after the
-repository becomes public and is not active at this stage. macOS 0.1.0 is unsigned and
-unnotarized; no Developer ID claim is made.
+actually controlled. GitHub Private Vulnerability Reporting is enabled. macOS 0.1.0 is
+unsigned and unnotarized; no Developer ID claim is made.

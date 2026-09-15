@@ -27,11 +27,12 @@ The Agent view excludes the hidden case itself. [Threat boundary](docs/THREAT-MO
 
 ## Install and run
 
-**B2IGE Verify 0.1.0 is prepared for the official [GitHub repository](https://github.com/b2ige2-a11y/b2ige-verify),
-but the repository is still private and the `v0.1.0` tag/release has not been created.** Native
-archives are the authoritative first distribution. The final npm package name is `@b2ige/verify`,
-but npm publication is intentionally deferred until the `@b2ige` scope is actually controlled;
-that is not a GitHub release blocker. See [installation and platforms](docs/INSTALL.md),
+**B2IGE Verify 0.1.0 is released in the official [GitHub repository](https://github.com/b2ige2-a11y/b2ige-verify).**
+See the [v0.1.0 release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0) for the
+Linux x86_64, macOS arm64 and macOS Intel archives, platform manifests and SHA256SUMS. macOS
+binaries are unsigned and unnotarized. Native archives are the authoritative first distribution.
+The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred until
+the `@b2ige` scope is actually controlled; that is not a GitHub release blocker. See [installation and platforms](docs/INSTALL.md),
 [5-minute quickstarts](docs/QUICKSTART.md), and [release status](release/checklist.md).
 
 ```sh

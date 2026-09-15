@@ -1,8 +1,9 @@
 # Final publication decisions — 0.1.0
 
-This is the final pre-publication handoff for the reviewed B2IGE Verify 0.1.0
-source. The product code, verifier semantics, schemas, benchmark baseline and
-test logic are unchanged by this documentation pass.
+This records the final release state for B2IGE Verify 0.1.0. The release was
+created from final release source commit `57c6977`. The product code, verifier
+semantics, schemas, benchmark baseline and test logic are unchanged by this
+post-release documentation pass.
 
 ## Confirmed owner decisions
 
@@ -20,8 +21,7 @@ test logic are unchanged by this documentation pass.
    until the `@b2ige` scope is actually controlled. npm is intentionally deferred
    and is not a GitHub 0.1.0 release blocker.
 6. `SECURITY.md` remains in the repository. GitHub Private Vulnerability Reporting
-   is planned for activation immediately after the repository becomes public; it
-   is not active or claimed as active at this stage.
+   is enabled for the public repository.
 
 ## Technical verification
 
@@ -37,6 +37,10 @@ that code commit.
 | macOS scope | Documented partial no-Docker scope PASS on native arm64 and Intel CI |
 | Release checks | Packaging, SBOM, manifest and npm archive checks PASS |
 | P3A signal fixture | Fixture cleanup race fixed; final native Intel CI PASS |
+| Final release source | `57c6977` |
+| Public GitHub Release | [B2IGE Verify 0.1.0](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0) |
+| Public release assets | Linux x86_64, macOS arm64, macOS Intel archives; platform manifests; SHA256SUMS |
+| GitHub Private Vulnerability Reporting | Enabled |
 
 The existing generated release artifacts, SBOMs and checksums are not hand-edited
 by this task.
@@ -46,20 +50,19 @@ by this task.
 ```text
 CLEAN_PUBLIC_REPO_READY=true
 TECHNICAL_PUBLICATION_READY=true
-PUBLICATION_READY=false
+PUBLICATION_READY=true
 ```
 
-`PUBLICATION_READY=false` is now an external-action state, not a technical failure:
+`PUBLICATION_READY=true` records that the public release operations are complete:
 
-- the official repository is still private;
-- GitHub Private Vulnerability Reporting is not yet activated;
-- the `v0.1.0` tag and GitHub Release have not been created; and
-- npm publication is intentionally deferred until the `@b2ige` scope is controlled.
+- the official repository is public;
+- GitHub Private Vulnerability Reporting is enabled;
+- the fixed `v0.1.0` tag and GitHub Release are public with their release assets; and
+- npm publication remains intentionally deferred until the `@b2ige` scope is controlled.
 
-## Remaining public actions
+## Post-release state
 
-After the reviewed snapshot is approved, the owner can make the selected repository
-public, activate and verify Private Vulnerability Reporting, and create the `v0.1.0`
-tag/GitHub Release with the reviewed release assets. npm remains deferred until its
-scope prerequisite is satisfied. This task does not publish, create the tag/release,
-change account settings, or push.
+The official repository is public, the `v0.1.0` tag remains fixed at the released
+snapshot, and the GitHub Release and release assets are available at the link above.
+npm remains deferred until its scope prerequisite is satisfied. This documentation
+commit does not modify the tag, GitHub Release, generated release artifacts, or npm.
