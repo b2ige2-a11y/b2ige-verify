@@ -8,6 +8,7 @@ pub mod behavior;
 pub mod blindtest;
 mod contracts;
 pub mod sideeffect;
+pub mod task_seal;
 pub use contracts::*;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};

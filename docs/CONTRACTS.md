@@ -119,3 +119,32 @@ Product/package version remains 0.1.0 (local release candidate). The new release
 independent schema v1 and does not change any authoritative product/evidence/report schema.
 Benchmark comparison rejects benchmark/schema/corpus mismatches and recomputes canonical semantic
 content hashes; stored hash fields are not comparison authority. P1–P8 verdict semantics remain unchanged.
+
+## V100-1A independent Task Seal v1 version decision
+
+Task Seal is an independent V100 artifact with string `schema_version: "1"`.
+It does not rename or reinterpret P0–P9 artifacts or change existing schemas,
+verdicts, evidence requirements, or LLM authority restrictions.
+
+Its only other fields are `task_identity`, `verifier_identity`, and
+`environment_contract_identity`. These are identities of the task, verifier, and
+declared environment contract, produced using the existing RFC 8785 canonical JSON
+SHA-256 rules (`verify_evidence::canonical_hash`), encoded as `sha256:` plus exactly
+64 lowercase hexadecimal digits. The trusted caller must establish these inputs
+before candidate identity exists; none may contain or derive from candidate
+implementation identity. Syntax validation alone cannot establish their provenance.
+
+The seal identity/commitment is `canonical_hash({"domain":
+"b2ige.verify.task-seal.v1", "seal": <entire TaskSeal>})`. Validation rejects
+unsupported versions and malformed identities; commitment computation validates
+first. Missing, duplicate, and unknown wire fields are rejected. Every bound-field
+mutation either fails validation or changes the commitment. Mutation detection
+requires comparison with an independently retained commitment; this does not
+authenticate replacement of both the artifact and its commitment.
+
+Local hashing establishes deterministic content binding only. Seal existence does
+not prove creation time or independently witnessed pre-candidate chronology,
+authentication, actual environment conformance, or correctness. A valid seal
+assigns no verdict and cannot substitute for verdict-critical evidence.
+V100-1A adds no candidate/evidence binding, signatures, timestamps, attestations,
+receipt presentation, CLI, network service, or cloud feature.

@@ -15,7 +15,7 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-Convert existing trust-critical invariants into executable regression protection without changing their meaning.
+V100-1A — create the minimal pre-candidate Task Seal foundation that binds task, verifier, and declared environment-contract identities before candidate implementation. The local seal establishes deterministic content commitment, not independently witnessed chronology.
 
 Next phases:
 1. V100-0 Trust Lock
