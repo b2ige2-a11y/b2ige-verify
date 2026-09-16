@@ -43,8 +43,8 @@ python3 scripts/validate-archive.py release/artifacts
 
 Heavy gates should run sequentially because some bounded timing tests are load-sensitive.
 The history scanner reports candidates privately for human classification; exit zero means
-the bounded scan finished, not that history is publishable. Review the findings and existing
-[history blockers](../release/public-hygiene-review.md). No tool rewrites history.
+the bounded scan finished, not that history is publishable. Its diagnostic output stays in
+the local ignored `.b2ige/publication/` directory. No tool rewrites history.
 
 Hosted macOS without Docker runs `platform-tests.py --without-docker` and
 `record-platform-gate.py --without-docker`. These are explicit partial gates. They do not
@@ -114,8 +114,8 @@ release creation, deployment, secret upload, signing credential or write permiss
 successful candidate runs above are validation evidence only; they did not make the repository
 public or create a tag/release.
 
-Use [the publication checklist](../release/checklist.md) to verify the completed public
-release state and any future release-specific actions.
+Use this procedure together with the checked-in release manifest, license notices and
+provenance document to verify the public release state and any future release-specific actions.
 The public Behavior brand is BehaviorSeal, while the compatible CLI remains `b2ige behavior ...`.
 Current Cargo registry publication remains disabled because individual crate packages need a
 deliberately reviewed full-workspace publication layout. The final npm package name is

@@ -9,8 +9,7 @@ Build deterministic verification infrastructure. Do not replace evidence with mo
 3. `docs/EVIDENCE.md`
 4. `docs/THREAT-MODEL.md`
 5. `docs/ARCHITECTURE.md`
-6. current phase task index
-7. implementation
+6. implementation
 
 If code conflicts with an authoritative document, the code is wrong until the contract is deliberately versioned.
 
@@ -23,7 +22,6 @@ If code conflicts with an authoritative document, the code is wrong until the co
 - Never expose hidden grader/oracle artifacts to the coding-agent workspace in an isolation mode that claims secrecy.
 - Every FAIL should be replayable or explicitly marked `replayability: unavailable` with a reason.
 - Every schema-visible change requires a schema version decision.
-- Do not start the next phase until the current phase gate is recorded in `state/CURRENT.md`.
 - Do not expand protocol breadth unless the current product hypothesis requires it.
 
 ## Required review before merging verifier logic

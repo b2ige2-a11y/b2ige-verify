@@ -133,7 +133,11 @@ JSON/schema validation targets the official Agent Plugins 1.0.0 schema, MCPB 0.4
 shipped with CLI 2.1.2, and Registry 2025-12-11 schema. Codex validation uses the installed
 `plugin-creator/scripts/validate_plugin.py` and `skill-creator/scripts/quick_validate.py`
 with PyYAML; those tooling paths depend on the maintainer's Codex installation.
-See [P11 validation record](../P11-RESULT.md) for exact results and limitations.
+The focused distribution validation covers all three launcher dispatch routes, unsupported
+platforms and malformed path inputs, cached-release integrity, exact bundle contents, native
+binary bytes, executable permissions, MCP initialization and structured configuration errors.
+It also validates the Agent Plugin, MCPB and Registry manifests. These are packaging and
+transport checks; they are not product verification verdicts.
 
 ## Format and version decisions
 
@@ -173,7 +177,7 @@ Only the owner should perform the following (none performed by this task):
 
 | Platform | Remaining action |
 |---|---|
-| GitHub prerequisite | Push reviewed P11 commit. Add the MCPB and its separately named `.mcpb.sha256` to the existing v0.1.0 release; never replace its tag/assets/original SHA256SUMS. Download the uploaded MCPB and recheck its recorded hash. |
+| GitHub prerequisite | Push the reviewed distribution commit. Add the MCPB and its separately named `.mcpb.sha256` to the existing v0.1.0 release; never replace its tag/assets/original SHA256SUMS. Download the uploaded MCPB and recheck its recorded hash. |
 | Official MCP Registry | Authenticate as `b2ige2-a11y` via `mcp-publisher login github`, validate the now-reachable package and publish `server.json`. |
 | Cursor Marketplace | Import/test in a current Cursor client (including a missing-verifier setup and the six discovery intents), then submit the public repository at <https://cursor.com/marketplace/publish>. |
 | cursor.directory | Sign in at <https://cursor.directory/plugins/new?type=mcp_server>; paste `metadata.md`, repository and released bundle information. |

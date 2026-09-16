@@ -1,4 +1,4 @@
-# Benchmark Methodology — P8 / v1
+# Benchmark Methodology — B2IGE Verify Bench v1
 
 Benchmark measurements below refer only to **B2IGE Verify Bench v1 — 31 explicit cases**, on the benchmark corpus.
 
@@ -159,11 +159,13 @@ python3 benchmarks/run-local.py /absolute/new-output-directory
 ```
 
 Baseline location: [baseline-v1](../benchmarks/baseline-v1/).
-Actual results and remaining limitations: [P8-RESULT.md](../P8-RESULT.md).
+The committed baseline directory contains the measured fixed/reverse snapshots and
+canonical hash; its bounded results are not a substitute for product evidence.
 
 ## Future external comparison
 
 Schemathesis, Keploy, equiv and TestSprite may be evaluated in future work with
-appropriate workload/contract alignment. P8 installs none of these products and
-requires no paid API keys. Their execution is not a P8 gate dependency. P9 public
-launch, repository separation, hosting, publishing and marketing remain out of scope.
+appropriate workload/contract alignment. This benchmark installs none of these
+products and requires no paid API keys. Their execution is not a benchmark gate
+dependency. External-product comparison, hosting, publishing and marketing remain
+out of scope for this methodology.

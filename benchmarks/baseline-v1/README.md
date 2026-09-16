@@ -16,10 +16,12 @@ expected-result golden or an automatic update to any Behavior baseline.
 Both full release gates passed. Evidence/schema and verified reload checks occurred
 inside the benchmark. Intentionally removed evidence was separately rejected.
 Raw product evidence and sealed inputs remain in the private temporary controller
-roots. P9 explicitly removed nonsemantic local result/reproduction path references
-from both published snapshots and recomputed the canonical content hash. Corpus labels,
-metrics and semantic hashes are unchanged. Live evidence references are not distributed; this directory is not a portable evidence bundle or host-authenticated
-certificate. It contains no raw hidden suite, oracle, input inventory or canary.
+roots. Nonsemantic local result/reproduction path references are not part of the
+published snapshots. Corpus labels, metrics and semantic hashes are unchanged. Live
+evidence references are not distributed; this directory is not a portable evidence
+bundle or host-authenticated certificate. It contains no raw hidden suite, oracle,
+input inventory or canary.
 
 Re-execution uses a new output directory; never overwrite this baseline implicitly.
-See [methodology](../../docs/BENCHMARKS.md) and [P8 result](../../P8-RESULT.md).
+See the [methodology](../../docs/BENCHMARKS.md) for denominators, execution scope and
+reproduction limitations.
