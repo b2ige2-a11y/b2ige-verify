@@ -1,4 +1,4 @@
-B2IGE Verify 0.1.0 — third-party notices
+B2IGE Verify 0.2.0 — third-party notices
 
 Covers the complete Cargo.lock graph, including build/dev/foreign-target dependencies.
 Inclusion does not assert that every component is linked into every binary.
