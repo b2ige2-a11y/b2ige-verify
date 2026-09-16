@@ -41,6 +41,21 @@ Run both orders and compare, with no automatic baseline overwrite:
 python3 benchmarks/run-local.py /absolute/new-output-directory
 ```
 
+For reproducible local evidence when Docker is unavailable, explicitly select a
+product in a fresh directory for each run:
+
+```sh
+python3 benchmarks/run-local.py /absolute/new-behavior-proof --product behavior
+python3 benchmarks/run-local.py /absolute/new-sideeffect-proof --product sideeffect
+```
+
+These execute actual cases in both orders and compare recomputed semantic hashes.
+They require their scoped gates and require the overall release gate to stay
+blocked. They do not skip or satisfy the Docker integration test. The default
+command still requires all 31 cases. Preflight distinguishes local-engine access,
+local base-image availability and missing repository digest; it never pulls an
+image. A Docker-capable outer runner must satisfy these prerequisites separately.
+
 The script builds release binaries, runs all 31 cases in both orders, and requires
 both full release gates plus equal semantic hashes. It does not run the development
 quality gates; run the four commands in `docs/BENCHMARKS.md` for those.

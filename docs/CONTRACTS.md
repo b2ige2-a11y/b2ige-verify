@@ -113,6 +113,13 @@ loaders; it cannot correct or override a product verdict. A missing/corrupt arti
 produces a measured verified-loader ERROR boundary, never a fabricated product run.
 See [BENCHMARKS.md](BENCHMARKS.md) for denominators, source identities and release gates.
 
+V100-3 keeps these v1 schemas and corpus labels unchanged. Measurement-availability
+rates use the existing extensible summary `rates` map; no new wire field or product
+trust semantic is introduced. Inventory/identity comparison checks are stricter,
+planned denominators survive missing execution, and late harness failures cannot
+contribute provisional product verdicts. No full release gate is granted by a
+product-scoped run, absent Docker evidence, or a historical baseline snapshot.
+
 ## P9 packaging version decision
 
 Product/package version remains 0.1.0 (local release candidate). The new release manifest is

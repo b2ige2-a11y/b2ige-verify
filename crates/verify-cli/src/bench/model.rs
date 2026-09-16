@@ -163,7 +163,7 @@ impl BenchmarkCaseResult {
 pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> BenchmarkSummary {
     let mut s = BenchmarkSummary {
         schema_version: "1".into(),
-        total_cases: rows.len(),
+        total_cases: expected.len(),
         verdict_counts: ["PASS", "FAIL", "INCONCLUSIVE", "ERROR"]
             .map(|x| (x.into(), 0))
             .into(),
@@ -178,8 +178,22 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         gate_pass: false,
         blockers: vec![],
     };
-    let inventory: BTreeSet<_> = expected.iter().map(|c| &c.benchmark_case_id).collect();
-    let seen: BTreeSet<_> = rows.iter().map(|r| &r.case.benchmark_case_id).collect();
+    let inventory: BTreeSet<_> = expected
+        .iter()
+        .map(|c| c.benchmark_case_id.clone())
+        .collect();
+    let seen: BTreeSet<_> = rows
+        .iter()
+        .map(|r| r.case.benchmark_case_id.clone())
+        .collect();
+    let mut unique_rows = BTreeMap::new();
+    for r in rows {
+        if inventory.contains(&r.case.benchmark_case_id) {
+            unique_rows
+                .entry(r.case.benchmark_case_id.clone())
+                .or_insert(r);
+        }
+    }
     if expected.is_empty() {
         s.blockers.push("zero-case suite".into());
     }
@@ -190,12 +204,21 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         s.blockers
             .push("missing or unexpected case result: partial execution".into());
     }
-    let mut bug = 0;
+    let bug = expected
+        .iter()
+        .filter(|c| c.expected_classification == Classification::Buggy)
+        .count();
     let mut killed = 0;
-    let mut correct = 0;
+    let correct = expected
+        .iter()
+        .filter(|c| c.expected_classification == Classification::Correct)
+        .count();
     let mut accepted = 0;
-    let mut noncorrect = 0;
-    for r in rows {
+    let noncorrect = expected
+        .iter()
+        .filter(|c| c.expected_classification != Classification::Correct)
+        .count();
+    for r in unique_rows.values() {
         let Some(c) = expected
             .iter()
             .find(|c| c.benchmark_case_id == r.case.benchmark_case_id)
@@ -212,15 +235,12 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
                 .unwrap() += 1;
         }
         if c.expected_classification == Classification::Buggy {
-            bug += 1;
             killed += usize::from(r.actual_verdict == Some(Verdict::Fail));
         }
         if c.expected_classification == Classification::Correct {
-            correct += 1;
             accepted += usize::from(r.actual_verdict == Some(Verdict::Pass));
             s.false_fail += usize::from(r.actual_verdict == Some(Verdict::Fail));
         } else {
-            noncorrect += 1;
             s.false_pass += usize::from(r.actual_verdict == Some(Verdict::Pass));
         }
         let mismatch = r
@@ -304,19 +324,46 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         s.agent_leakage += r.agent_leakage.unwrap_or(0);
     }
     let bool_rate = |f: fn(&BenchmarkCaseResult) -> Option<bool>| {
-        let values: Vec<_> = rows.iter().filter_map(f).collect();
+        let values: Vec<_> = unique_rows.values().filter_map(|r| f(r)).collect();
         Rate::new(values.iter().filter(|x| **x).count(), values.len())
     };
     for (k, v) in [
+        (
+            "measured_verdicts",
+            Rate::new(s.verdict_counts.values().sum(), expected.len()),
+        ),
+        (
+            "hidden_leakage_measurement",
+            Rate::new(
+                unique_rows
+                    .values()
+                    .filter(|r| r.case.product == "blindtest" && r.hidden_leakage.is_some())
+                    .count(),
+                expected.iter().filter(|c| c.product == "blindtest").count(),
+            ),
+        ),
+        (
+            "agent_leakage_measurement",
+            Rate::new(
+                unique_rows
+                    .values()
+                    .filter(|r| r.case.product == "blindtest" && r.agent_leakage.is_some())
+                    .count(),
+                expected.iter().filter(|c| c.product == "blindtest").count(),
+            ),
+        ),
         ("false_pass", Rate::new(s.false_pass, noncorrect)),
         ("false_fail", Rate::new(s.false_fail, correct)),
         ("true_bug_detection", Rate::new(killed, bug)),
         ("correct_acceptance", Rate::new(accepted, correct)),
         (
             "inconclusive",
-            Rate::new(s.verdict_counts["INCONCLUSIVE"], rows.len()),
+            Rate::new(s.verdict_counts["INCONCLUSIVE"], expected.len()),
         ),
-        ("error", Rate::new(s.verdict_counts["ERROR"], rows.len())),
+        (
+            "error",
+            Rate::new(s.verdict_counts["ERROR"], expected.len()),
+        ),
         ("evidence_validity", bool_rate(|r| r.evidence_valid)),
         ("verified_reload", bool_rate(|r| r.verified_reload)),
         (
@@ -338,10 +385,12 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         (
             "minimal_reproduction_availability",
             Rate::new(
-                rows.iter()
+                unique_rows
+                    .values()
                     .filter(|r| r.reproduction.locally_minimized == Some(true))
                     .count(),
-                rows.iter()
+                unique_rows
+                    .values()
                     .filter(|r| r.actual_verdict == Some(Verdict::Fail))
                     .count(),
             ),
@@ -349,8 +398,12 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         (
             "observation_coverage",
             Rate::new(
-                rows.iter().map(|r| r.observation_coverage.numerator).sum(),
-                rows.iter()
+                unique_rows
+                    .values()
+                    .map(|r| r.observation_coverage.numerator)
+                    .sum(),
+                unique_rows
+                    .values()
                     .map(|r| r.observation_coverage.denominator)
                     .sum(),
             ),
@@ -373,11 +426,15 @@ pub fn summarize(expected: &[BenchmarkCase], rows: &[BenchmarkCaseResult]) -> Be
         }
     }
     let count_rate = |select: fn(&BenchmarkCase) -> bool, verdict: Verdict| {
-        let selected: Vec<_> = rows.iter().filter(|r| select(&r.case)).collect();
+        let selected: Vec<_> = expected.iter().filter(|c| select(c)).collect();
         Rate::new(
             selected
                 .iter()
-                .filter(|r| r.actual_verdict == Some(verdict))
+                .filter(|c| {
+                    unique_rows
+                        .get(&c.benchmark_case_id)
+                        .is_some_and(|r| r.actual_verdict == Some(verdict))
+                })
                 .count(),
             selected.len(),
         )

@@ -61,6 +61,14 @@ Rates always record numerator, denominator and fractional value. Zero denominato
 is JSON `null` and human `N/A`; 0/N remains 0%. Product totals and all four verdict
 counts are explicit. A harness execution failure has a null actual verdict and a
 harness error, blocks the gate, and is not silently counted as product ERROR.
+Late harness failures also clear provisional verdict/reload success, retaining
+source references for diagnosis. Planned label denominators are retained when
+rows are absent; duplicate rows never inflate counts and always block the gate.
+The `measured_verdicts` rate reports completed verdicts / planned cases. Both
+`hidden_leakage_measurement` and `agent_leakage_measurement` report measurements
+present / planned BlindTest cases. Zero leakage with zero measurements is **not**
+evidence of no leakage. Read false-verdict rates together with measured coverage
+and blockers; unexecuted cases establish neither correctness nor false verdicts.
 
 - **False PASS:** non-correct cases observed PASS (BUGGY, NONDETERMINISTIC,
   INCOMPLETE or expected infrastructure error). Denominator: non-correct cases.

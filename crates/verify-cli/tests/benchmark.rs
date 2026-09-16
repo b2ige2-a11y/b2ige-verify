@@ -53,3 +53,37 @@ fn empty_selection_is_not_success() {
     assert!(!r.summary.gate_pass);
     assert_eq!(r.summary.total_cases, 0);
 }
+
+#[test]
+fn unavailable_docker_is_reported_without_fabricated_measurements() {
+    let output = Command::new(env!("CARGO_BIN_EXE_b2ige"))
+        .env("B2IGE_DOCKER", "/nonexistent/b2ige-proof-docker")
+        .args(["bench", "blindtest", "--output", "json"])
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    let r: BenchmarkRunResult = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(r.cases.len(), 9);
+    assert!(!r.summary.gate_pass);
+    let summary = &r.products["blindtest"];
+    assert!(!summary.gate_pass);
+    assert_eq!(summary.rates["measured_verdicts"].numerator, 0);
+    assert_eq!(summary.rates["measured_verdicts"].denominator, 9);
+    assert_eq!(summary.rates["true_bug_detection"].denominator, 3);
+    for name in ["hidden_leakage_measurement", "agent_leakage_measurement"] {
+        assert_eq!(summary.rates[name].numerator, 0);
+        assert_eq!(summary.rates[name].denominator, 9);
+    }
+    for case in &r.cases {
+        assert!(case.actual_verdict.is_none());
+        assert!(case.evidence_valid.is_none());
+        assert!(case.hidden_leakage.is_none());
+        assert!(case.agent_leakage.is_none());
+        assert!(case
+            .harness_error
+            .as_ref()
+            .unwrap()
+            .contains("local engine unavailable"));
+        assert!(verify_recorded_verdict(case).is_err());
+    }
+}

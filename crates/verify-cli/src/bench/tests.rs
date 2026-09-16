@@ -35,6 +35,45 @@ fn partial_execution_cannot_pass() {
     assert!(!summarize(&c, &[row(&c[0], Verdict::Pass)]).gate_pass);
 }
 #[test]
+fn missing_results_keep_planned_metric_denominators() {
+    let c = catalog().unwrap();
+    let s = summarize(&c, &[]);
+    let count = |classification| {
+        c.iter()
+            .filter(|case| case.expected_classification == classification)
+            .count()
+    };
+    assert_eq!(s.total_cases, c.len());
+    assert_eq!(
+        s.rates["false_pass"].denominator,
+        c.len() - count(Classification::Correct)
+    );
+    assert_eq!(
+        s.rates["false_fail"].denominator,
+        count(Classification::Correct)
+    );
+    assert_eq!(
+        s.rates["true_bug_detection"].denominator,
+        count(Classification::Buggy)
+    );
+    assert_eq!(s.rates["inconclusive"].denominator, c.len());
+    assert_eq!(s.rates["error"].denominator, c.len());
+    assert!(!s.gate_pass);
+}
+#[test]
+fn duplicate_results_do_not_inflate_measured_counts() {
+    let c = catalog()
+        .unwrap()
+        .into_iter()
+        .find(|case| case.expected_classification == Classification::Buggy)
+        .unwrap();
+    let r = row(&c, Verdict::Pass);
+    let s = summarize(std::slice::from_ref(&c), &[r.clone(), r]);
+    assert_eq!(s.false_pass, 1);
+    assert_eq!(s.rates["false_pass"], Rate::new(1, 1));
+    assert!(!s.gate_pass);
+}
+#[test]
 fn known_false_pass_candidate_is_counted() {
     let c = catalog()
         .unwrap()
@@ -201,4 +240,58 @@ fn comparison_rejects_versions_and_recomputes_untrusted_hashes() {
     other = run.clone();
     other.semantic_hash = "forged".into();
     assert_eq!(compare(&run, &other).unwrap()["semantic_equal"], true);
+}
+#[test]
+fn comparison_rejects_case_identity_tamper() {
+    let run: BenchmarkRunResult = serde_json::from_str(include_str!(
+        "../../../../benchmarks/baseline-v1/result.json"
+    ))
+    .unwrap();
+    let mut other = run.clone();
+    other.cases[0].case.category = "tampered".into();
+    assert!(compare(&run, &other).is_err());
+}
+
+#[test]
+fn comparison_rejects_missing_duplicate_foreign_and_reclassified_rows() {
+    let run: BenchmarkRunResult = serde_json::from_str(include_str!(
+        "../../../../benchmarks/baseline-v1/result.json"
+    ))
+    .unwrap();
+    validate_snapshot_shape(&run).unwrap();
+    let mut variants = vec![run.clone(); 6];
+    variants[0].cases.pop();
+    variants[1].cases.push(run.cases[0].clone());
+    variants[2].cases[0].case.benchmark_case_id = "foreign".into();
+    variants[3].cases[0].case.expected_classification = Classification::Incomplete;
+    variants[4].requested_case_ids.pop();
+    variants[5].cases[0].actual_config_hash = None;
+    for invalid in variants {
+        assert!(compare(&run, &invalid).is_err());
+    }
+}
+
+#[test]
+fn late_harness_failure_remains_serializable_and_blocks_success_counts() {
+    let mut run: BenchmarkRunResult = serde_json::from_str(include_str!(
+        "../../../../benchmarks/baseline-v1/result.json"
+    ))
+    .unwrap();
+    let r = run
+        .cases
+        .iter_mut()
+        .find(|r| r.actual_verdict == Some(Verdict::Pass))
+        .unwrap();
+    let refs = r.result_refs.clone();
+    harness_failure(r, invalid("required follow-up verification failed"));
+    assert_eq!(r.result_refs, refs);
+    assert!(r.actual_verdict.is_none());
+    assert!(r.evidence_valid.is_none());
+    assert!(r.verified_reload.is_none());
+    assert!(verify_recorded_verdict(r).is_err());
+    validate_snapshot_shape(&run).unwrap();
+    let s = summarize(&catalog().unwrap(), &run.cases);
+    assert!(!s.gate_pass);
+    assert_eq!(s.rates["measured_verdicts"], Rate::new(30, 31));
+    assert_eq!(s.rates["correct_acceptance"], Rate::new(6, 7));
 }

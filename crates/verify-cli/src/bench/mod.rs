@@ -8,7 +8,7 @@ pub use model::*;
 use serde::Serialize;
 use serde_json::json;
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, BTreeSet},
     fs, io,
     path::{Path, PathBuf},
     process::Command,
@@ -57,16 +57,38 @@ fn loader_observation(result: io::Result<Verdict>) -> (Verdict, bool) {
         Err(_) => (Verdict::Error, true),
     }
 }
+fn harness_failure(r: &mut BenchmarkCaseResult, error: io::Error) {
+    // A partially observed result is not a completed, verified observation.
+    // Keep its references for diagnosis, never count its provisional verdict.
+    r.actual_verdict = None;
+    r.harness_error = Some(error.to_string());
+    r.evidence_valid = None;
+    r.verified_reload = None;
+}
 fn corrupt_evidence(store: &EvidenceStore, id: &str) -> io::Result<()> {
     let evidence = store.root().join(id).join("evidence");
-    let file = fs::read_dir(evidence)?
+    let mut files: Vec<_> = fs::read_dir(evidence)?
+        .map(|entry| entry.map(|entry| entry.path()))
+        .collect::<io::Result<_>>()?;
+    files.sort();
+    let file = files
+        .into_iter()
         .next()
-        .ok_or_else(|| invalid("missing evidence to corrupt"))??;
-    fs::remove_file(file.path())
+        .ok_or_else(|| invalid("missing evidence to corrupt"))?;
+    fs::remove_file(file)
 }
 pub fn catalog() -> io::Result<Vec<BenchmarkCase>> {
     let mut cases: Vec<BenchmarkCase> = serde_json::from_str(DEFINITIONS)?;
+    let mut ids = BTreeSet::new();
     for c in &mut cases {
+        if c.schema_version != "1"
+            || c.benchmark_case_id.is_empty()
+            || !ids.insert(c.benchmark_case_id.clone())
+            || c.allowed_verdicts.is_empty()
+            || !["behavior", "sideeffect", "blindtest"].contains(&c.product.as_str())
+        {
+            return Err(invalid("invalid or duplicate benchmark case definition"));
+        }
         c.config_identity = canonical_hash(c)?;
         c.fixture_identity = canonical_hash(&match c.product.as_str() {
             "behavior" => include_str!("behavior.rs").to_string(),
@@ -82,9 +104,71 @@ pub fn catalog() -> io::Result<Vec<BenchmarkCase>> {
             ),
             _ => return Err(invalid("unsupported corpus product")),
         })?;
+        if !verify_evidence::valid_hash(&c.config_identity)
+            || !verify_evidence::valid_hash(&c.fixture_identity)
+        {
+            return Err(invalid("benchmark case identity is not a content hash"));
+        }
         validate(&schema::<BenchmarkCase>(), c)?;
     }
     Ok(cases)
+}
+
+/// Validate the non-runtime portion of a saved result before comparing it.
+/// Stored summaries and semantic hashes remain derived and are recomputed by
+/// callers; corpus and case identities are the independent comparison scope.
+fn validate_snapshot_shape(run: &BenchmarkRunResult) -> io::Result<()> {
+    validate(&schema::<BenchmarkRunResult>(), run)?;
+    if run.schema_version != "1" || run.benchmark_version != VERSION {
+        return Err(invalid("unsupported benchmark result version"));
+    }
+    let all = catalog()?;
+    if run.corpus_hash != canonical_hash(&all)? {
+        return Err(invalid("benchmark corpus hash mismatch"));
+    }
+    let all_ids: BTreeSet<_> = all.iter().map(|c| c.benchmark_case_id.clone()).collect();
+    let requested: BTreeSet<_> = run.requested_case_ids.iter().cloned().collect();
+    if requested.len() != run.requested_case_ids.len()
+        || requested.is_empty() && !run.cases.is_empty()
+        || !requested.is_subset(&all_ids)
+        || run.complete_release_corpus != (requested == all_ids)
+    {
+        return Err(invalid("invalid benchmark selection"));
+    }
+    let seen: BTreeSet<_> = run
+        .cases
+        .iter()
+        .map(|r| r.case.benchmark_case_id.clone())
+        .collect();
+    if seen.len() != run.cases.len() || seen != requested {
+        return Err(invalid("benchmark result inventory mismatch"));
+    }
+    for r in &run.cases {
+        let expected = all
+            .iter()
+            .find(|c| c.benchmark_case_id == r.case.benchmark_case_id)
+            .ok_or_else(|| invalid("benchmark result contains unknown case"))?;
+        if &r.case != expected {
+            return Err(invalid("benchmark result case definition mismatch"));
+        }
+        if r.actual_verdict.is_some() {
+            if r.harness_error.is_some()
+                || r.actual_config_hash
+                    .as_deref()
+                    .is_none_or(|h| !verify_evidence::valid_hash(h))
+                || r.actual_fixture_hash
+                    .as_deref()
+                    .is_none_or(|h| !verify_evidence::valid_hash(h))
+            {
+                return Err(invalid(
+                    "completed benchmark result lacks identity evidence",
+                ));
+            }
+        } else if r.harness_error.is_none() {
+            return Err(invalid("benchmark result lacks verdict or harness error"));
+        }
+    }
+    Ok(())
 }
 #[derive(Default)]
 pub struct Options {
@@ -139,6 +223,20 @@ pub fn execute(options: &Options) -> io::Result<BenchmarkRunResult> {
     let images = if selected.iter().any(|c| c.product == "blindtest") {
         Some(
             std::panic::catch_unwind(|| {
+                let docker = verify_core::blindtest::docker::Docker::discover().map_err(|e| {
+                    io::Error::other(format!("Docker corpus preflight: local engine unavailable: {e}"))
+                })?;
+                let base = std::env::var("B2IGE_P6_BASE_IMAGE")
+                    .unwrap_or_else(|_| "node:24.18.1-bookworm-slim".into());
+                let image = docker.resolve_image(&base).map_err(|e| {
+                    io::Error::other(format!("Docker corpus preflight: local base image unavailable or invalid; check B2IGE_P6_BASE_IMAGE: {e}"))
+                })?;
+                if !image.inspect["RepoDigests"][0]
+                    .as_str()
+                    .is_some_and(|digest| digest.contains("@sha256:"))
+                {
+                    return Err(invalid("Docker corpus preflight: local base image lacks a repository digest"));
+                }
                 blindtest::DockerCorpus::build(&root.join("image-controller"))
             })
             .unwrap_or_else(|_| {
@@ -168,7 +266,7 @@ pub fn execute(options: &Options) -> io::Result<BenchmarkRunResult> {
         };
         let result = result.and_then(|()| verify_recorded_verdict(&r));
         if let Err(e) = result {
-            r.harness_error = Some(e.to_string());
+            harness_failure(&mut r, e);
             r.execution_ms = ms(start);
         }
         validate(&schema::<BenchmarkCaseResult>(), &r)?;
@@ -204,6 +302,7 @@ pub fn execute(options: &Options) -> io::Result<BenchmarkRunResult> {
                 .into(),
         );
     }
+    validate_snapshot_shape(&run)?;
     validate(&schema::<BenchmarkRunResult>(), &run)?;
     write(&root.join("benchmark-run.json"), &run)?;
     if let Some(save) = &options.save {
@@ -238,6 +337,27 @@ fn source(r: &BenchmarkCaseResult) -> io::Result<(EvidenceStore, String)> {
     ))
 }
 pub fn verify_recorded_verdict(r: &BenchmarkCaseResult) -> io::Result<()> {
+    let expected = catalog()?
+        .into_iter()
+        .find(|c| c.benchmark_case_id == r.case.benchmark_case_id)
+        .ok_or_else(|| invalid("benchmark result contains unknown case"))?;
+    if r.case != expected {
+        return Err(invalid("benchmark case definition mismatch"));
+    }
+    if r.harness_error.is_some() || r.actual_verdict.is_none() || r.result_refs.is_empty() {
+        return Err(invalid(
+            "benchmark result is not a completed product observation",
+        ));
+    }
+    if r.actual_config_hash
+        .as_deref()
+        .is_none_or(|h| !verify_evidence::valid_hash(h))
+        || r.actual_fixture_hash
+            .as_deref()
+            .is_none_or(|h| !verify_evidence::valid_hash(h))
+    {
+        return Err(invalid("benchmark result lacks identity evidence"));
+    }
     let (store, id) = source(r)?;
     let auth = if r.case.product == "behavior" {
         serde_json::from_slice(&fs::read(
@@ -311,6 +431,11 @@ pub fn compare(
     before: &BenchmarkRunResult,
     after: &BenchmarkRunResult,
 ) -> io::Result<serde_json::Value> {
+    validate_snapshot_shape(before)?;
+    validate_snapshot_shape(after)?;
+    if before.requested_case_ids.is_empty() || after.requested_case_ids.is_empty() {
+        return Err(invalid("zero-case benchmark comparison is not evidence"));
+    }
     if before.benchmark_version != after.benchmark_version
         || before.schema_version != after.schema_version
         || before.corpus_hash != after.corpus_hash
