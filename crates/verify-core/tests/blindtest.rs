@@ -447,6 +447,166 @@ fn rehashed_attestation_is_revalidated() {
     )
     .is_err());
 }
+
+#[test]
+fn adversarial_rehashed_boundary_and_missing_fields_reach_real_loader() {
+    let a = actual();
+    for stage in ["before", "after"] {
+        for (pointer, replacement) in [
+            ("/HostConfig/ReadonlyPaths", json!(["/proc/sys"])),
+            ("/HostConfig/MaskedPaths", json!(["/proc/kcore"])),
+            (
+                "/Config/Healthcheck",
+                json!({"Test":["CMD-SHELL", "cat /oracle"]}),
+            ),
+            ("/HostConfig/NetworkMode", json!("host")),
+            (
+                "/Mounts",
+                json!([{"Source":"/private", "Destination":"/oracle"}]),
+            ),
+            ("/HostConfig/SecurityOpt", Value::Null),
+        ] {
+            let mut x = a.runs[0].executions[0].clone();
+            let inspect = if stage == "before" {
+                &mut x.attestation.before
+            } else {
+                &mut x.attestation.after
+            };
+            *inspect.pointer_mut(pointer).unwrap() = replacement;
+            let changed = x.clone();
+            assert!(
+                forged(
+                    a.runs[0].clone(),
+                    |r| r.executions[0] = changed,
+                    |items| {
+                        let item = items
+                            .iter_mut()
+                            .find(|e| e.evidence_id == "execution-0")
+                            .unwrap();
+                        item.observation = Observation::Value { value: json!(x) };
+                        item.integrity_hash = canonical_hash(&item.observation).unwrap();
+                    }
+                )
+                .is_err(),
+                "{stage} {pointer}"
+            );
+        }
+        for field in [
+            "ReadonlyPaths",
+            "MaskedPaths",
+            "NetworkMode",
+            "Binds",
+            "OomKillDisable",
+        ] {
+            let mut x = a.runs[0].executions[0].clone();
+            let inspect = if stage == "before" {
+                &mut x.attestation.before
+            } else {
+                &mut x.attestation.after
+            };
+            inspect["HostConfig"].as_object_mut().unwrap().remove(field);
+            let changed = x.clone();
+            assert!(
+                forged(
+                    a.runs[0].clone(),
+                    |r| r.executions[0] = changed,
+                    |items| {
+                        let item = items
+                            .iter_mut()
+                            .find(|e| e.evidence_id == "execution-0")
+                            .unwrap();
+                        item.observation = Observation::Value { value: json!(x) };
+                        item.integrity_hash = canonical_hash(&item.observation).unwrap();
+                    }
+                )
+                .is_err(),
+                "missing {stage} {field}"
+            );
+        }
+    }
+}
+
+#[test]
+fn adversarial_fixed_input_cannot_disclose_canary() {
+    for kind in 0..4 {
+        let mut c = fixture();
+        let canary = c.suite.private_canary.clone();
+        match kind {
+            0 => c.config.target.args.push(canary),
+            1 => {
+                c.config
+                    .target
+                    .environment
+                    .insert("PUBLIC_TEXT".into(), canary);
+            }
+            2 => c.config.target.command = format!("/app/{canary}"),
+            _ => {
+                c.config.target.environment.insert(canary, "public".into());
+            }
+        }
+        assert!(validate_suite(&c.suite, &c.config).is_err());
+        assert!(execute(&c.config, &c.sealed, &c.store, "input-leak").is_err());
+        assert!(!c.store.root().join("input-leak").exists());
+    }
+}
+
+#[test]
+fn adversarial_target_result_forgery_cannot_assign_verdict() {
+    let a = actual();
+    let r = execute(
+        &a.corpus.config_for("forge"),
+        &a.corpus.sealed,
+        &a.corpus.store,
+        "target-forgery",
+    )
+    .unwrap();
+    assert_eq!(r.verdict, Verdict::Fail);
+    assert!(String::from_utf8_lossy(&r.executions[0].capture.stdout).contains("PASS"));
+    assert_eq!(
+        load(&a.corpus.store, "target-forgery").unwrap().verdict,
+        Verdict::Fail
+    );
+    assert!(!r.violations.is_empty());
+}
+
+#[test]
+fn adversarial_query_actual_execution_and_receipt_reload() {
+    use verify_core::sealed_run::{
+        self,
+        query::{Ledger, Policy},
+        Execution,
+    };
+    let a = actual();
+    let mut c = fixture();
+    c.config.target.image = a.corpus.images["correct"].clone();
+    let seal = sealed_support::seal();
+    let execution = Execution::Blindtest {
+        config: Box::new(c.config.clone()),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let policy = Policy {
+        schema_version: "1".into(),
+        seal_commitment: seal.commitment().unwrap(),
+        suite_hash: c.config.suite_hash.clone(),
+        max_attempts: 1,
+    };
+    let ledger =
+        Ledger::initialize(&c.sealed.join("queries"), &c.workspace, &c.sealed, &policy).unwrap();
+    let result = ledger
+        .execute(&c.store, "bounded", &seal, &auth, &execution, &c.sealed)
+        .unwrap();
+    assert_eq!(result.verdict(), Verdict::Pass);
+    assert_eq!(
+        sealed_run::load(&c.store, "bounded", &auth, &result.commitment().unwrap())
+            .unwrap()
+            .verdict(),
+        Verdict::Pass
+    );
+    assert!(ledger
+        .execute(&c.store, "retry", &seal, &auth, &execution, &c.sealed)
+        .is_err());
+    assert!(!c.store.root().join("retry").exists());
+}
 #[test]
 fn actual_quality_receipt_verified() {
     let a = actual();

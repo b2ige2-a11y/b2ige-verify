@@ -43,3 +43,9 @@ errors (`io::Error`), not evidence of a product FAIL. The original product loade
 still determines PASS/FAIL/INCONCLUSIVE/ERROR, scope, replayability and limitations;
 identity binding cannot upgrade an incomplete or failed observation. A receipt
 contains no authoritative cached verdict. Legacy results do not imply V100 sealing.
+
+V100-2 query-admission exhaustion, missing policy evidence or policy/scope mismatch
+is an ERROR-boundary `io::Error` before a new product experiment, not a product
+violation. Admission records assign no verdict. An admitted experiment still uses
+the original sealed/product loader, including ERROR for unavailable Docker/image
+evidence; errors never refund the attempt or upgrade its observation to PASS.

@@ -229,3 +229,44 @@ FAIL. Receipt removal cannot turn a V100 load into legacy verification.
 This is deterministic local content binding. It adds no independently witnessed
 chronology, signatures, authenticated controller identity, external timestamps,
 cloud attestation, reproducible-build proof, or exhaustive correctness proof.
+
+## V100-2 hidden-query admission v1 version decision
+
+`sealed_run::query::Policy` is an independent strict string-version v1 contract:
+`schema_version`, `seal_commitment`, `suite_hash`, `max_attempts` (integer 0–1024).
+Its commitment is `canonical_hash({"domain":"b2ige.verify.hidden-query-policy.v1",
+"value": <entire Policy>})`. The controller independently retains the commitment
+and one ledger path for the task/suite across all candidates and receipt IDs.
+Missing, duplicate, unknown fields and unsupported versions are rejected.
+
+`Ledger::initialize` is explicit trusted setup with exclusive directory creation;
+`open` requires the retained pin and verified policy evidence. Execution never
+creates or repairs a missing policy. `Ledger::execute` accepts only sealed BlindTest
+with matching task-seal and suite pins, then reserves one durable attempt slot
+before calling the existing sealed executor. Exclusive store reservation bounds
+concurrent callers. Errors, crashes and partial slots consume attempts permanently;
+there are no refunds. Zero/exhausted budget is an ERROR-boundary `io::Error`, never
+a product FAIL or PASS. Invalid authorization/scope is rejected before admission.
+Receipt reload does not execute a target or consume a query.
+
+The existing canonical EvidenceStore v1 contains policy record `policy` and attempt
+records `attempt-N`. Each attempt has string `schema_version: "1"`, policy commitment,
+zero-based slot, receipt ID and complete Authorization. One matching `admission`
+evidence item is `derived`, source `query_controller`, claim `v100.hidden_query.v1`.
+An attempt records admission, not successful execution or a verdict. Even a partial
+or corrupt occupied slot remains spent. The controller must preserve the ledger;
+deletion/rollback or replacement of the ledger and trusted pins is outside the
+same-user local integrity boundary.
+
+This optional controller admission API is the only bounded-query claim. Legacy
+BlindTest, CLI/MCP and `sealed_run::execute` remain unmetered and must not be exposed
+as bypasses by a controller claiming this policy. Receipt v1 remains an execution
+identity receipt and does not itself certify query admission. No existing P0–P9,
+TaskSeal, Authorization, Receipt or public report schema is changed.
+
+P6 Docker inspect validation is tightened within its existing v1 evidence contract:
+healthchecks must be explicitly disabled (`Config.Healthcheck.Test == ["NONE"]`),
+and recorded proc read-only/masked path protections must include the required set
+listed in BLINDTEST.md. Historical artifacts lacking these observations fail closed;
+they are not upgraded or rewritten. This is evidence validation, not a new isolation
+level or an attestation of an unrestricted host user.

@@ -62,3 +62,11 @@ process context or validated Docker image/lifecycle. Local process metadata is n
 external attestation. Receipt hashes expose no raw hidden values but the Receipt
 and its source store remain trusted-controller artifacts; no new public projection
 or disclosure policy is introduced. See CONTRACTS.md for exact identity inputs.
+
+V100-2 hidden-query ledger policy/attempt evidence is derived controller admission
+metadata only. It cannot replace runtime evidence or certify a product verdict.
+An occupied attempt slot is spent even when its evidence is partial or corrupt;
+policy loading itself requires intact canonical evidence and the retained policy
+commitment. A Receipt v1 does not prove that admission was used. Before/after Docker
+inspect evidence must now also show disabled healthchecks and the required proc
+protection sets; cached safe claims cannot substitute for those observations.

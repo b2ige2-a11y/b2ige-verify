@@ -96,3 +96,35 @@ required. Historical verification reuses recorded observations, not a claim that
 the current filesystem or runtime still has the recorded contents. Scoped read
 identity tracking rejects inconsistent repeated reads, but is not an adversarial
 filesystem snapshot or defense against a hostile controller.
+
+## V100-2 adversarial admission and boundary limits
+
+A controller exposing repeated hidden-suite queries can choose
+`sealed_run::query::Ledger::execute` with an independently pinned finite policy.
+The counter spans candidate and receipt IDs under one retained task/suite ledger;
+concurrent reservations, interrupted runs and retries cannot obtain free attempts.
+The caller must not choose a fresh ledger, repin a task/suite, remove spent slots,
+or invoke unmetered execution routes. All such authority remains with the trusted
+controller. This is a persistent local admission limit, not a multi-tenant service,
+authenticated quota, or defense against ledger rollback by the same host user.
+Finite query limits reduce repeated feedback exposure; they do not prove that even
+one response cannot reveal an oracle property. Current case inputs remain visible
+to the target, and repeated access to already exported reports is not metered.
+
+Docker targets cannot assign verdicts by printing PASS/JSON or writing a local
+`result.json`: the host loader requires separately recorded runtime evidence and
+recomputes approved predicates. Rehashing unsafe inspect evidence still fails its
+policy checks. Image healthchecks are disabled so image metadata cannot schedule
+an undeclared background command. Required proc masking/read-only paths are checked
+as a set, not inferred from a single representative path. Fixed target arguments,
+command and environment are checked for accidental private-canary overlap as well
+as per-case inputs. Canary detection is literal and bounded, not arbitrary encoded
+information-flow detection or protection against a controller deliberately leaking
+secrets in approved image content or labels.
+
+The public probe target attempts root/proc writes, Docker socket discovery, a bounded
+TCP connection to the documentation-only address 192.0.2.1, and bounded filesystem,
+environment and proc enumeration. Failure to connect alone is not network isolation
+proof; actual before/after Docker settings remain mandatory. The probe corpus and
+rehashed-loader attacks are regression evidence only, not kernel-escape testing,
+exhaustive secrecy, or independent external/private-holdout qualification.

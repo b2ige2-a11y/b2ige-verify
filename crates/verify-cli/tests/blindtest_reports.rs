@@ -231,7 +231,17 @@ fn malicious_public_labels_and_run_names_are_sanitized() {
     c.suite.invariants[0].public_summary =
         format!("{} {} /sealed/oracle", secret, c.suite.cases[0].case_id);
     c.suite.invariants[0].expected_semantic = c.suite.cases[0].args[0].clone();
-    c.suite.cases[0].reproduction_template = vec![secret.clone()];
+    let fixture_name = "private_fixture_inventory_name";
+    c.suite.cases[0].fixture = Some(BoundedFixture {
+        name: fixture_name.into(),
+        bytes: vec![],
+    });
+    c.suite.cases[0].reproduction_template = vec![
+        secret.clone(),
+        c.suite.manifest.suite_id.clone(),
+        fixture_name.into(),
+        "LOGICAL_NOW".into(),
+    ];
     for case in &mut c.suite.cases {
         let inv = c
             .suite
@@ -248,6 +258,9 @@ fn malicious_public_labels_and_run_names_are_sanitized() {
     assert!(!agent.contains(&secret));
     assert!(!agent.contains(&c.suite.cases[0].case_id));
     assert!(!agent.contains("/sealed/oracle"));
+    assert!(!agent.contains(&c.suite.manifest.suite_id));
+    assert!(!agent.contains(fixture_name));
+    assert!(!agent.contains("LOGICAL_NOW"));
     assert!(!r.document().reason.contains(&secret));
 }
 #[test]

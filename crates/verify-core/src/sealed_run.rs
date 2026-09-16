@@ -1,5 +1,6 @@
 //! V100 authoritative local boundary. Only verified product loaders assign verdicts.
 //! Trusted controller pins are external inputs, never learned from stored receipts.
+pub mod query;
 use crate::{behavior, blindtest, sideeffect, task_seal::TaskSeal, Verdict};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};

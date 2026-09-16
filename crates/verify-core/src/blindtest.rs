@@ -89,6 +89,14 @@ pub fn validate_suite(s: &SealedSuite, c: &BlindTestConfig) -> io::Result<()> {
     {
         return Err(invalid("sealed suite integrity/approval invalid"));
     }
+    if std::iter::once(&c.target.command)
+        .chain(c.target.args.iter())
+        .chain(c.target.environment.keys())
+        .chain(c.target.environment.values())
+        .any(|v| v.contains(&s.private_canary))
+    {
+        return Err(invalid("private canary overlaps fixed target input"));
+    }
     let mut requirements = BTreeSet::new();
     for r in &s.requirements {
         if r.schema_version != "1"

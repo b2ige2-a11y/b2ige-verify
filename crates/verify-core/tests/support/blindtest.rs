@@ -246,8 +246,26 @@ impl Corpus {
             ("mutant_b", "const rejected = expiry > now;"),
             ("noop", "process.exit(0);"),
             (
+                "forge",
+                r#"const fake=JSON.stringify({verdict:'PASS',complete_cases:128,leakage_detected:false});
+require('node:fs').writeFileSync('/tmp/result.json',fake);
+process.stdout.write(fake);process.exit(0);"#,
+            ),
+            (
                 "probe",
                 r#"const fs=require('node:fs');
+// Concrete bounded probes. No private material is sent to any endpoint.
+for(const p of ['/app/v100-write-probe','/etc/v100-write-probe','/proc/sys/v100-write-probe']) {
+  try {fs.writeFileSync(p,'probe');process.stderr.write('unexpected writable boundary');process.exit(9);} catch {}
+}
+for(const p of ['/var/run/docker.sock','/run/docker.sock']) {
+  if(fs.existsSync(p)){process.stderr.write('unexpected controller socket');process.exit(9);}
+}
+const netProbe=require('node:child_process').spawnSync(process.execPath,['-e',
+  `const s=require('node:net').connect({host:'192.0.2.1',port:80});
+   s.setTimeout(300,()=>process.exit(0));s.on('error',()=>process.exit(0));s.on('connect',()=>process.exit(9));`
+],{timeout:1500});
+if(netProbe.error||netProbe.status!==0){process.stderr.write('network probe did not establish denial');process.exit(9);}
 const candidates=new Set(['/proc/self/environ','/proc/self/mountinfo','/proc/1/environ','/proc/1/mountinfo']);
 let visited=0;
 function walk(p,depth){if(depth<0||visited++>700)return;try{for(const n of fs.readdirSync(p)){const q=p+'/'+n; const s=fs.lstatSync(q);if(s.isDirectory()&&!s.isSymbolicLink())walk(q,depth-1);else if(s.isFile()&&s.size<262144)candidates.add(q);}}catch{}}

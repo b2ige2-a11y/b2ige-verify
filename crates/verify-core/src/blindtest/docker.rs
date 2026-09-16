@@ -109,6 +109,7 @@ impl Docker {
             "--network",
             "none",
             "--read-only",
+            "--no-healthcheck",
             "--cap-drop",
             "ALL",
             "--security-opt",
@@ -325,6 +326,7 @@ pub fn validate_settings(
         || config["OpenStdin"] != false
         || config["AttachStdout"] != true
         || config["AttachStderr"] != true
+        || config["Healthcheck"]["Test"] != json!(["NONE"])
         || !empty(&config["Volumes"])
         || env_map(&config["Env"])? != env
         || h["NetworkMode"] != "none"
@@ -362,12 +364,27 @@ pub fn validate_settings(
             h.get("OomKillDisable"),
             Some(Value::Bool(false) | Value::Null)
         )
-        || !h["ReadonlyPaths"]
-            .as_array()
-            .is_some_and(|v| v.contains(&json!("/proc/sys")))
-        || !h["MaskedPaths"]
-            .as_array()
-            .is_some_and(|v| v.contains(&json!("/proc/kcore")))
+        || !h["ReadonlyPaths"].as_array().is_some_and(|v| {
+            [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger",
+            ]
+            .iter()
+            .all(|p| v.contains(&json!(p)))
+        })
+        || !h["MaskedPaths"].as_array().is_some_and(|v| {
+            [
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/timer_list",
+                "/sys/firmware",
+            ]
+            .iter()
+            .all(|p| v.contains(&json!(p)))
+        })
         || !v["NetworkSettings"]["Networks"]
             .as_object()
             .is_some_and(|n| n.len() == 1 && n.contains_key("none"))

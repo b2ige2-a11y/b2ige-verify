@@ -104,8 +104,15 @@ Before **and** after execution, actual `docker container inspect` is checked for
 - all capabilities dropped, no capability additions, `no-new-privileges`;
 - private IPC/cgroup namespaces, no host PID/UTS/user namespace, no devices;
 - bounded pids, memory plus swap, CPU; bounded noexec/nosuid/nodev `/tmp` tmpfs;
-- bounded 8 MiB shared memory, default masked/read-only proc paths;
+- bounded 8 MiB shared memory, required masked/read-only proc paths listed below;
 - disabled restart and persistent target logging; actual created → exited lifecycle.
+
+V100-2 additionally disables image healthchecks and requires the actual
+`Config.Healthcheck.Test` to be `["NONE"]` before and after execution. Required
+read-only paths include `/proc/bus`, `/proc/fs`, `/proc/irq`, `/proc/sys`, and
+`/proc/sysrq-trigger`; required masked paths include `/proc/kcore`, `/proc/keys`,
+`/proc/timer_list`, and `/sys/firmware`. Additional Docker default protections are
+allowed. Missing or reduced sets are rejected, including on historical reload.
 
 Docker's optional `OomKillDisable` field may be false or explicitly null after start
 on this engine; true or a missing field is rejected. Actual OOM termination is
@@ -164,6 +171,10 @@ private values and paths, with fixed safe fallbacks. Caller-chosen run IDs becom
 opaque aliases. Evidence IDs point to controller-owned execution evidence; the
 isolation reference identifies that same evidence's embedded attestation.
 
+V100-2 also filters literal suite IDs, fixture names and case environment keys
+embedded in otherwise public labels/reproduction text. This conservative filter
+does not certify arbitrary encoded labels as secret-free.
+
 There is no `hidden_details` field/section in Agent output. `--output agent --open`
 is rejected to prevent opening a full human view from an Agent-output request.
 Agent errors use fixed messages so parser and filesystem errors cannot leak paths
@@ -202,6 +213,12 @@ never overwritten. Build prerequisite: local `node:24.18.1-bookworm-slim` (or se
 requires no paid API. Ordinary verdict exits remain 0/1/2/3; argument misuse is 64.
 A validation receipt exits 0 only if every declared expected outcome matched; a
 quality mismatch exits 3 and does not masquerade as target FAIL.
+
+For a controller that exposes repeated hidden-suite queries, V100-2 supplies the
+optional `sealed_run::query::Ledger` admission API. Its pinned policy bounds whole
+execution attempts across candidate/run IDs, separately from `max_cases`, which
+only bounds cases within one execution. See CONTRACTS.md for persistence and
+failure semantics. CLI/MCP and ordinary execution do not implicitly enforce a quota.
 
 ## Schema decision
 

@@ -3,9 +3,10 @@
 Program: B2IGE Verify V100
 Branch: automation/v100-longhorizon
 Status: ACTIVE
-Current phase: V100-2 Adversarial Trust
+Current phase: V100-3 RealBench / RedBench Proof
 
 Completed:
+- V100-2 Adversarial Trust: automated implementation, deterministic phase gate, and independent phase audit passed.
 - V100-1 Seal + Identity + Receipt Foundation: automated implementation, deterministic phase gate, and independent phase audit passed.
 - V100-0 Trust Lock: executable invariants added; targeted and full workspace deterministic gates passed; independent Astra audit passed.
 - Clean V100 branch created from origin/main.
@@ -16,7 +17,7 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-Complete V100-2 Adversarial Trust without weakening V100 trust invariants.
+Complete V100-3 RealBench / RedBench Proof without weakening V100 trust invariants.
 
 Next phases:
 1. V100-0 Trust Lock

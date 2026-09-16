@@ -40,13 +40,16 @@ fn safe_text(text: &str, fallback: &str, r: &bt::BlindTestRunResult) -> String {
     let mut secrets = vec![
         r.suite.private_canary.clone(),
         r.suite.private_metadata.clone(),
+        r.suite.manifest.suite_id.clone(),
         r.config.target.workspace.to_string_lossy().into_owned(),
     ];
     for case in &r.suite.cases {
         secrets.push(case.case_id.clone());
         secrets.extend(case.args.clone());
+        secrets.extend(case.environment.keys().cloned());
         secrets.extend(case.environment.values().cloned());
         if let Some(f) = &case.fixture {
+            secrets.push(f.name.clone());
             if let Ok(s) = String::from_utf8(f.bytes.clone()) {
                 secrets.push(s);
             }
