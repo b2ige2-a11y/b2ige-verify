@@ -1,7 +1,41 @@
 # Quickstart
 
-After [installation](INSTALL.md), aim for a first result in five minutes once Docker's
-base image and native binaries are available. Initial compilation/image downloads may take longer.
+After [installation](INSTALL.md), the fastest first result is the BlindTest demo. With native
+binaries and Docker's base image already available, it typically takes 30–60 seconds; initial
+archive extraction, image downloads and source builds can take longer. Docker is required for
+BlindTest, and missing prerequisites do not become PASS.
+
+## 30-second BlindTest path
+
+From the source workspace:
+
+```sh
+docker pull node:24.18.1-bookworm-slim
+cargo build --workspace --release --locked
+scripts/demo-blindtest.sh
+```
+
+From an extracted native release archive, run from its top-level directory:
+
+```sh
+export PATH="$PWD/bin:$PATH"
+export B2IGE_BIN_DIR="$PWD/bin"
+b2ige doctor                 # fresh archive: ready=false until a project is registered
+b2ige blindtest doctor      # Docker readiness; not a verification verdict
+scripts/demo-blindtest.sh
+```
+
+On a fresh archive, `b2ige doctor` prints `ready=false` and exits 3 because no project is
+registered yet. That readiness result is expected and is not a verification verdict; continue with
+`b2ige blindtest doctor` for the Docker preflight.
+
+The demo executes both implementations against the same visible valid-credential check, then
+performs the actual sealed hidden verification: correct `PASS`, buggy `FAIL`, and probe `PASS`.
+It also checks that private hidden values do not appear in the Agent projection. There is no
+fabricated terminal output. See the [README demo](../README.md#30-second-blindtest-demo) for
+release archive links and the [Docker prerequisites](INSTALL.md).
+
+## Run all three demos
 
 From the source workspace use `scripts/demo-behavior.sh`, `scripts/demo-sideeffect.sh`, or
 `scripts/demo-blindtest.sh`. From an extracted archive:
