@@ -11,9 +11,14 @@ From the source workspace:
 
 ```sh
 docker pull node:24.18.1-bookworm-slim
-cargo build --workspace --release --locked
+python3 scripts/setup.py
 scripts/demo-blindtest.sh
 ```
+
+`setup.py` is a safe bootstrap: it builds the locked workspace if needed and creates only
+the empty registry. It does not approve a baseline or discover a hidden suite. Windows x64
+can use `py -3 scripts/setup.py` for source/build setup, but this Mac run makes no Windows
+runtime or Docker claim; Windows CI-only setup does not require the Docker/demo lines above.
 
 From an extracted native release archive, run from its top-level directory:
 

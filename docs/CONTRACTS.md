@@ -103,6 +103,28 @@ verdict semantics remain unchanged. CLI legacy `--output agent` remains v3; expl
 and verified loaders, never assigns verification verdicts. Doctor PASS is readiness only.
 See [AGENT-PROTOCOL.md](AGENT-PROTOCOL.md), [MCP.md](MCP.md), and [CI.md](CI.md).
 
+V100-4 setup status, diff-aware selection plans, diff maps and sanitized summaries are
+non-authoritative tooling/presentation messages. Their `schema_version: "1"` labels are
+independent tooling compatibility markers; they are not new product/evidence schemas and
+cannot be loaded as a verdict or replace the project registry, product contract, approval,
+sealed root or required evidence.
+
+The V100-4 CI adapter requires an independently retained trusted commit and compares
+the invocation registry against that commit's required inventory before selection.
+This tightens tooling input admission only; tooling v1 and all authoritative schemas
+remain unchanged. The controller must supply the verifier, adapters, configs, maps
+and approvals independently of candidate control; inventory comparison alone does
+not authenticate those inputs or confer an isolation claim.
+
+V100-4 adds an independent tooling-only candidate approval v1: exact current Git
+head plus the complete required contract inventory's config-byte SHA-256,
+Behavior authorization-byte SHA-256 (null for other products), and executable or
+immutable image identity. This admission input is controller-retained, never
+candidate/model approval or verdict evidence. Missing or mismatched bindings fail
+with ERROR before execution; runtime identity checks remain with product loaders.
+This new tooling contract leaves registry, diff-plan and all authoritative product,
+seal and receipt schema versions unchanged. See [CI.md](CI.md) for its exact shape.
+
 ## P8 Benchmark version decision
 
 BenchmarkCase, BenchmarkCaseResult, BenchmarkSummary and BenchmarkRunResult are

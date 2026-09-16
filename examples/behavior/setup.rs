@@ -4,7 +4,6 @@ use verify_core::{
     behavior::*, checker_binding_hash, ApprovalStatus, Baseline, BaselineApproval, BaselineCreator,
 };
 pub fn setup(root: &Path, changed: bool) -> io::Result<()> {
-    use std::os::unix::fs::PermissionsExt;
     fs::create_dir(root)?;
     for (name, body) in [
         ("before", "printf hello"),
@@ -19,7 +18,7 @@ pub fn setup(root: &Path, changed: bool) -> io::Result<()> {
     ] {
         let p = root.join(name);
         fs::write(&p, format!("#!/bin/sh\n{body}\n"))?;
-        fs::set_permissions(p, fs::Permissions::from_mode(0o700))?;
+        make_executable(&p)?;
     }
     let case = BehaviorCase {
         schema_version: "1".into(),
@@ -72,5 +71,21 @@ pub fn setup(root: &Path, changed: bool) -> io::Result<()> {
     };
     write_json(&root.join("authorization.json"), &auth)?;
     write_json(&root.join("experiment.json"), &e)?;
+    Ok(())
+}
+
+fn make_executable(path: &Path) -> io::Result<()> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(path, fs::Permissions::from_mode(0o700))?;
+    }
+    #[cfg(not(unix))]
+    {
+        // Windows has no Unix executable mode. The public shell fixture is a
+        // source/build fixture only on that platform; no verifier PASS is
+        // inferred from creating it.
+        let _ = path;
+    }
     Ok(())
 }

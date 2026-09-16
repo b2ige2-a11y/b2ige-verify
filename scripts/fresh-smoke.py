@@ -26,6 +26,9 @@ os.chdir(work)
 cli = bin_dir / 'b2ige'
 run([cli, '--help']); run([cli, '--version'])
 run([cli, 'init', '--dry-run']); run([cli, 'init'])
+setup = package / 'scripts' / 'setup.py'
+assert setup.is_file()
+run([sys.executable, str(setup), '--binary', str(cli), '--skip-build'])
 # Empty registry is intentionally not ready; inspect it, never call it verification.
 r = subprocess.run([str(cli),'doctor'],capture_output=True,text=True,timeout=45)
 d = json.loads(r.stdout)
@@ -38,6 +41,13 @@ entry = {'product':'behavior','config':str(root/'behavior/pass/experiment.json')
 registry = work/'.b2ige/project.json'
 registry.write_text(json.dumps({'schema_version':'1','entries':{'hello':entry}}))
 assert json.loads(run([cli,'doctor']))['ready']
+recovery = root / 'recovery-check'
+(recovery / '.b2ige').mkdir(parents=True)
+recovery_registry = recovery / '.b2ige/project.json'
+recovery_registry.write_text('{malformed')
+recovered = subprocess.run([sys.executable, str(setup), '--project-root', str(recovery),
+                            '--binary', str(cli), '--skip-build'], capture_output=True, text=True)
+assert recovered.returncode == 3 and recovery_registry.read_text() == '{malformed'
 messages = [
  {'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'fresh-smoke','version':'1'}}},
  {'jsonrpc':'2.0','method':'notifications/initialized'},

@@ -120,6 +120,15 @@ fn init_dry_run_and_no_overwrite() {
         Some(3)
     );
     assert_eq!(fs::read(path).unwrap(), original);
+    let setup = cli().arg("setup").current_dir(&c.dir).output().unwrap();
+    assert!(setup.status.success());
+    let setup_value: Value = serde_json::from_slice(&setup.stdout).unwrap();
+    assert_eq!(setup_value["kind"], "setup");
+    assert_eq!(setup_value["verification_performed"], false);
+    assert_eq!(
+        fs::read(c.dir.join(".b2ige/project.json")).unwrap(),
+        original
+    );
     let doctor = cli().arg("doctor").current_dir(&c.dir).output().unwrap();
     assert_eq!(doctor.status.code(), Some(3));
     let v: Value = serde_json::from_slice(&doctor.stdout).unwrap();

@@ -43,6 +43,9 @@ Also download [SHA256SUMS](https://github.com/b2ige2-a11y/b2ige-verify/releases/
 Verify the matching archive line before extracting. The full [installation and platform guide](docs/INSTALL.md)
 has the checksum and prerequisite details.
 
+Windows x64 is currently supported for reviewed source/build CI (`x86_64-pc-windows-msvc`),
+but no Windows runtime or native archive evidence is claimed by this Mac checkout.
+
 ### Download → extract → doctor → demo
 
 ```sh
@@ -161,6 +164,10 @@ vulnerability reporting instead.
 Native archives are the authoritative first distribution. macOS 0.1.0 binaries are intentionally
 unsigned and unnotarized; Gatekeeper may show a warning, and no Developer ID signing or notarization
 claim is made. See [installation and platforms](docs/INSTALL.md) for the complete policy.
+
+For a source checkout, `python3 scripts/setup.py` performs the locked release build when needed
+and safely creates the empty project registry. It never invents contracts or approves baselines;
+registration and the [Codex/GitHub workflow](docs/CI.md) remain explicit trusted-operator steps.
 
 The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred until
 the `@b2ige` scope is actually controlled; npm is not required for the GitHub 0.1.0 release.

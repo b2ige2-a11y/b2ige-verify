@@ -216,7 +216,8 @@ impl Viewer {
         load(&store, id, &auth)?;
         let listener = TcpListener::bind(("127.0.0.1", 0))?;
         let mut bytes = [0u8; 24];
-        std::fs::File::open("/dev/urandom")?.read_exact(&mut bytes)?;
+        getrandom::fill(&mut bytes)
+            .map_err(|_| io::Error::other("secure viewer token unavailable"))?;
         let token = bytes.iter().map(|b| format!("{b:02x}")).collect();
         Ok(Self {
             listener,

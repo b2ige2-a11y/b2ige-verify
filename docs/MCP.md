@@ -47,7 +47,9 @@ are still checked by the verifier, so stale identity pins cannot PASS.
 
 ## Codex
 
-This host's actual `codex mcp add --help` confirms the following supported adapter:
+From a source checkout, run `python3 scripts/setup.py` once to build the locked binaries and
+create the empty project registry. It does not register unreviewed configs or alter baseline
+authorizations. Then launch the trusted MCP binary with absolute paths:
 
 ```sh
 codex mcp add b2ige -- /absolute/verifier/target/release/b2ige-mcp --registry /trusted/project.json
@@ -65,6 +67,8 @@ can be copied into the configured Codex skills directory (`$CODEX_HOME/skills`, 
 `~/.codex/skills`), without overwriting an existing skill. No guessed repository-local
 Codex config or installer is provided. For other clients use their documented stdio
 setup; unsupported target-specific automatic installation is not offered.
+If the registry or installed binary is damaged, rerun setup only after preserving the original
+and restoring a reviewed copy. A setup/doctor result is readiness, not a verification verdict.
 
 ## Tools and transport
 

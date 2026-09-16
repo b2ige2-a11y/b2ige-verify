@@ -7,11 +7,12 @@ b2ige --help
 b2ige --version
 b2ige init --dry-run
 b2ige init
+b2ige setup
 b2ige doctor
 b2ige behavior verify CONFIG --authorization AUTH --store STORE
 b2ige sideeffect verify CONTRACT --store STORE
 b2ige blindtest doctor
-b2ige blindtest verify CONFIG --output agent
+b2ige blindtest verify CONFIG --output agent --protocol 1
 b2ige blindtest validate-suite CONFIG
 b2ige report RESULT --store STORE --output human
 b2ige report RESULT --store STORE --output json
@@ -19,6 +20,11 @@ b2ige report RESULT --store STORE --output agent
 b2ige bench
 b2ige-mcp --registry PROJECT
 ```
+
+For a source checkout, `python3 scripts/setup.py` is the near-one-command bootstrap: it
+builds the locked workspace when needed and safely creates an empty registry. `b2ige setup`
+is the installed-binary alias for the safe registry initialization step. Neither command
+registers unreviewed configs, approves baselines, or creates hidden suites.
 
 Uppercase operands are operator-supplied paths/identities, not literal commands to copy.
 BlindTest requires `B2IGE_BLINDTEST_SEALED_ROOT` in the trusted controller environment.

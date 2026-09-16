@@ -1,6 +1,8 @@
 /target/
 .DS_Store
 /.b2ige/
+/b2ige-agent-report.json
+/b2ige-agent-reports/
 /release/artifacts/
 **/__pycache__/
 *.pyc

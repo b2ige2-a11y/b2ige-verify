@@ -51,6 +51,10 @@ fn main() {
                     .status()
                     .unwrap();
             }
+            #[cfg(not(unix))]
+            {
+                std::process::exit(3);
+            }
         }
         _ => panic!("unknown fixture mode"),
     }

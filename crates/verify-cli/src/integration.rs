@@ -175,13 +175,37 @@ pub struct Project {
     pub schema_version: String,
     pub entries: BTreeMap<String, Entry>,
 }
-pub fn init(root: &Path, dry_run: bool) -> io::Result<Value> {
+fn registry_location(root: &Path) -> io::Result<(PathBuf, bool, bool)> {
     let path = root.join(".b2ige/project.json");
-    let existing = path.try_exists()?;
+    let parent = path.parent().expect("registry parent");
+    let parent_exists = match fs::symlink_metadata(parent) {
+        Ok(metadata) if metadata.file_type().is_dir() && !metadata.file_type().is_symlink() => true,
+        Ok(_) => return Err(io::Error::other(".b2ige must be a real directory")),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => false,
+        Err(error) => return Err(error),
+    };
+    let existing = match fs::symlink_metadata(&path) {
+        Ok(metadata) if metadata.file_type().is_file() => true,
+        Ok(metadata) if metadata.file_type().is_symlink() => {
+            return Err(io::Error::other(
+                "project registry symlinks are not accepted",
+            ))
+        }
+        Ok(_) => return Err(io::Error::other("project registry must be a regular file")),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => false,
+        Err(error) => return Err(error),
+    };
+    Ok((path, parent_exists, existing))
+}
+pub fn init(root: &Path, dry_run: bool) -> io::Result<Value> {
+    let (path, parent_exists, existing) = registry_location(root)?;
+    let parent = path.parent().expect("registry parent");
     let d = blindtest::docker::doctor();
     let result = json!({"schema_version":"1","rust":root.join("Cargo.toml").is_file(),"node":root.join("package.json").is_file(),"docker_available":d.docker_available,"existing_config":existing,"dry_run":dry_run,"surfaces":["behavior: approved executable comparison","sideeffect: configured local SQLite ledger","blindtest: approved sealed Docker suite"],"next_action":"Register reviewed product configs; stack detection does not create evidence or approve baselines"});
     if !dry_run {
-        fs::create_dir_all(path.parent().expect("parent"))?;
+        if !parent_exists {
+            fs::create_dir(parent)?;
+        }
         let mut f = fs::OpenOptions::new()
             .write(true)
             .create_new(true)
@@ -195,6 +219,25 @@ pub fn init(root: &Path, dry_run: bool) -> io::Result<Value> {
         )?;
         f.sync_all()?;
     }
+    Ok(result)
+}
+pub fn setup(root: &Path, dry_run: bool) -> io::Result<Value> {
+    let (path, _, existing) = registry_location(root)?;
+    if existing {
+        let project: Project = read(&path)?;
+        if project.schema_version != "1" {
+            return Err(io::Error::other("unsupported project registry version"));
+        }
+    }
+    if existing && !dry_run {
+        let d = blindtest::docker::doctor();
+        return Ok(
+            json!({"schema_version":"1","kind":"setup","rust":root.join("Cargo.toml").is_file(),"node":root.join("package.json").is_file(),"docker_available":d.docker_available,"existing_config":true,"dry_run":false,"verification_performed":false,"next_action":"Register reviewed product configs; setup never creates evidence or approves baselines"}),
+        );
+    }
+    let mut result = init(root, dry_run)?;
+    result["kind"] = "setup".into();
+    result["verification_performed"] = false.into();
     Ok(result)
 }
 pub fn project_doctor(path: &Path) -> Value {

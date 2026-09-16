@@ -14,7 +14,7 @@ until the `@b2ige` scope is actually controlled.
 | macOS Intel | x86_64-apple-darwin | VERIFIED_NATIVE; documented partial no-Docker scope PASS |
 | Linux x86_64 | x86_64-unknown-linux-gnu | VERIFIED_NATIVE; actual Docker tests and full fixed/reverse benchmark gate PASS |
 | Linux arm64 | aarch64-unknown-linux-gnu | Deferred until native runner gate is verified |
-| Windows | — | Unsupported: current runner requires Unix capabilities |
+| Windows x64 | x86_64-pc-windows-msvc | SOURCE/BUILD/CI_ONLY; Windows runtime and archive evidence are not recorded locally |
 
 macOS requires Docker Desktop running a Linux engine for BlindTest. Linux requires a local
 Unix-socket Docker engine and permission to access it. No remote Docker TCP support is claimed.
@@ -29,6 +29,13 @@ docker pull node:24.18.1-bookworm-slim
 The demo resolves that local image to its RepoDigest before building with networking disabled.
 You may choose another available digest-bearing Node image through `B2IGE_P6_BASE_IMAGE`;
 record that choice with the run. Missing Docker/image prerequisites fail, never skip to PASS.
+
+Windows source builds use the MSVC Rust target and are checked by the dedicated
+`windows-latest` workflow job. The Unix process-cleanup backend and the P6 Docker endpoint
+are not asserted on Windows. Do not turn a successful Windows compile into a product
+verification result; the workflow is the platform evidence path. A Windows native
+archive/MCPB is not listed until a Windows host build and installation smoke have been
+independently run.
 
 ## Native archive
 
@@ -47,6 +54,27 @@ Do not register these helpers as production verification targets accidentally.
 On macOS, 0.1.0 is intentionally unsigned and unnotarized. Do not claim Developer ID
 signing or notarization. Gatekeeper may show a warning; signing is a future release improvement.
 See [provenance](RELEASE-PROVENANCE.md). No script removes quarantine or bypasses OS controls automatically.
+
+For a source checkout, the near-one-command bootstrap is:
+
+```sh
+python3 scripts/setup.py
+```
+
+On Windows use `py -3 scripts/setup.py` when the Python launcher is installed. The helper
+builds with `cargo build --workspace --release --locked` when needed, creates only an empty
+`.b2ige/project.json`, and never approves or rewrites a contract. For an extracted native
+archive, pass the already trusted binary and skip the source build:
+
+```sh
+python3 scripts/setup.py --binary /absolute/trusted/bin/b2ige --skip-build
+```
+
+On Windows, the equivalent is `py -3 scripts/setup.py --binary C:\trusted\bin\b2ige.exe --skip-build`.
+
+If setup reports `recovery_required`, preserve the reported registry and recover it from a
+reviewed backup before retrying. Setup deliberately has no overwrite or automatic baseline
+repair mode.
 
 ## Source workspace / Cargo
 

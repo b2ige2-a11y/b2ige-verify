@@ -6,7 +6,7 @@ use std::{
 use verify_cli::{load, pretty, resolve, viewer::Viewer};
 use verify_core::behavior::BehaviorAuthorization;
 use verify_evidence::store::EvidenceStore;
-const USAGE: &str = "Usage: b2ige bench [behavior|sideeffect|blindtest] [--output human|json] [--save DIRECTORY] [--reverse] [--case ID]\n       b2ige init [--dry-run]\n       b2ige doctor [--config project.json]\n       b2ige behavior verify <config.json> [--authorization FILE] [--store PATH] [--output human|json|agent] [--protocol 1]\n       b2ige blindtest doctor\n       b2ige blindtest verify <config.json> [--output human|json|agent] [--open]\n       b2ige blindtest validate-suite <validation-config.json>\n       B2IGE_BLINDTEST_SEALED_ROOT points to the trusted private suite directory; default store is its runs directory.\n        b2ige sideeffect verify <contract.json> [--store PATH] [--output human|json|agent] [--open]\n       b2ige report <artifact-id|store/id/result.json> [--store PATH] [--authorization FILE] [--output human|json|agent] [--open]\nDefaults: --store .b2ige/runs --authorization .b2ige/authorization.json\nVerdict exit codes: 0 PASS, 1 FAIL, 2 INCONCLUSIVE, 3 ERROR. Argument misuse: 64.\n--open serves localhost until interrupted; output and verdict are emitted before serving.";
+const USAGE: &str = "Usage: b2ige bench [behavior|sideeffect|blindtest] [--output human|json] [--save DIRECTORY] [--reverse] [--case ID]\n       b2ige init [--dry-run]\n       b2ige setup [--dry-run]\n       b2ige doctor [--config project.json]\n       b2ige behavior verify <config.json> [--authorization FILE] [--store PATH] [--output human|json|agent] [--protocol 1]\n       b2ige blindtest doctor\n       b2ige blindtest verify <config.json> [--output human|json|agent] [--protocol 1] [--open]\n       b2ige blindtest validate-suite <validation-config.json>\n       B2IGE_BLINDTEST_SEALED_ROOT points to the trusted private suite directory; default store is its runs directory.\n        b2ige sideeffect verify <contract.json> [--store PATH] [--output human|json|agent] [--protocol 1] [--open]\n       b2ige report <artifact-id|store/id/result.json> [--store PATH] [--authorization FILE] [--output human|json|agent] [--open]\nDefaults: --store .b2ige/runs --authorization .b2ige/authorization.json\nVerdict exit codes: 0 PASS, 1 FAIL, 2 INCONCLUSIVE, 3 ERROR. Argument misuse: 64.\n--open serves localhost until interrupted; output and verdict are emitted before serving.";
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if args == ["--version"] {
@@ -24,6 +24,7 @@ fn main() -> ExitCode {
                 "sideeffect",
                 "blindtest",
                 "init",
+                "setup",
                 "doctor",
             ]
             .contains(&args[0].as_str())
@@ -54,17 +55,26 @@ fn main() -> ExitCode {
         println!("{}", pretty(&r));
         return ExitCode::from(r.verdict.exit_code());
     }
-    if args.first().is_some_and(|s| s == "init") {
+    if args.first().is_some_and(|s| s == "init" || s == "setup") {
         if args.len() > 2 || (args.len() == 2 && args[1] != "--dry-run") {
             return ExitCode::from(64);
         }
-        return match verify_cli::integration::init(std::path::Path::new("."), args.len() == 2) {
+        let setup = args[0] == "setup";
+        let result = if setup {
+            verify_cli::integration::setup(std::path::Path::new("."), args.len() == 2)
+        } else {
+            verify_cli::integration::init(std::path::Path::new("."), args.len() == 2)
+        };
+        return match result {
             Ok(v) => {
                 println!("{}", pretty(&v));
                 ExitCode::SUCCESS
             }
             Err(_) => {
-                eprintln!("Init failed: existing configuration is never overwritten");
+                eprintln!(
+                    "{} failed: existing configuration is never overwritten",
+                    if setup { "Setup" } else { "Init" }
+                );
                 ExitCode::from(3)
             }
         };
@@ -302,16 +312,14 @@ fn run(o: Options) -> io::Result<u8> {
         let viewer = Viewer::bind(store, auth, &id)?;
         let url = viewer.url()?;
         eprintln!("Local report: {url}\nStop viewer with Ctrl-C.");
-        let opener = if cfg!(target_os = "macos") {
-            "open"
+        let opened = if cfg!(target_os = "macos") {
+            Command::new("open").arg(&url).status()
+        } else if cfg!(target_os = "windows") {
+            Command::new("cmd").args(["/C", "start", "", &url]).status()
         } else {
-            "xdg-open"
+            Command::new("xdg-open").arg(&url).status()
         };
-        if !Command::new(opener)
-            .arg(&url)
-            .status()
-            .is_ok_and(|s| s.success())
-        {
+        if !opened.is_ok_and(|s| s.success()) {
             eprintln!("Browser did not open; use the local URL above.");
         }
         viewer.serve()?;

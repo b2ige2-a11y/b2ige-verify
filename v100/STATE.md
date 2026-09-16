@@ -3,9 +3,10 @@
 Program: B2IGE Verify V100
 Branch: automation/v100-longhorizon
 Status: ACTIVE
-Current phase: V100-4 Adoption
+Current phase: V100-5 Verifier Qualification + Protocol + Release
 
 Completed:
+- V100-4 Adoption: deterministic phase gate and independent audit passed.
 - V100-3 RealBench / RedBench Proof: deterministic phase gate and independent audit passed.
 - V100-2 Adversarial Trust: automated implementation, deterministic phase gate, and independent phase audit passed.
 - V100-1 Seal + Identity + Receipt Foundation: automated implementation, deterministic phase gate, and independent phase audit passed.
@@ -18,7 +19,7 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-Complete V100-4 Adoption without weakening the established V100 trust invariants.
+Complete V100-5 Verifier Qualification + Protocol + Release without weakening the established V100 trust invariants.
 
 Next phases:
 1. V100-0 Trust Lock

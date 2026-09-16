@@ -66,6 +66,7 @@ jobs:
           python3 scripts/license-notices.py --check
           python3 scripts/readme-bench.py
           python3 scripts/test-release.py
+          python3 scripts/test-adoption.py
           python3 scripts/validate-workflows.py
           npm --prefix npm/b2ige test
       - name: Pinned release-only SBOM tooling
@@ -100,3 +101,36 @@ jobs:
           retention-days: 14
       # No raw evidence, private stores, logs, publishing, signing or write permissions.
       # Embedded manifests are pre-smoke; the external manifest records subsequent runtime scope.
+  windows-source:
+    name: Windows x64 source and build checks
+    runs-on: windows-latest
+    timeout-minutes: 60
+    env:
+      RUSTUP_TOOLCHAIN: "1.98.1"
+      CARGO_TERM_COLOR: never
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, resolved 2026-09-15
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned Windows MSVC toolchain
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt,clippy
+          $rustHost = (rustc -vV | Select-String '^host: ').ToString().Split(': ', 2)[1]
+          if ($rustHost -ne 'x86_64-pc-windows-msvc') { throw "unexpected Rust host: $rustHost" }
+          cargo fetch --locked
+      - name: Windows source checks
+        shell: pwsh
+        run: cargo fmt --check
+      - name: Windows lint checks
+        shell: pwsh
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Windows tests
+        shell: pwsh
+        run: cargo test --workspace --locked
+      - name: Windows release build
+        shell: pwsh
+        run: cargo build --workspace --release --locked
+      # This job establishes source/build CI only. It does not claim a local
+      # Windows BlindTest Docker run, product runtime PASS, or release archive.

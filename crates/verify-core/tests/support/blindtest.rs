@@ -4,7 +4,6 @@
 use std::{
     collections::BTreeMap,
     fs,
-    io::Read,
     path::{Path, PathBuf},
     process::Command,
 };
@@ -22,10 +21,7 @@ pub struct Corpus {
 }
 fn nonce() -> String {
     let mut b = [0u8; 16];
-    fs::File::open("/dev/urandom")
-        .unwrap()
-        .read_exact(&mut b)
-        .unwrap();
+    getrandom::fill(&mut b).unwrap();
     b.iter().map(|b| format!("{b:02x}")).collect()
 }
 fn approval() -> Provenance {

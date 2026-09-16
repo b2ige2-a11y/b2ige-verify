@@ -1,7 +1,48 @@
 //! P8 trusted, bounded benchmark controller. Product execution/verified loaders
 //! own verdicts; independently authored labels own benchmark expectations.
+#[cfg(unix)]
 mod behavior;
+#[cfg(not(unix))]
+mod behavior {
+    use super::{invalid, BenchmarkCase, BenchmarkCaseResult};
+    use std::{io, path::Path};
+
+    pub fn run(
+        _case: &BenchmarkCase,
+        _root: &Path,
+        _result: &mut BenchmarkCaseResult,
+    ) -> io::Result<()> {
+        Err(invalid("Behavior benchmark runtime requires Unix"))
+    }
+}
+#[cfg(unix)]
 mod blindtest;
+#[cfg(not(unix))]
+mod blindtest {
+    use super::{invalid, BenchmarkCase, BenchmarkCaseResult};
+    use std::{io, path::Path};
+
+    pub struct DockerCorpus;
+
+    impl DockerCorpus {
+        pub fn build(_root: &Path) -> io::Result<Self> {
+            Err(invalid(
+                "BlindTest benchmark runtime requires Unix and Docker",
+            ))
+        }
+    }
+
+    pub fn run(
+        _case: &BenchmarkCase,
+        _root: &Path,
+        _images: &DockerCorpus,
+        _result: &mut BenchmarkCaseResult,
+    ) -> io::Result<()> {
+        Err(invalid(
+            "BlindTest benchmark runtime requires Unix and Docker",
+        ))
+    }
+}
 mod model;
 mod sideeffect;
 pub use model::*;

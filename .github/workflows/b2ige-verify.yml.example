@@ -1,43 +1,58 @@
 name: B2IGE Verify
 on:
-  workflow_dispatch:
-  pull_request:
+  # The workflow definition comes from the trusted base, never the PR.
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 permissions:
   contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        product: [behavior, sideeffect, blindtest]
+    env:
+      B2IGE_TRUSTED_REVISION: ${{ github.event.pull_request.base.sha }}
+      B2IGE_CANDIDATE_REVISION: ${{ github.event.pull_request.head.sha }}
     steps:
-      - uses: actions/checkout@v4
-      # This template runs in the verifier repository or a checkout containing it.
-      # For another repository, build a separately pinned verifier checkout first.
-      - name: Build local verifier
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, resolved 2026-09-15
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      # Fetch candidate objects for diff inspection only. Never check out or run
+      # PR scripts/build hooks on this controller (including Cargo build.rs).
+      - name: Fetch candidate diff without executing candidate code
+        run: git fetch --no-tags origin "$B2IGE_CANDIDATE_REVISION"
+      - name: Build trusted verifier
         run: cargo build --workspace --release --locked
-      - name: Prepare reviewed project fixtures
+      - name: Require controller-reviewed project inputs
         run: |
-          rm -f b2ige-agent-report.json
-          test -f ".b2ige/${{ matrix.product }}.json"
-          # Build project binaries / seed local SQLite before this step.
-          # For BlindTest provision approved suite OUTSIDE the workspace and
-          # locally build the pinned target image. Never upload the private store.
-      - name: Require actual Docker for BlindTest
-        if: matrix.product == 'blindtest'
-        run: target/release/b2ige blindtest doctor
-      - name: Verify (only PASS returns zero)
+          test "$(git rev-parse HEAD)" = "$B2IGE_TRUSTED_REVISION"
+          git diff --exit-code "$B2IGE_TRUSTED_REVISION" -- .
+          test -f .b2ige/project.json
+          test ! -e b2ige-agent-reports
+          test -f "$RUNNER_TEMP/b2ige-candidate-approval.json"
+          # Registry, configs and approval references are from the trusted base.
+          # Provision candidate-bound approvals/fixtures through a trusted
+          # controller before enabling this template. Do not copy PR configs,
+          # approvals, verifier binaries, adapters, or reports into this job.
+          # Candidate builds need a separate unprivileged isolated runner.
+          # Missing approved inputs must fail; never auto-approve a baseline.
+      - name: Diff-aware verification (only all-PASS returns zero)
         env:
           B2IGE_BLINDTEST_SEALED_ROOT: ${{ runner.temp }}/b2ige-sealed
         run: >-
-          python3 scripts/ci-verify.py '${{ matrix.product }}'
-          '.b2ige/${{ matrix.product }}.json'
-          --authorization .b2ige/authorization.json
-          --report b2ige-agent-report.json
-      - uses: actions/upload-artifact@v4
+          python3 scripts/diff-verify.py
+          --base "$B2IGE_TRUSTED_REVISION"
+          --head "$B2IGE_CANDIDATE_REVISION"
+          --trusted-revision "$B2IGE_TRUSTED_REVISION"
+          --required-registry .b2ige/project.json
+          --registry .b2ige/project.json
+          --candidate-approval "$RUNNER_TEMP/b2ige-candidate-approval.json"
+          --b2ige target/release/b2ige
+          --report-dir b2ige-agent-reports
+          --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: b2ige-${{ matrix.product }}-sanitized
-          path: b2ige-agent-report.json
+          name: b2ige-sanitized-agent-reports
+          path: b2ige-agent-reports/*.json
           if-no-files-found: ignore
