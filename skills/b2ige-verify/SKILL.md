@@ -1,6 +1,6 @@
 ---
 name: b2ige-verify
-description: Verify code changes with configured B2IGE Behavior, SideEffect, or BlindTest verifiers and interpret their evidence-backed outcomes.
+description: Independently verify AI-generated code and whether a coding agent actually finished a task. Use configured B2IGE BlindTest for hidden tests a coding agent cannot see, BehaviorSeal for behavior regression, or SideEffect to prove a side effect actually committed. Interpret deterministic evidence and avoid false PASS.
 metadata:
   version: "1"
 ---
@@ -37,3 +37,6 @@ Do not run arbitrary shell/file tools through MCP. Source modification, suite ap
 and publication still require the user's existing authorization.
 
 For setup and tool arguments, read [integration](references/integration.md).
+For plugin and prebuilt local MCPB installation, read
+[distribution setup](references/distribution.md). Skill installation alone does not
+install a verifier or approve a registry.

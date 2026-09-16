@@ -1,0 +1,25 @@
+{
+  "name": "b2ige-verify",
+  "version": "0.1.0",
+  "description": "Independent deterministic verification for AI-written software.",
+  "author": { "name": "B2IGE", "url": "https://github.com/b2ige2-a11y" },
+  "homepage": "https://github.com/b2ige2-a11y/b2ige-verify/blob/main/distribution/README.md",
+  "repository": "https://github.com/b2ige2-a11y/b2ige-verify",
+  "license": "Apache-2.0",
+  "keywords": ["verification", "ai-generated-code", "coding-agent", "hidden-tests", "behavior-regression", "side-effects", "false-pass", "mcp", "local", "deterministic"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "B2IGE Verify",
+    "shortDescription": "Don't trust done. Prove it.",
+    "longDescription": "Independent deterministic verification for AI-written software. Verify local repositories with approved hidden CLI tests, BehaviorSeal before/after comparisons, and durable SQLite side-effect evidence. Missing evidence never becomes PASS. Install the local v0.1.0 CLI or MCPB and configure a trusted operator registry before verification; no hosted service, API key, or telemetry is required.",
+    "developerName": "B2IGE",
+    "category": "Developer Tools",
+    "capabilities": [],
+    "websiteURL": "https://github.com/b2ige2-a11y/b2ige-verify",
+    "defaultPrompt": [
+      "Independently verify whether my coding agent finished.",
+      "Check for behavior regressions without changing the baseline.",
+      "Verify committed side effects and avoid false PASS."
+    ]
+  }
+}

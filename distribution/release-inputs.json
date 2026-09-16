@@ -1,0 +1,33 @@
+{
+  "release_url": "https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.1.0",
+  "download_base": "https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.1.0",
+  "source_commit": "57c69773c019b6dbc3b6ac730269c6233ec5e523",
+  "checksums_sha256": "9c4abc9e96385bc8f99caefa9f09e87361c98f0e70afef714d1225b7984eee75",
+  "mcpb_cli_version": "2.1.2",
+  "inputs": [
+    {
+      "target": "aarch64-apple-darwin",
+      "archive": "b2ige-0.1.0-aarch64-apple-darwin.tar.gz",
+      "archive_sha256": "4d5b899b65766c9a8d216024f5a0f3fa0cebfe0517c0197a8ef02fe7a1952346",
+      "manifest": "b2ige-0.1.0-aarch64-apple-darwin.manifest.json",
+      "manifest_sha256": "dd2332e59c520a97df9fda00d5f238a592a4aa2725b4712e1731f7d1775c3f9d",
+      "binary_sha256": "8a2a145b113f6eb645e13f8c053a90190a17dca4626baac0080cae3ead751dbc"
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "archive": "b2ige-0.1.0-x86_64-apple-darwin.tar.gz",
+      "archive_sha256": "36970b03002d5640d821a0d97b4b1f884e26e208c32a577531794de9c67c708d",
+      "manifest": "b2ige-0.1.0-x86_64-apple-darwin.manifest.json",
+      "manifest_sha256": "32f9856659d8a8c1917a441d87666f7eb9b9514e1927d40c50814b82a0be564a",
+      "binary_sha256": "faed8ee2c1cace6778d0ce953d2ff90285cd4cecf2d3c8db064b02e32a011bb3"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "archive": "b2ige-0.1.0-x86_64-unknown-linux-gnu.tar.gz",
+      "archive_sha256": "e6be0125cdf5d5488b2c53d57721435c0ec3a8346c3b282829c923af2fe87aae",
+      "manifest": "b2ige-0.1.0-x86_64-unknown-linux-gnu.manifest.json",
+      "manifest_sha256": "5ab6c24436815368dcef0fe97cca504356b632094c410a8f59a91b8c9f891194",
+      "binary_sha256": "fa13133cbc827c2129a0625abb36e46cc2bd31c8dc26d24dc867ac07fdd35e56"
+    }
+  ]
+}

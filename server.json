@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.b2ige2-a11y/b2ige-verify",
+  "title": "B2IGE Verify",
+  "description": "Independent deterministic verification for AI-written software. Local, evidence-backed checks.",
+  "repository": {
+    "url": "https://github.com/b2ige2-a11y/b2ige-verify",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.1.0/b2ige-verify-0.1.0.mcpb",
+      "fileSha256": "f205d467a639747ce684bb32c4a560e6f63ade73cddeddbb822aafd00a48c884",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

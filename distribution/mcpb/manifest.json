@@ -1,0 +1,40 @@
+{
+  "manifest_version": "0.4",
+  "name": "b2ige-verify",
+  "display_name": "B2IGE Verify",
+  "version": "0.1.0",
+  "description": "Independent deterministic verification for AI-written software.",
+  "long_description": "Don't trust done. Prove it. Local stdio MCP for approved BlindTest hidden CLI invariants, BehaviorSeal regression checks, and SideEffect durable SQLite evidence. Supports macOS arm64/x86_64 and GNU/Linux x86_64 only; other OS/architectures fail closed. Uses unchanged v0.1.0 native binaries. Requires a trusted operator registry with absolute configuration paths; BlindTest additionally requires Docker and protected sealed storage. No telemetry, API key, or hosted service. Installation and doctor readiness never mean PASS; bounded verification is not exhaustive proof.",
+  "author": { "name": "B2IGE", "url": "https://github.com/b2ige2-a11y" },
+  "repository": { "type": "git", "url": "https://github.com/b2ige2-a11y/b2ige-verify" },
+  "homepage": "https://github.com/b2ige2-a11y/b2ige-verify",
+  "documentation": "https://github.com/b2ige2-a11y/b2ige-verify/blob/main/distribution/README.md",
+  "support": "https://github.com/b2ige2-a11y/b2ige-verify/issues",
+  "license": "Apache-2.0",
+  "keywords": ["verification", "deterministic", "local", "hidden-tests", "behavior-regression", "side-effects"],
+  "server": {
+    "type": "binary",
+    "entry_point": "launch.sh",
+    "mcp_config": {
+      "command": "/bin/sh",
+      "args": ["${__dirname}/launch.sh", "--registry", "${user_config.registry}"],
+      "env": { "B2IGE_BLINDTEST_SEALED_ROOT": "${user_config.sealed_root}" }
+    }
+  },
+  "compatibility": { "platforms": ["darwin", "linux"] },
+  "user_config": {
+    "registry": {
+      "type": "file",
+      "title": "Trusted operator registry",
+      "description": "Absolute path to a reviewed project.json. Use absolute config/storage paths. Do not use an agent-writable registry.",
+      "required": true
+    },
+    "sealed_root": {
+      "type": "string",
+      "title": "BlindTest sealed root (only for BlindTest)",
+      "description": "Absolute protected directory outside the coding workspace. Required for BlindTest; leave empty for BehaviorSeal/SideEffect only.",
+      "required": false,
+      "default": ""
+    }
+  }
+}

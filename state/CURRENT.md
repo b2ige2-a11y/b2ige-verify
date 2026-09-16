@@ -1,8 +1,19 @@
 # Current State
 
 Date: 2026-09-16
-Phase: P9 PUBLIC RELEASE COMPLETE (post-release status)
-Status: PUBLIC RELEASE COMPLETE — STATUS DOCUMENTS UPDATED
+Phase: P11 AGENT DISTRIBUTION (local asset gate complete)
+Status: DISTRIBUTION ASSETS VALIDATED — EXTERNAL PUBLICATION NOT PERFORMED
+
+- P11 local gate: MCPB packaging/integrity/reproducibility, Official Registry validation,
+  portable Cursor manifest schema, Codex plugin validator, shared skill and distribution
+  checks completed. [P11 result](../P11-RESULT.md) · [P11 scope](../tasks/P11-INDEX.md).
+- Cursor live-client import and public submission remain pending. Codex local manifest
+  is validated; public-directory eligibility for local execution needs OpenAI review.
+- No push, release asset upload, registry/marketplace submission or npm publish.
+  Existing product code, schemas, baselines, v0.1.0 tag/binaries and root README unchanged.
+- P10 commit `13539e165a5170003162ec0c2015af4537e61573` was not applied.
+
+## P9 public product release (preserved)
 
 CLEAN_PUBLIC_REPO_READY=true
 TECHNICAL_PUBLICATION_READY=true
