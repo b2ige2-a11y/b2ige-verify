@@ -10,7 +10,7 @@ const {spawn} = require('node:child_process');
 const {gzipSync} = require('node:zlib');
 const {releaseURL, fetchArchive, unpack, digest, targets} = require('./bin/download.cjs');
 const platform = `${process.platform}-${process.arch}`;
-const rootName = `b2ige-0.1.0-${targets[platform]}`;
+const rootName = `b2ige-0.2.0-${targets[platform]}`;
 function archive(entries) {
   const chunks = [];
   for (const {name, data = Buffer.alloc(0), type = '0'} of entries) {
@@ -25,15 +25,15 @@ function archive(entries) {
   return gzipSync(Buffer.concat([...chunks,Buffer.alloc(1024)]));
 }
 function manifest(binary, tar) {
-  return {schema_version:'2',version:'0.1.0',release_repository:'synthetic-owner/synthetic-repository',platforms:{[platform]:{sha256:digest(binary),archive_sha256:digest(tar)}}};
+  return {schema_version:'2',version:'0.2.0',release_repository:'synthetic-owner/synthetic-repository',platforms:{[platform]:{sha256:digest(binary),archive_sha256:digest(tar)}}};
 }
 test('version/host/pin/platform configuration fails closed', () => {
   const m=manifest(Buffer.from('test'),Buffer.from('test'));
-  assert.match(releaseURL(m,platform,'0.1.0'),new RegExp(`/v0.1.0/${rootName}\\.tar\\.gz$`));
-  assert.throws(()=>releaseURL(m,'win32-x64','0.1.0'),/Unsupported/);
-  assert.throws(()=>releaseURL({...m,version:'0.2.0'},platform,'0.1.0'),/version/);
-  for (const release_repository of [null,'../escape','https://example.invalid/x','owner/repo/extra']) assert.throws(()=>releaseURL({...m,release_repository},platform,'0.1.0'));
-  assert.throws(()=>releaseURL({...m,platforms:{}},platform,'0.1.0'),/pins/);
+  assert.match(releaseURL(m,platform,'0.2.0'),new RegExp(`/v0.2.0/${rootName}\\.tar\\.gz$`));
+  assert.throws(()=>releaseURL(m,'win32-x64','0.2.0'),/Unsupported/);
+  assert.throws(()=>releaseURL({...m,version:'9.9.9'},platform,'0.2.0'),/version/);
+  for (const release_repository of [null,'../escape','https://example.invalid/x','owner/repo/extra']) assert.throws(()=>releaseURL({...m,release_repository},platform,'0.2.0'));
+  assert.throws(()=>releaseURL({...m,platforms:{}},platform,'0.2.0'),/pins/);
 });
 test('USTAR rejects escape, links, duplicate, corrupt and truncated archives', () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'wrapper-tar-'));
@@ -80,7 +80,7 @@ for (const mode of ['success','archive-tamper','binary-tamper','version','unsafe
     fs.cpSync(path.join(__dirname,'bin'),path.join(dir,'bin'),{recursive:true});
     fs.copyFileSync(path.join(__dirname,'package.json'),path.join(dir,'package.json'));
     const marker=path.join(dir,'executed');
-    const binary=Buffer.from(`#!/bin/sh\nif [ "$1" = "--version" ]; then echo 'verify-cli ${mode==='version'?'9.9.9':'0.1.0'}'; exit 0; fi\ntouch '${marker}'\nprintf 'delivered:%s' "$1"\n`);
+    const binary=Buffer.from(`#!/bin/sh\nif [ "$1" = "--version" ]; then echo 'verify-cli ${mode==='version'?'9.9.9':'0.2.0'}'; exit 0; fi\ntouch '${marker}'\nprintf 'delivered:%s' "$1"\n`);
     const tar=archive([{name:mode==='unsafe'?'../escape':`${rootName}/bin/b2ige`,data:binary}]);
     const m=manifest(binary,tar);
     if (mode==='archive-tamper') m.platforms[platform].archive_sha256='0'.repeat(64);
@@ -96,7 +96,7 @@ for (const mode of ['success','archive-tamper','binary-tamper','version','unsafe
       assert.equal(result.status,0,result.stderr);assert.equal(result.stdout,'delivered:hello');
       fs.unlinkSync(path.join(dir,'asset')); // Cached matching delivery works with transport unavailable.
       const offline=await run(args,env);assert.equal(offline.status,0,offline.stderr);
-      const cache=path.join(dir,'.cache/b2ige-verify/0.1.0',platform,m.platforms[platform].archive_sha256,rootName,'bin/b2ige');
+      const cache=path.join(dir,'.cache/b2ige-verify/0.2.0',platform,m.platforms[platform].archive_sha256,rootName,'bin/b2ige');
       fs.appendFileSync(cache,'# tampered');assert.equal((await run(args,env)).status,3);
     } else {
       assert.equal(result.status,3,result.stderr);assert.match(result.stderr,/ERROR/);assert.equal(fs.existsSync(marker),false);

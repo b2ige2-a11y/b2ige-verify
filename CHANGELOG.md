@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — release candidate (not released)
+
+- Trust: Trust Lock and the seal/identity/receipt foundation add executable trust boundaries without assigning verdicts.
+- Adversarial trust hardening: fail-closed admission, identity, evidence and receipt checks strengthen the bounded verifier boundary.
+- Proof and adoption: bounded RealBench/RedBench proof plus adoption and diff-aware verification safeguards reuse verified product execution.
+- Qualification and release: verifier qualification, protocol/conformance and release-foundation tooling make the local candidate stop at an explicit publication boundary.
+- Final publication still requires fresh external CI and an independent private holdout; npm publication remains deferred until the `@b2ige` scope is controlled.
+
 ## 0.1.0 — released (npm deferred)
 
 - Core: deterministic verdicts, canonical evidence, verified loading and bounded process replay.
