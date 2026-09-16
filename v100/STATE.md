@@ -3,9 +3,10 @@
 Program: B2IGE Verify V100
 Branch: automation/v100-longhorizon
 Status: ACTIVE
-Current phase: V100-0 Trust Lock
+Current phase: V100-1 Seal + Identity + Receipt Foundation
 
 Completed:
+- V100-0 Trust Lock: executable invariants added; targeted and full workspace deterministic gates passed; independent Astra audit passed.
 - Clean V100 branch created from origin/main.
 - LongHorizon-Harness 0.1.7 installed.
 - Codex backend verified.
