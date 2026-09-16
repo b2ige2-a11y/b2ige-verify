@@ -128,3 +128,13 @@ environment and proc enumeration. Failure to connect alone is not network isolat
 proof; actual before/after Docker settings remain mandatory. The probe corpus and
 rehashed-loader attacks are regression evidence only, not kernel-escape testing,
 exhaustive secrecy, or independent external/private-holdout qualification.
+
+## V100-5 qualification and release boundary
+
+Protocol v1 and its public conformance/mutation matrices stabilize existing local
+checks; they add no isolation level or authenticated receipt. The local release
+gate's source/log hashes are controller bookkeeping, not external attestation.
+Public historical benchmark vectors qualify controller regression behavior only.
+They cannot fill absent fresh Docker measurements or independent private holdout
+evidence. Local completion stops at WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT;
+packaging, model explanations and self-reported completion cannot advance it.

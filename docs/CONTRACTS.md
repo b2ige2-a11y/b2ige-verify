@@ -2,6 +2,18 @@
 
 Schema version starts at `1`.
 
+## V100-5 protocol and local gate version decision
+
+[Verification Protocol v1](VERIFICATION-PROTOCOL.md) consolidates existing V100
+TaskSeal/Authorization/IdentityBundle/Receipt/query contracts without adding wire
+fields or changing authoritative semantics. Agent Protocol v1 and P0–P9 retain
+their existing meanings and versions. The local release gate report is a new,
+independent tooling-only string-version v1 JSON document, not verdict evidence.
+Its schema records scope, source byte hashes before/after, ordered commands with
+exit/completion/log identities, pending gates and publication readiness=false.
+Only BLOCKED_LOCAL or WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT is permitted.
+Release manifest v3 and package version 0.1.0 remain unchanged.
+
 ## ExperimentPlan
 Must identify:
 - plan id/version

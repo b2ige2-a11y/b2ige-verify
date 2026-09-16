@@ -66,6 +66,7 @@ jobs:
           python3 scripts/license-notices.py --check
           python3 scripts/readme-bench.py
           python3 scripts/test-release.py
+          python3 scripts/test-v100-release.py
           python3 scripts/test-adoption.py
           python3 scripts/validate-workflows.py
           npm --prefix npm/b2ige test

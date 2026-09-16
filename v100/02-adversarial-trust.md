@@ -50,7 +50,7 @@ Critical audit: Astra / xhigh only when the security boundary changes.
 | `git diff --check` | Passed |
 
 Docker diagnostic: `docker version --format '{{json .}}'` reported Server null
-and permission denied connecting to `unix:///Users/kim/.docker/run/docker.sock`.
+and permission denied connecting to the local user's Docker Desktop Unix socket.
 No permission bypass or test skip was introduced. The outer runner must execute
 the final Docker integration tests (core BlindTest and CLI BlindTest reports),
 including the new forged-result target, real probes, rehashed inspect attacks and

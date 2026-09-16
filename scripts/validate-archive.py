@@ -52,6 +52,9 @@ def validate(folder):
                 assert digest(package / 'THIRD-PARTY-NOTICES.txt') == data['license_notices_sha256']
                 assert digest(package / 'RUST-RUNTIME-NOTICES.html') == data['rust_runtime_notices_sha256']
                 for required in ['LICENSE', 'TRADEMARKS.md', 'SECURITY.md']: assert (package / required).is_file(), required
+                for required in ['docs/VERIFICATION-PROTOCOL.md', 'docs/V100-RELEASE.md',
+                                 'conformance/V100-PROTOCOL.md']:
+                    assert (package / required).is_file(), required
             for m in root.glob('*/release/release-manifest.json'):
                 source = m.parent.parent
                 paths = sorted(p for p in source.rglob('*') if p.is_file() and p != m)

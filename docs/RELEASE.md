@@ -1,5 +1,10 @@
 # B2IGE Verify 0.1.0 release procedure
 
+**Historical 0.1.0 release record:** readiness flags and CI results below apply
+only to the named historical commits, not the current V100 candidate. V100-5 uses
+[V100-RELEASE.md](V100-RELEASE.md) and must stop locally at
+`WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT`.
+
 This procedure covers final candidate validation and post-release verification.
 P1–P8 verifier semantics and baselines are unchanged. Package version remains 0.1.0.
 The reviewed product/code commit is `28315fd`; the final release source commit is

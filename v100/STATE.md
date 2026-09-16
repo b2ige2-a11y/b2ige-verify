@@ -2,10 +2,11 @@
 
 Program: B2IGE Verify V100
 Branch: automation/v100-longhorizon
-Status: ACTIVE
-Current phase: V100-5 Verifier Qualification + Protocol + Release
+Status: WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT
+Current phase: External CI + Private Holdout
 
 Completed:
+- V100-5 Verifier Qualification + Protocol + Release: deterministic phase gate and independent audit passed.
 - V100-4 Adoption: deterministic phase gate and independent audit passed.
 - V100-3 RealBench / RedBench Proof: deterministic phase gate and independent audit passed.
 - V100-2 Adversarial Trust: automated implementation, deterministic phase gate, and independent phase audit passed.
@@ -19,7 +20,7 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-Complete V100-5 Verifier Qualification + Protocol + Release without weakening the established V100 trust invariants.
+Local V100 implementation and deterministic gates are complete. Final release proof requires external cross-platform CI and an independent private holdout unavailable to the development agent.
 
 Next phases:
 1. V100-0 Trust Lock

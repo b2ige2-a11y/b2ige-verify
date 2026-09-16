@@ -2805,6 +2805,72 @@ fn p3c_saved_schema_equals_runtime() {
 mod sealed_support;
 
 #[test]
+fn sealed_protocol_wire_matrix_and_canonical_receipt_metamorphism() {
+    use serde::de::DeserializeOwned;
+    use verify_core::sealed_run::{self, Authorization, Execution, IdentityBundle, Receipt};
+
+    fn strict<T: DeserializeOwned>(value: Value) {
+        let encoded = serde_json::to_string(&value).unwrap();
+        for (key, entry) in value.as_object().unwrap() {
+            let mut missing = value.clone();
+            missing.as_object_mut().unwrap().remove(key);
+            assert!(
+                serde_json::from_value::<T>(missing).is_err(),
+                "missing {key}"
+            );
+            let duplicate = format!("{{\"{key}\":{entry},{}", &encoded[1..]);
+            assert!(
+                serde_json::from_str::<T>(&duplicate).is_err(),
+                "duplicate {key}"
+            );
+        }
+        let mut unknown = value;
+        unknown["verdict"] = json!("PASS");
+        assert!(serde_json::from_value::<T>(unknown).is_err());
+    }
+
+    let case = Case::new("equal");
+    let seal = sealed_support::seal();
+    let execution = Execution::Behavior {
+        experiment: Box::new(case.experiment.clone()),
+        authorization: case.auth.clone(),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let verified = sealed_run::execute(
+        &case.store(),
+        "wire",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None,
+    )
+    .unwrap();
+    assert_eq!(verified.verdict(), Verdict::Pass);
+    strict::<Authorization>(serde_json::to_value(&auth).unwrap());
+    strict::<Execution>(serde_json::to_value(&execution).unwrap());
+    strict::<IdentityBundle>(serde_json::to_value(&verified.receipt().identities).unwrap());
+    strict::<Receipt>(serde_json::to_value(verified.receipt()).unwrap());
+
+    let value = serde_json::to_value(verified.receipt()).unwrap();
+    let reversed = value
+        .as_object()
+        .unwrap()
+        .iter()
+        .rev()
+        .map(|(k, v)| format!("\"{k}\": {v}"))
+        .collect::<Vec<_>>()
+        .join(",\n");
+    let decoded: Receipt = serde_json::from_str(&format!("{{\n{reversed}\n}}")).unwrap();
+    assert_eq!(
+        decoded.commitment().unwrap(),
+        verified.commitment().unwrap()
+    );
+    assert_eq!(decoded, *verified.receipt());
+    assert_eq!(case.count().len(), 2);
+}
+
+#[test]
 fn sealed_behavior_verified_reload_and_every_identity_tamper_fails_closed() {
     use verify_core::sealed_run::{self, Execution, Receipt};
     let seal = sealed_support::seal();

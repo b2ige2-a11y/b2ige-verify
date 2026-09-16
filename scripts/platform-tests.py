@@ -20,7 +20,8 @@ else:
     run('--workspace', '--no-run')
     run('--workspace', '--lib', '--bins')
     run('--workspace', '--doc')
-    for target in ['conformance', 'independent_gate', 'repair_regressions', 'process_acquisition',
+    for target in ['conformance', 'task_seal', 'trust_lock', 'adversarial_query',
+                   'independent_gate', 'repair_regressions', 'process_acquisition',
                    'replay_execution', 'behavior_differential', 'sideeffect_proof']:
         run('-p', 'verify-core', '--test', target)
     for target in ['reports', 'sideeffect_reports', 'agent_protocol']:

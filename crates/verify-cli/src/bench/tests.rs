@@ -295,3 +295,41 @@ fn late_harness_failure_remains_serializable_and_blocks_success_counts() {
     assert_eq!(s.rates["measured_verdicts"], Rate::new(30, 31));
     assert_eq!(s.rates["correct_acceptance"], Rate::new(6, 7));
 }
+
+#[test]
+fn qualification_each_public_case_missing_or_unverified_blocks_gate() {
+    // Historical rows are input vectors for the measurement controller only.
+    // This does not rerun products or turn the snapshot into fresh proof.
+    let run: BenchmarkRunResult = serde_json::from_str(include_str!(
+        "../../../../benchmarks/baseline-v1/result.json"
+    ))
+    .unwrap();
+    let expected = catalog().unwrap();
+    let control = summarize(&expected, &run.cases);
+    assert!(control.gate_pass);
+    let mut reversed = run.cases.clone();
+    reversed.reverse();
+    assert_eq!(summarize(&expected, &reversed), control);
+    for index in 0..run.cases.len() {
+        for mutation in ["omit", "unmeasured", "unverified", "harness_error"] {
+            let mut rows = run.cases.clone();
+            match mutation {
+                "omit" => {
+                    rows.remove(index);
+                }
+                "unmeasured" => rows[index].actual_verdict = None,
+                "unverified" => rows[index].verified_reload = None,
+                _ => harness_failure(&mut rows[index], invalid("qualification failure")),
+            }
+            let summary = summarize(&expected, &rows);
+            assert!(
+                !summary.gate_pass,
+                "{}: {mutation}",
+                run.cases[index].case.benchmark_case_id
+            );
+            assert_eq!(summary.rates["false_pass"].denominator, 24);
+            assert_eq!(summary.rates["false_fail"].denominator, 7);
+            assert_eq!(summary.rates["measured_verdicts"].denominator, 31);
+        }
+    }
+}
