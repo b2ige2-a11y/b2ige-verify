@@ -79,3 +79,20 @@ rewrites by the trusted host user. Approval/provenance is trusted controller inp
 not a signature service. Persistent Docker logs are disabled; full evidence is held
 in the private host store. Human raw hidden evidence is intentionally visible only
 on the trusted controller surface. See [BLINDTEST.md](BLINDTEST.md) for exact limits.
+
+## V100 local seal/receipt boundary
+
+The trusted controller independently retains pre-candidate seal commitments,
+subsequent execution/candidate approval pins, and completed receipt commitments.
+Candidate/LLM output must not supply or replace these trusted inputs. Replacing
+both artifacts and every retained pin is outside this local hash boundary. Hashes
+bind content, not chronology, human approval, signer identity or actual environment
+conformance. Same-user host compromise remains outside the secrecy claim.
+
+Sealed BlindTest retains the P6 private-store/path rules and immutable-image/actual
+inspect requirements. Receipt storage is checked against the candidate workspace
+before reservation. No private holdout access or new secret dissemination path is
+required. Historical verification reuses recorded observations, not a claim that
+the current filesystem or runtime still has the recorded contents. Scoped read
+identity tracking rejects inconsistent repeated reads, but is not an adversarial
+filesystem snapshot or defense against a hostile controller.

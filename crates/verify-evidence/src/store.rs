@@ -6,10 +6,12 @@ use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
 
 #[derive(Debug, Clone)]
 pub struct EvidenceStore {
     root: PathBuf,
+    reads: Option<Arc<Mutex<BTreeMap<String, String>>>>,
 }
 pub struct RunStore {
     path: PathBuf,
@@ -89,7 +91,31 @@ impl EvidenceStore {
     }
     /// Root is normally `.b2ige/runs`; caller owns this trusted local directory.
     pub fn new(root: impl Into<PathBuf>) -> Self {
-        Self { root: root.into() }
+        Self {
+            root: root.into(),
+            reads: None,
+        }
+    }
+    /// Capture the exact transitive source inventory read by a verified loader.
+    /// Repeated reads must agree; this is content binding, not filesystem isolation.
+    pub fn record_reads<T>(
+        &self,
+        load: impl FnOnce(&Self) -> io::Result<T>,
+    ) -> io::Result<(T, BTreeMap<String, String>)> {
+        let reads = Arc::new(Mutex::new(BTreeMap::new()));
+        let scoped = Self {
+            root: self.root.clone(),
+            reads: Some(reads.clone()),
+        };
+        let result = load(&scoped)?;
+        let inventory = reads
+            .lock()
+            .map_err(|_| invalid("poisoned read inventory"))?
+            .clone();
+        if inventory.values().any(String::is_empty) {
+            return Err(invalid("source changed during verified load"));
+        }
+        Ok((result, inventory))
     }
     pub fn reserve(&self, run_id: &str) -> io::Result<RunStore> {
         component(run_id)?;
@@ -132,6 +158,21 @@ impl EvidenceStore {
                 return Err(invalid("invalid evidence integrity or run linkage"));
             }
             evidence.push(item);
+        }
+        if let Some(reads) = &self.reads {
+            let identity = canonical_hash(&serde_json::json!({
+                "domain": "b2ige.verify.source-read.v1",
+                "run_id": run_id, "result": manifest.result, "evidence": evidence,
+            }))?;
+            let mut reads = reads
+                .lock()
+                .map_err(|_| invalid("poisoned read inventory"))?;
+            if reads.get(run_id).is_some_and(|old| old != &identity) {
+                // Sticky failure even if a caller handles an individual read error.
+                reads.insert(run_id.into(), String::new());
+                return Err(invalid("source changed during verified load"));
+            }
+            reads.insert(run_id.into(), identity);
         }
         Ok((manifest.result, evidence))
     }

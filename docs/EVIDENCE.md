@@ -46,3 +46,19 @@ Only a host-side deterministic, approved checker evaluates those observations.
 Target stdout does not prove unobserved durable state. Human projections may expose
 full private evidence; Agent projections carry only public semantics and safe refs.
 P6 loaders revalidate required evidence and recompute verdict/coverage/leakage/quality.
+
+## V100 receipt-ready identity evidence
+
+A sealed identity bundle binds the complete source inventory actually traversed
+by the product verified loader, including raw result content and all store-verified
+evidence for each source. Verified reload reconstructs the inventory, not merely
+a cached result hash. Repeated reads with changed content fail closed. The source
+inventory and runtime identity are recomputed, never accepted from model output.
+Receipt storage evidence is explicitly `derived`; it is not a new observation or
+authoritative checker. Original evidence sufficiency rules continue to apply.
+
+Runtime linkage distinguishes the declared environment contract from the recorded
+process context or validated Docker image/lifecycle. Local process metadata is not
+external attestation. Receipt hashes expose no raw hidden values but the Receipt
+and its source store remain trusted-controller artifacts; no new public projection
+or disclosure policy is introduced. See CONTRACTS.md for exact identity inputs.

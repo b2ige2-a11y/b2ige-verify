@@ -3,9 +3,10 @@
 Program: B2IGE Verify V100
 Branch: automation/v100-longhorizon
 Status: ACTIVE
-Current phase: V100-1 Seal + Identity + Receipt Foundation
+Current phase: V100-2 Adversarial Trust
 
 Completed:
+- V100-1 Seal + Identity + Receipt Foundation: automated implementation, deterministic phase gate, and independent phase audit passed.
 - V100-0 Trust Lock: executable invariants added; targeted and full workspace deterministic gates passed; independent Astra audit passed.
 - Clean V100 branch created from origin/main.
 - LongHorizon-Harness 0.1.7 installed.
@@ -15,7 +16,7 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-V100-1A — create the minimal pre-candidate Task Seal foundation that binds task, verifier, and declared environment-contract identities before candidate implementation. The local seal establishes deterministic content commitment, not independently witnessed chronology.
+Complete V100-2 Adversarial Trust without weakening V100 trust invariants.
 
 Next phases:
 1. V100-0 Trust Lock

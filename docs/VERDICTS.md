@@ -33,3 +33,13 @@ Examples:
 
 ## Mandatory invariant
 `missing verdict-critical evidence != PASS`
+
+## V100 sealed boundary
+
+V100 sealed execution/reload returns a verdict only after its mandatory seal,
+authorization, candidate, runtime and complete source-identity checks pass.
+Missing/mismatched trust bindings are verifier ERROR-boundary load/execution
+errors (`io::Error`), not evidence of a product FAIL. The original product loader
+still determines PASS/FAIL/INCONCLUSIVE/ERROR, scope, replayability and limitations;
+identity binding cannot upgrade an incomplete or failed observation. A receipt
+contains no authoritative cached verdict. Legacy results do not imply V100 sealing.

@@ -764,3 +764,52 @@ fn timeout_termination_is_in_history_but_not_an_executed_scheduled_kill() {
         .iter()
         .any(|e| e.kind == HistoryKind::TargetKilled));
 }
+
+#[path = "support/sealed.rs"]
+mod sealed_support;
+
+#[test]
+fn sealed_sideeffect_binds_verified_attempts_and_rejects_missing_source() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let mut case = Case::new("safe", retry());
+    case.fast();
+    let execution = Execution::Sideeffect {
+        contract: Box::new(case.contract.clone()),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let result = sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        case.dir.path(),
+        None,
+    )
+    .unwrap();
+    assert_eq!(result.verdict(), Verdict::Pass);
+    assert_eq!(result.receipt().identities.source_identities.len(), 3);
+    assert!(result.receipt().identities.runtime_identity.is_some());
+    let pin = result.commitment().unwrap();
+    assert_eq!(
+        sealed_run::load(&case.store(), "sealed", &auth, &pin)
+            .unwrap()
+            .verdict(),
+        Verdict::Pass
+    );
+    let source_path = case.store().root().join("sealed-source/result.json");
+    let original = fs::read(&source_path).unwrap();
+    edit(&source_path, |raw| {
+        raw["verdict"] = serde_json::json!("FAIL")
+    });
+    // The product recomputes PASS, but the pinned source content has changed.
+    assert_eq!(
+        load(&case.store(), "sealed-source").unwrap().verdict,
+        Verdict::Pass
+    );
+    assert!(sealed_run::load(&case.store(), "sealed", &auth, &pin).is_err());
+    fs::write(source_path, original).unwrap();
+    fs::remove_file(case.store().root().join("sealed-source-s0-a1/result.json")).unwrap();
+    assert!(sealed_run::load(&case.store(), "sealed", &auth, &pin).is_err());
+}

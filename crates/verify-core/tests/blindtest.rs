@@ -627,3 +627,74 @@ fn missing_mount_inspect_fields_cannot_mean_safe_empty() {
         );
     }
 }
+
+#[path = "support/sealed.rs"]
+mod sealed_support;
+
+#[test]
+fn sealed_blindtest_requires_immutable_candidate_and_private_storage() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let mut corpus = fixture();
+    corpus.config.target.image = "mutable:latest".into();
+    let execution = Execution::Blindtest {
+        config: Box::new(corpus.config.clone()),
+    };
+    assert!(execution.candidate_identity().is_err());
+    corpus.config.target.image = canonical_hash(&"unavailable local image").unwrap();
+    let execution = Execution::Blindtest {
+        config: Box::new(corpus.config.clone()),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let exposed_store = EvidenceStore::new(corpus.workspace.join("receipts"));
+    assert!(sealed_run::execute(
+        &exposed_store,
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &corpus.workspace,
+        Some(&corpus.sealed)
+    )
+    .is_err());
+    assert!(!exposed_store.root().join("sealed").exists());
+}
+
+#[test]
+fn sealed_blindtest_actual_runtime_reload_and_missing_attestation_rejected() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let mut corpus = fixture();
+    corpus.build_images();
+    let execution = Execution::Blindtest {
+        config: Box::new(corpus.config_for("correct")),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let result = sealed_run::execute(
+        &corpus.store,
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &corpus.workspace,
+        Some(&corpus.sealed),
+    )
+    .unwrap();
+    assert_eq!(result.verdict(), Verdict::Pass);
+    assert!(result.receipt().identities.runtime_identity.is_some());
+    let pin = result.commitment().unwrap();
+    assert_eq!(
+        sealed_run::load(&corpus.store, "sealed", &auth, &pin)
+            .unwrap()
+            .verdict(),
+        Verdict::Pass
+    );
+    fs::remove_file(
+        corpus
+            .store
+            .root()
+            .join("sealed-source/evidence/execution-0.json"),
+    )
+    .unwrap();
+    assert!(sealed_run::load(&corpus.store, "sealed", &auth, &pin).is_err());
+}

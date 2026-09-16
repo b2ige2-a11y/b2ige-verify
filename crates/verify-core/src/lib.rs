@@ -7,6 +7,7 @@ pub mod acquisition;
 pub mod behavior;
 pub mod blindtest;
 mod contracts;
+pub mod sealed_run;
 pub mod sideeffect;
 pub mod task_seal;
 pub use contracts::*;

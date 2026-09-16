@@ -200,3 +200,38 @@ fn authoritative_store_loader_fails_closed_on_missing_or_corrupt_artifacts() {
     .unwrap();
     assert!(store.load("run").is_err());
 }
+
+#[test]
+fn sealed_read_inventory_is_content_bound_and_inconsistent_reads_are_sticky() {
+    use verify_evidence::canonical_bytes;
+    let (directory, store) = committed_store();
+    let (_, inventory) = store
+        .record_reads(|tracked| {
+            tracked.load("run")?;
+            tracked.clone().load("run")?;
+            Ok(())
+        })
+        .unwrap();
+    let (raw, evidence) = store.load("run").unwrap();
+    assert_eq!(
+        inventory["run"],
+        canonical_hash(&json!({
+            "domain": "b2ige.verify.source-read.v1", "run_id": "run",
+            "result": raw, "evidence": evidence,
+        }))
+        .unwrap()
+    );
+    let path = directory.path().join("runs/run/result.json");
+    assert!(store
+        .record_reads(|tracked| {
+            tracked.load("run")?;
+            let mut commit: serde_json::Value = serde_json::from_slice(&fs::read(&path)?)?;
+            commit["manifest"]["result"]["verdict"] = json!("ERROR");
+            commit["integrity_hash"] = json!(canonical_hash(&commit["manifest"])?);
+            fs::write(&path, canonical_bytes(&commit)?)?;
+            assert!(tracked.load("run").is_err());
+            Ok(()) // Swallowing the read error must not clear the failed scope.
+        })
+        .is_err());
+    assert!(store.load("run").is_ok()); // Original untracked store remains usable.
+}

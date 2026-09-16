@@ -2800,3 +2800,382 @@ fn p3c_saved_schema_equals_runtime() {
         reduction::result_schema()
     );
 }
+
+#[path = "support/sealed.rs"]
+mod sealed_support;
+
+#[test]
+fn sealed_behavior_verified_reload_and_every_identity_tamper_fails_closed() {
+    use verify_core::sealed_run::{self, Execution, Receipt};
+    let seal = sealed_support::seal();
+    let case = Case::new("equal");
+    let execution = Execution::Behavior {
+        experiment: Box::new(case.experiment.clone()),
+        authorization: case.auth.clone(),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let result = sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None,
+    )
+    .unwrap();
+    assert_eq!(result.verdict(), Verdict::Pass);
+    let pin = result.commitment().unwrap();
+    let receipt = result.receipt();
+    let raw = serde_json::to_value(receipt).unwrap();
+    for key in raw.as_object().unwrap().keys() {
+        let mut missing = raw.clone();
+        missing.as_object_mut().unwrap().remove(key);
+        assert!(
+            serde_json::from_value::<Receipt>(missing).is_err(),
+            "missing {key}"
+        );
+    }
+    for key in raw["identities"].as_object().unwrap().keys() {
+        let mut missing = raw.clone();
+        missing["identities"].as_object_mut().unwrap().remove(key);
+        assert!(
+            serde_json::from_value::<Receipt>(missing).is_err(),
+            "missing identity {key}"
+        );
+    }
+    let mut unknown = raw.clone();
+    unknown["verdict"] = json!("PASS");
+    assert!(serde_json::from_value::<Receipt>(unknown).is_err());
+    let encoded = serde_json::to_string(receipt).unwrap();
+    assert!(serde_json::from_str::<Receipt>(&encoded.replacen(
+        "\"schema_version\":\"1\"",
+        "\"schema_version\":\"1\",\"schema_version\":\"1\"",
+        1
+    ))
+    .is_err());
+
+    assert_eq!(receipt.identities.source_identities.len(), 3);
+    assert!(receipt.identities.runtime_identity.is_some());
+    assert_eq!(
+        sealed_run::load(&case.store(), "sealed", &auth, &pin)
+            .unwrap()
+            .receipt(),
+        receipt
+    );
+    assert!(sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None
+    )
+    .is_err());
+    assert_eq!(case.count().len(), 2);
+    for key in [
+        "schema_version",
+        "seal_commitment",
+        "task_identity",
+        "verifier_identity",
+        "environment_contract_identity",
+        "candidate_identity",
+        "execution_identity",
+        "evidence_identity",
+        "runtime_identity",
+        "source_identities",
+    ] {
+        let mut raw = serde_json::to_value(receipt).unwrap();
+        raw["identities"][key] = if key == "source_identities" {
+            json!({})
+        } else {
+            json!(canonical_hash(&"wrong").unwrap())
+        };
+        let changed: Receipt = serde_json::from_value(raw).unwrap();
+        let (_, mut items) = case.store().load("sealed").unwrap();
+        items[0].observation = verify_evidence::Observation::Value {
+            value: serde_json::to_value(&changed).unwrap(),
+        };
+        items[0].integrity_hash = canonical_hash(&items[0].observation).unwrap();
+        rewrite_artifact(&case, "sealed", &changed, &items[0]);
+        assert!(case.store().load("sealed").is_ok());
+        assert!(
+            sealed_run::load(&case.store(), "sealed", &auth, &pin).is_err(),
+            "{key}"
+        );
+        // Even a replaced receipt pin cannot substitute for recomputing identities.
+        assert!(
+            sealed_run::load(
+                &case.store(),
+                "sealed",
+                &auth,
+                &changed.commitment().unwrap()
+            )
+            .is_err(),
+            "{key}"
+        );
+    }
+    for field in ["schema_version", "source_run_id", "seal", "execution"] {
+        let mut raw = serde_json::to_value(receipt).unwrap();
+        match field {
+            "seal" => raw["seal"]["task_identity"] = json!(canonical_hash(&"replacement").unwrap()),
+            "execution" => {
+                raw["execution"]["experiment"]["after"]["identity"] =
+                    json!(canonical_hash(&"replacement").unwrap())
+            }
+            _ => raw[field] = json!("replacement"),
+        }
+        let changed: Receipt = serde_json::from_value(raw).unwrap();
+        let (_, mut items) = case.store().load("sealed").unwrap();
+        items[0].observation = verify_evidence::Observation::Value {
+            value: serde_json::to_value(&changed).unwrap(),
+        };
+        items[0].integrity_hash = canonical_hash(&items[0].observation).unwrap();
+        rewrite_artifact(&case, "sealed", &changed, &items[0]);
+        assert!(
+            sealed_run::load(
+                &case.store(),
+                "sealed",
+                &auth,
+                &changed.commitment().unwrap()
+            )
+            .is_err(),
+            "{field}"
+        );
+    }
+    let (_, mut items) = case.store().load("sealed").unwrap();
+    items[0].observation = verify_evidence::Observation::Value {
+        value: serde_json::to_value(receipt).unwrap(),
+    };
+    items[0].integrity_hash = canonical_hash(&items[0].observation).unwrap();
+    rewrite_artifact(&case, "sealed", receipt, &items[0]);
+    assert!(sealed_run::load(&case.store(), "sealed", &auth, "").is_err());
+    // A missing transitive acquisition is an ERROR boundary, never a cached PASS.
+    fs::remove_file(case.dir.join("runs/sealed-source-after/result.json")).unwrap();
+    assert!(sealed_run::load(&case.store(), "sealed", &auth, &pin).is_err());
+}
+
+#[test]
+fn sealed_authorization_rejects_missing_and_changed_bindings_before_execution() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let case = Case::new("equal");
+    let execution = Execution::Behavior {
+        experiment: Box::new(case.experiment.clone()),
+        authorization: case.auth.clone(),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    for field in [
+        "schema_version",
+        "seal_commitment",
+        "execution_identity",
+        "candidate_identity",
+    ] {
+        for value in ["".to_string(), canonical_hash(&"other").unwrap()] {
+            let mut raw = serde_json::to_value(&auth).unwrap();
+            raw[field] = json!(value);
+            let changed = serde_json::from_value(raw).unwrap();
+            assert!(sealed_run::execute(
+                &case.store(),
+                "sealed",
+                &seal,
+                &changed,
+                &execution,
+                &case.dir.join("work"),
+                None
+            )
+            .is_err());
+        }
+    }
+    for field in [
+        "schema_version",
+        "task_identity",
+        "verifier_identity",
+        "environment_contract_identity",
+    ] {
+        let mut raw = serde_json::to_value(&seal).unwrap();
+        raw[field] = json!(canonical_hash(&"replaced intent").unwrap());
+        let changed = serde_json::from_value(raw).unwrap();
+        assert!(sealed_run::execute(
+            &case.store(),
+            "sealed",
+            &changed,
+            &auth,
+            &execution,
+            &case.dir.join("work"),
+            None
+        )
+        .is_err());
+    }
+    assert!(case.count().is_empty());
+    assert!(!case.dir.join("runs/sealed").exists());
+    let mut candidate = execution.clone();
+    if let Execution::Behavior { experiment, .. } = &mut candidate {
+        experiment.after.identity = canonical_hash(&"substitute").unwrap();
+    }
+    assert!(sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &candidate,
+        &case.dir.join("work"),
+        None
+    )
+    .is_err());
+    assert!(case.count().is_empty());
+}
+
+#[test]
+fn sealed_product_fail_and_observer_error_are_not_reassigned() {
+    use verify_core::sealed_run::{self, Execution};
+    for (mode, expected) in [
+        ("stdout", Verdict::Fail),
+        ("equal", Verdict::Error),
+        ("equal", Verdict::Inconclusive),
+    ] {
+        let seal = sealed_support::seal();
+        let mut case = Case::new(mode);
+        if expected == Verdict::Inconclusive {
+            case.auth.baseline_stable = false;
+        }
+        if expected == Verdict::Error {
+            fs::set_permissions(
+                &case.experiment.after.executable,
+                fs::Permissions::from_mode(0o600),
+            )
+            .unwrap();
+        }
+        let execution = Execution::Behavior {
+            experiment: Box::new(case.experiment.clone()),
+            authorization: case.auth.clone(),
+        };
+        let auth = sealed_support::approve(&seal, &execution);
+        let result = sealed_run::execute(
+            &case.store(),
+            "sealed",
+            &seal,
+            &auth,
+            &execution,
+            &case.dir.join("work"),
+            None,
+        )
+        .unwrap();
+        assert_eq!(result.verdict(), expected);
+        if expected == Verdict::Inconclusive {
+            assert!(result.receipt().identities.runtime_identity.is_none());
+            assert!(case.count().is_empty());
+        }
+        assert_eq!(
+            sealed_run::load(
+                &case.store(),
+                "sealed",
+                &auth,
+                &result.commitment().unwrap()
+            )
+            .unwrap()
+            .verdict(),
+            expected
+        );
+    }
+}
+
+#[test]
+fn sealed_historical_reload_requires_receipt_but_not_live_candidate() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let case = Case::new("equal");
+    let execution = Execution::Behavior {
+        experiment: Box::new(case.experiment.clone()),
+        authorization: case.auth.clone(),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let result = sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None,
+    )
+    .unwrap();
+    let pin = result.commitment().unwrap();
+    fs::remove_file(&case.experiment.before.executable).unwrap();
+    fs::remove_file(&case.experiment.after.executable).unwrap();
+    assert_eq!(
+        sealed_run::load(&case.store(), "sealed", &auth, &pin)
+            .unwrap()
+            .verdict(),
+        Verdict::Pass
+    );
+    assert_eq!(
+        case.count().len(),
+        2,
+        "historical load must not rerun targets"
+    );
+    fs::remove_file(case.dir.join("runs/sealed/result.json")).unwrap();
+    assert_eq!(
+        behavior::load(&case.store(), "sealed-source", &case.auth)
+            .unwrap()
+            .verdict,
+        Verdict::Pass
+    );
+    assert!(sealed_run::load(&case.store(), "sealed", &auth, &pin).is_err());
+    // A partial reservation also cannot be reused to create a replacement receipt.
+    assert!(sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None,
+    )
+    .is_err());
+    assert_eq!(case.count().len(), 2);
+}
+
+#[test]
+fn sealed_candidate_file_change_cannot_pass_or_update_approval() {
+    use verify_core::sealed_run::{self, Execution};
+    let seal = sealed_support::seal();
+    let case = Case::new("equal");
+    let execution = Execution::Behavior {
+        experiment: Box::new(case.experiment.clone()),
+        authorization: case.auth.clone(),
+    };
+    let auth = sealed_support::approve(&seal, &execution);
+    let original_auth = auth.clone();
+    fs::write(
+        &case.experiment.after.executable,
+        b"changed candidate content",
+    )
+    .unwrap();
+    let result = sealed_run::execute(
+        &case.store(),
+        "sealed",
+        &seal,
+        &auth,
+        &execution,
+        &case.dir.join("work"),
+        None,
+    )
+    .unwrap();
+    assert_eq!(result.verdict(), Verdict::Error);
+    assert!(result.receipt().identities.runtime_identity.is_none());
+    assert_eq!(auth, original_auth);
+    assert!(case.count().is_empty());
+    assert_eq!(
+        sealed_run::load(
+            &case.store(),
+            "sealed",
+            &auth,
+            &result.commitment().unwrap()
+        )
+        .unwrap()
+        .verdict(),
+        Verdict::Error
+    );
+}
