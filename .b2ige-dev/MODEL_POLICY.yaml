@@ -1,0 +1,47 @@
+version: 1
+
+default:
+  model: Luna
+  reasoning: Max
+
+advanced:
+  model: Astra
+  reasoning: Medium
+
+critical:
+  model: Astra
+  reasoning: xhigh
+
+routing:
+  luna_max:
+    - documentation
+    - tests
+    - cli
+    - packaging
+    - github_actions
+    - windows_support
+    - routine_refactoring
+    - ordinary_feature_implementation
+
+  astra_medium:
+    - architecture
+    - task_seal
+    - verifier_forge
+    - anti_oracle
+    - complex_isolation
+    - verifier_generation
+    - protocol_design
+
+  astra_xhigh:
+    - false_pass
+    - verdict_semantics
+    - evidence_invariants
+    - isolation_security_boundary
+    - verifier_commitment
+    - cryptographic_trust
+    - receipt_attestation_core
+
+rules:
+  - Never use Luna Medium.
+  - Choose by risk, not by code size.
+  - Any change capable of weakening PASS semantics is critical.

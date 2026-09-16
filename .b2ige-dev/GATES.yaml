@@ -1,0 +1,29 @@
+version: 1
+
+global_invariants:
+  - missing_verdict_critical_evidence_never_becomes_pass
+  - verifier_or_observer_error_never_becomes_pass
+  - llm_never_assigns_authoritative_verdict
+  - hidden_verifier_material_never_enters_agent_workspace
+  - candidate_cannot_silently_modify_verifier_or_oracle
+  - bounded_testing_never_claims_exhaustive_correctness
+  - behavior_baseline_is_never_auto_approved_after_candidate_change
+  - fail_is_replayable_or_explicitly_marked_unavailable_with_reason
+  - schema_visible_changes_require_schema_version_decision
+
+execution:
+  max_fix_attempts: 3
+  targeted_tests_first: true
+  full_regression_every_task: false
+  stop_on_blocked: true
+  auto_merge_to_main: false
+
+critical_change_policy:
+  require_astra_xhigh: true
+  require_contract_review: true
+  require_targeted_adversarial_test: true
+
+success_policy:
+  require_clean_relevant_tests: true
+  require_gate_pass: true
+  require_state_update: true

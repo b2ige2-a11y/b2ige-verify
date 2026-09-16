@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "project": "B2IGE Verify 100-point program",
+  "branch": "automation/100-point",
+  "current_phase": "P4",
+  "current_work_package": null,
+  "status": "READY",
+  "completed": [],
+  "blocked": [],
+  "attempts_for_current_work_package": 0,
+  "last_successful_commit": null,
+  "notes": "Automation begins in supervised one-work-package mode."
+}
