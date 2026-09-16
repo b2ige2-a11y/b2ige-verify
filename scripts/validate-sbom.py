@@ -45,10 +45,11 @@ for p in paths:
         assert edge['ref'] in refs and set(edge.get('dependsOn', [])) <= refs, 'Dangling dependency reference'
 assert inventory == set(locked), 'Missing locked package(s)'
 assert roots == {p['name'] for p in locked.values() if 'source' not in p}
+version = tomllib.loads((ROOT / 'Cargo.toml').read_text())['workspace']['package']['version']
 for p in folder.glob('b2ige-*-npm.cdx.json'):
     bom = json.loads(p.read_text()); validator.validate(bom)
     assert bom['metadata']['component']['name'] == '@b2ige/verify'
-    assert bom['metadata']['component']['version'] == '0.1.0'
+    assert bom['metadata']['component']['version'] == version
     assert not bom.get('components'), 'Unexpected npm dependencies'
 scan(paths)
 print(f'Native CycloneDX 1.5 schema, references and inventory: PASS; {len(paths)} SBOMs, {len(inventory)} locked packages')
