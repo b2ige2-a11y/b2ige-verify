@@ -6,7 +6,7 @@ const {tmpdir} = require('node:os');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
 const {readFileSync, existsSync} = require('node:fs');
-const versionProbe = 'if [ "$1" = "--version" ]; then echo "verify-cli 0.1.0"; exit 0; fi\n';
+const versionProbe = 'if [ "$1" = "--version" ]; then echo "verify-cli 0.2.0"; exit 0; fi\n';
 function trustedEnv(fixture) {
   return {...process.env,B2IGE_BINARY:fixture,B2IGE_BINARY_SHA256:createHash('sha256').update(readFileSync(fixture)).digest('hex')};
 }
@@ -51,7 +51,7 @@ test('bundled pin works and altered manifest version is refused', () => {
     const platform=`${process.platform}-${process.arch}`;
     const dir=path.join(root,'native',platform);require('node:fs').mkdirSync(dir,{recursive:true});
     const f=path.join(dir,'b2ige');writeFileSync(f,`#!/bin/sh\n${versionProbe}echo ready\n`,{mode:0o700});
-    const manifest={schema_version:'2',version:'0.1.0',release_repository:null,platforms:{[platform]:{sha256:trustedEnv(f).B2IGE_BINARY_SHA256}}};
+    const manifest={schema_version:'2',version:'0.2.0',release_repository:null,platforms:{[platform]:{sha256:trustedEnv(f).B2IGE_BINARY_SHA256}}};
     const env={...process.env};delete env.B2IGE_BINARY;delete env.B2IGE_BINARY_SHA256;
     writeFileSync(path.join(root,'native-manifest.json'),JSON.stringify(manifest));
     const run=()=>spawnSync(process.execPath,[path.join(root,'bin/b2ige.cjs')],{env,encoding:'utf8'});

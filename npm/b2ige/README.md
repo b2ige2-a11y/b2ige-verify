@@ -4,7 +4,8 @@ The wrapper contains distribution and process-launch code only. All product veri
 runs in the version-matched native executable. No npm dependencies or postinstall hook.
 The final package name is `@b2ige/verify`. The package is private and `prepublishOnly` always
 fails until the `@b2ige` scope is actually controlled and publication is separately authorized.
-Npm publication is intentionally deferred and is not required for the GitHub 0.1.0 release.
+Npm publication is intentionally deferred and is not part of the 0.2.0 release candidate until
+the `@b2ige` scope is controlled and publication is separately authorized.
 Unscoped npm `blindtest` is occupied and is not used by this project.
 
 ## Native delivery
@@ -12,7 +13,7 @@ Unscoped npm `blindtest` is occupied and is not used by this project.
 When configured, the flow is:
 
 GitHub Release → exact version/platform archive → pinned archive SHA-256 → safe
-USTAR extraction → pinned binary SHA-256 → exact `verify-cli 0.1.0` version probe → execution.
+USTAR extraction → pinned binary SHA-256 → exact `verify-cli 0.2.0` version probe → execution.
 
 `native-manifest.json` schema v2 carries `release_repository` and, for each platform,
 `sha256` (binary) and `archive_sha256`. The repository is currently **null** and platform

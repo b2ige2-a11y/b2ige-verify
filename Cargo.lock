@@ -1069,7 +1069,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "verify-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "getrandom",
  "jsonschema",
@@ -1084,7 +1084,7 @@ dependencies = [
 
 [[package]]
 name = "verify-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "getrandom",
  "jsonschema",
@@ -1101,7 +1101,7 @@ dependencies = [
 
 [[package]]
 name = "verify-evidence"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "schemars",
  "serde",
@@ -1113,7 +1113,7 @@ dependencies = [
 
 [[package]]
 name = "verify-mcp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "getrandom",
  "jsonschema",
@@ -1126,7 +1126,7 @@ dependencies = [
 
 [[package]]
 name = "verify-replay"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "schemars",
  "serde",
@@ -1137,7 +1137,7 @@ dependencies = [
 
 [[package]]
 name = "verify-runner"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "libc",
  "schemars",

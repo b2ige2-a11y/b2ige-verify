@@ -1,8 +1,9 @@
 # V100-5 local release foundation
 
-V100 is a local candidate, separate from the historical 0.1.0 release described
-in RELEASE.md. Historical public-release flags, CI runs, manifests and benchmark
-snapshots do not qualify the current source. Package version remains 0.1.0;
+V100 is the 0.2.0 local release candidate, separate from the historical 0.1.0
+release described in RELEASE.md. Historical public-release flags, CI runs,
+manifests and benchmark snapshots do not qualify the current source. Package
+version is 0.2.0 for this candidate;
 no tag, commit, push, publication or deployment is part of this phase.
 
 ## Local deterministic gate
