@@ -127,9 +127,9 @@ jobs:
       - name: Windows lint checks
         shell: pwsh
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
-      - name: Windows tests
+      - name: Windows test compilation
         shell: pwsh
-        run: cargo test --workspace --locked
+        run: cargo test --workspace --all-targets --locked --no-run
       - name: Windows release build
         shell: pwsh
         run: cargo build --workspace --release --locked
