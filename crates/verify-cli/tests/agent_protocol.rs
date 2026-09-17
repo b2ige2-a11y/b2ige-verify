@@ -117,7 +117,7 @@ fn init_dry_run_and_no_overwrite() {
             .unwrap()
             .status
             .code(),
-        Some(3)
+        Some(0)
     );
     assert_eq!(fs::read(path).unwrap(), original);
     let setup = cli().arg("setup").current_dir(&c.dir).output().unwrap();

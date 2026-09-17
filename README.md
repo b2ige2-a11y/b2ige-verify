@@ -17,6 +17,11 @@ Buggy implementation   → FAIL
 
 Start with the [30-second BlindTest demo](#30-second-blindtest-demo).
 
+For your own project, the current source checkout provides the [Easy Adoption path](docs/ADOPTION.md):
+`inspect → init → prepare → trusted approve → doctor → verify ID`.
+These new commands are not in the unchanged v0.2.0 archives. Preparation is public and
+non-authoritative; approval belongs to an independent trusted operator.
+
 ## 30-second BlindTest demo
 
 BlindTest is the fastest way to see the coding-agent use case. It runs the same visible

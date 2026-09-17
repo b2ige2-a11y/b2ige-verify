@@ -1,5 +1,6 @@
 //! Read-only presentation. Only product verified loaders may construct VerifiedReport.
 //! Report/agent JSON is an export, never accepted as authoritative input.
+pub mod adoption;
 pub mod agent;
 pub mod bench;
 mod blindtest;
