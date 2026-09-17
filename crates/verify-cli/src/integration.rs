@@ -133,39 +133,13 @@ impl Prepared {
         r
     }
     fn check_ready(&self) -> io::Result<()> {
-        fs::create_dir_all(&self.store)?;
-        let probe = self.store.join(nonce());
-        let mut f = fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&probe)?;
-        let outcome = f.write_all(b"readiness").and_then(|()| f.sync_all());
-        drop(f);
-        fs::remove_file(probe)?;
-        outcome?;
-        let require = |ok| {
-            if ok {
-                Ok(())
-            } else {
-                Err(io::Error::other("prerequisite unavailable"))
-            }
-        };
-        match &self.config {
-            Config::Behavior(c, a) => behavior::validate_configuration(c, a),
-            Config::Sideeffect(c) => sideeffect::check_prerequisites(c),
-            Config::Blindtest(c, sealed) => {
-                c.validate()?;
-                blindtest::check_paths(&c.target.workspace, sealed, &self.store)?;
-                blindtest::validate_suite(&blindtest::read_suite(sealed)?, c)?;
-                require(
-                    behavior::snapshot_identity(Some(&c.target.workspace))?
-                        == c.target.workspace_hash,
-                )?;
-                let d = blindtest::docker::doctor();
-                require(d.docker_available && d.runtime_capabilities_available)?;
-                blindtest::docker::Docker::discover()?.resolve_image(&c.target.image)?;
-                Ok(())
-            }
+        if crate::adoption::readiness_fields(self)
+            .values()
+            .all(|v| v["ready"] == true)
+        {
+            Ok(())
+        } else {
+            Err(io::Error::other("readiness prerequisites unavailable"))
         }
     }
 }
@@ -173,6 +147,7 @@ impl Prepared {
 #[serde(deny_unknown_fields)]
 pub struct Project {
     pub schema_version: String,
+    #[serde(deserialize_with = "verify_evidence::unique_map")]
     pub entries: BTreeMap<String, Entry>,
 }
 fn registry_location(root: &Path) -> io::Result<(PathBuf, bool, bool)> {
@@ -198,11 +173,15 @@ fn registry_location(root: &Path) -> io::Result<(PathBuf, bool, bool)> {
     Ok((path, parent_exists, existing))
 }
 pub fn init(root: &Path, dry_run: bool) -> io::Result<Value> {
-    let (path, parent_exists, existing) = registry_location(root)?;
+    let root = crate::adoption::path(root)?;
+    let (path, parent_exists, existing) = registry_location(&root)?;
+    if existing {
+        crate::adoption::registry(&path)?;
+    }
     let parent = path.parent().expect("registry parent");
     let d = blindtest::docker::doctor();
-    let result = json!({"schema_version":"1","rust":root.join("Cargo.toml").is_file(),"node":root.join("package.json").is_file(),"docker_available":d.docker_available,"existing_config":existing,"dry_run":dry_run,"surfaces":["behavior: approved executable comparison","sideeffect: configured local SQLite ledger","blindtest: approved sealed Docker suite"],"next_action":"Register reviewed product configs; stack detection does not create evidence or approve baselines"});
-    if !dry_run {
+    let result = json!({"schema_version":"1","rust":root.join("Cargo.toml").is_file(),"node":root.join("package.json").is_file(),"docker_available":d.docker_available,"existing_config":existing,"dry_run":dry_run,"kind":"init","verification_performed":false,"surfaces":["behavior: approved executable comparison","sideeffect: configured local SQLite ledger","blindtest: approved sealed Docker suite"],"next_action":"Register reviewed product configs; stack detection does not create evidence or approve baselines"});
+    if !dry_run && !existing {
         if !parent_exists {
             fs::create_dir(parent)?;
         }
@@ -222,41 +201,42 @@ pub fn init(root: &Path, dry_run: bool) -> io::Result<Value> {
     Ok(result)
 }
 pub fn setup(root: &Path, dry_run: bool) -> io::Result<Value> {
-    let (path, _, existing) = registry_location(root)?;
-    if existing {
-        let project: Project = read(&path)?;
-        if project.schema_version != "1" {
-            return Err(io::Error::other("unsupported project registry version"));
-        }
-    }
-    if existing && !dry_run {
-        let d = blindtest::docker::doctor();
-        return Ok(
-            json!({"schema_version":"1","kind":"setup","rust":root.join("Cargo.toml").is_file(),"node":root.join("package.json").is_file(),"docker_available":d.docker_available,"existing_config":true,"dry_run":false,"verification_performed":false,"next_action":"Register reviewed product configs; setup never creates evidence or approves baselines"}),
-        );
-    }
     let mut result = init(root, dry_run)?;
     result["kind"] = "setup".into();
     result["verification_performed"] = false.into();
     Ok(result)
 }
 pub fn project_doctor(path: &Path) -> Value {
-    let project = read::<Project>(path);
+    let project = crate::adoption::registry(path);
     let docker = blindtest::docker::doctor();
     let mut checks = BTreeMap::new();
+    let mut fields = BTreeMap::new();
     let valid = match project {
-        Ok(p) if p.schema_version == "1" && !p.entries.is_empty() => {
+        Ok(p) if !p.entries.is_empty() => {
             for (key, e) in p.entries {
-                checks.insert(
-                    key,
-                    Prepared::open(&e)
-                        .map(|p| p.doctor(e.product))
-                        .unwrap_or_else(|_| Response::error(e.product, Operation::Doctor)),
-                );
+                let prepared = Prepared::open(&e);
+                let details = match &prepared {
+                    Ok(p) => crate::adoption::readiness_fields(p),
+                    Err(_) => BTreeMap::from([(
+                        "config_or_authorization",
+                        json!({"ready":false,"next_action":"Supply a valid typed config, Behavior authorization or controller sealed root; review registered paths (legacy relative paths use the current directory)"}),
+                    )]),
+                };
+                let ready = details.values().all(|v| v["ready"] == true);
+                let mut response = Response::error(e.product, Operation::Doctor);
+                response.kind = "readiness".into();
+                response.summary = "Readiness only; verification was not performed".into();
+                response.next_action =
+                    "Review field blockers, then run registered verification".into();
+                if ready {
+                    response.verdict = Verdict::Pass;
+                }
+                fields.insert(key.clone(), details);
+                checks.insert(key, response);
             }
             checks.values().all(|r| r.verdict == Verdict::Pass)
         }
         _ => false,
     };
-    json!({"schema_version":"1","kind":"readiness","tool_version":env!("CARGO_PKG_VERSION"),"ready":valid,"verification_performed":false,"docker_available":docker.docker_available,"checks":checks,"next_action":"Run verification; doctor success is readiness only"})
+    json!({"schema_version":"1","kind":"readiness","tool_version":env!("CARGO_PKG_VERSION"),"ready":valid,"verification_performed":false,"docker_available":docker.docker_available,"checks":checks,"fields":fields,"next_action":if fields.is_empty() {"Initialize a safe v1 registry, prepare explicit public inputs, then have a trusted operator approve an identity"} else {"Resolve field blockers and run b2ige verify ID --registry FILE; doctor success is readiness only"}})
 }

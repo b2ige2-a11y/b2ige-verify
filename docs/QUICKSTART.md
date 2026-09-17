@@ -60,11 +60,22 @@ The printed evidence path is trusted local data; do not upload it as a public is
 
 ## Use your own project
 
-`b2ige init --dry-run`, then `b2ige init` creates `.b2ige/project.json` without overwriting files.
-It does not invent contracts, approve baselines, or discover hidden suites. Review a product
-example config, pin your target/fixture identities and register its absolute path as described in
-[MCP setup](MCP.md). Run `b2ige doctor`, then the product's `verify` command. A ready doctor is
-not a product PASS. Never approve a changed baseline just to make a failing candidate pass.
+For the new adoption commands, build the current source checkout (the published
+v0.2.0 archives are unchanged). Follow [Easy Adoption](ADOPTION.md):
+
+```text
+b2ige inspect → b2ige init → b2ige prepare --product PRODUCT
+→ b2ige trust approve (independent trusted operator)
+→ b2ige doctor → b2ige verify REGISTERED_ID
+```
+
+Inspection and preparation are non-authoritative. Init is safe to repeat. Approval
+requires an interactive controller terminal and existing independent trust inputs;
+it cannot promote a candidate into the baseline or create a hidden suite. Doctor is
+readiness only. The guide includes all three products, exact preparation options,
+controller setup, path rules and recovery. Existing expert commands below and
+[MCP setup](MCP.md) remain supported. A directory outside the project is not an
+OS-level boundary against an unrestricted process with the same host user.
 
 Use `--output agent --protocol 1` for integrations. Use `b2ige report` to reload an evidence-backed
 result, with `--output human|json|agent`. Human and JSON BlindTest views are trusted private views.

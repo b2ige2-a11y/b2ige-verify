@@ -9,6 +9,9 @@ use verify_evidence::store::EvidenceStore;
 const USAGE: &str = "Usage: b2ige bench [behavior|sideeffect|blindtest] [--output human|json] [--save DIRECTORY] [--reverse] [--case ID]\n       b2ige init [--dry-run]\n       b2ige setup [--dry-run]\n       b2ige doctor [--config project.json]\n       b2ige behavior verify <config.json> [--authorization FILE] [--store PATH] [--output human|json|agent] [--protocol 1]\n       b2ige blindtest doctor\n       b2ige blindtest verify <config.json> [--output human|json|agent] [--protocol 1] [--open]\n       b2ige blindtest validate-suite <validation-config.json>\n       B2IGE_BLINDTEST_SEALED_ROOT points to the trusted private suite directory; default store is its runs directory.\n        b2ige sideeffect verify <contract.json> [--store PATH] [--output human|json|agent] [--protocol 1] [--open]\n       b2ige report <artifact-id|store/id/result.json> [--store PATH] [--authorization FILE] [--output human|json|agent] [--open]\nDefaults: --store .b2ige/runs --authorization .b2ige/authorization.json\nVerdict exit codes: 0 PASS, 1 FAIL, 2 INCONCLUSIVE, 3 ERROR. Argument misuse: 64.\n--open serves localhost until interrupted; output and verdict are emitted before serving.";
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
+    if let Some(code) = verify_cli::adoption::cli(&args) {
+        return ExitCode::from(code);
+    }
     if args == ["--version"] {
         println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
         return ExitCode::SUCCESS;
@@ -30,7 +33,7 @@ fn main() -> ExitCode {
             .contains(&args[0].as_str())
             && args[1] == "--help")
     {
-        println!("{USAGE}");
+        println!("{USAGE}\n{}", verify_cli::adoption::HELP);
         return ExitCode::SUCCESS;
     }
     if args == ["blindtest", "doctor"] {
@@ -56,14 +59,22 @@ fn main() -> ExitCode {
         return ExitCode::from(r.verdict.exit_code());
     }
     if args.first().is_some_and(|s| s == "init" || s == "setup") {
-        if args.len() > 2 || (args.len() == 2 && args[1] != "--dry-run") {
-            return ExitCode::from(64);
+        let mut root = None;
+        let mut dry = false;
+        for arg in &args[1..] {
+            if arg == "--dry-run" && !dry {
+                dry = true;
+            } else if !arg.starts_with('-') && root.is_none() {
+                root = Some(arg.as_str());
+            } else {
+                return ExitCode::from(64);
+            }
         }
         let setup = args[0] == "setup";
         let result = if setup {
-            verify_cli::integration::setup(std::path::Path::new("."), args.len() == 2)
+            verify_cli::integration::setup(std::path::Path::new(root.unwrap_or(".")), dry)
         } else {
-            verify_cli::integration::init(std::path::Path::new("."), args.len() == 2)
+            verify_cli::integration::init(std::path::Path::new(root.unwrap_or(".")), dry)
         };
         return match result {
             Ok(v) => {
@@ -80,16 +91,29 @@ fn main() -> ExitCode {
         };
     }
     if args.first().is_some_and(|s| s == "doctor") {
-        if args.len() != 1 && !(args.len() == 3 && args[1] == "--config") {
+        let mut path = ".b2ige/project.json";
+        let mut output = "json";
+        let mut seen = std::collections::BTreeSet::new();
+        for pair in args[1..].chunks(2) {
+            if pair.len() != 2 || !seen.insert(pair[0].as_str()) {
+                return ExitCode::from(64);
+            }
+            match pair[0].as_str() {
+                "--config" | "--registry" => path = &pair[1],
+                "--output" if ["human", "json"].contains(&pair[1].as_str()) => output = &pair[1],
+                _ => return ExitCode::from(64),
+            }
+        }
+        if seen.contains("--config") && seen.contains("--registry") {
             return ExitCode::from(64);
         }
-        let path = args
-            .get(2)
-            .map(String::as_str)
-            .unwrap_or(".b2ige/project.json");
         let v = verify_cli::integration::project_doctor(std::path::Path::new(path));
         let code = if v["ready"] == true { 0 } else { 3 };
-        println!("{}", pretty(&v));
+        if output == "human" {
+            print!("{}", verify_cli::adoption::doctor_human(&v));
+        } else {
+            println!("{}", pretty(&v));
+        }
         return ExitCode::from(code);
     }
     let options = match parse(&args) {
