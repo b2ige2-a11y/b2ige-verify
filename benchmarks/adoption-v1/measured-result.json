@@ -1,0 +1,959 @@
+{
+  "aggregate": {
+    "classification_agreement": {
+      "denominator": 9,
+      "fraction": 1.0,
+      "numerator": 9
+    },
+    "completed": {
+      "denominator": 9,
+      "fraction": 1.0,
+      "numerator": 9
+    },
+    "first_verification": {
+      "denominator": 9,
+      "fraction": 1.0,
+      "numerator": 9
+    },
+    "recovery_success": {
+      "denominator": 0,
+      "fraction": null,
+      "numerator": 0
+    },
+    "undocumented_edits": {
+      "denominator": 9,
+      "fraction": 0.0,
+      "numerator": 0
+    },
+    "unsafe_shortcuts_rejected": {
+      "denominator": 28,
+      "fraction": 1.0,
+      "numerator": 28
+    }
+  },
+  "authoritative": false,
+  "ci_bootstrap": "DEFERRED_TO_V110_C",
+  "corpus_version": "adoption-v1",
+  "kind": "adoption-benchmark-tooling",
+  "manifest_identity": "sha256:11b7d744c9b4af5ec698b2c92b94023f052ce2f8764b225acc7b569146ae4a5d",
+  "negative_controls": {
+    "ERROR-exit-zero": true,
+    "FAIL-exit-zero": true,
+    "INCONCLUSIVE-exit-zero": true,
+    "attempt-log-substitution": true,
+    "authority-tampering": true,
+    "baseline-poisoning": true,
+    "corrupt-previous-result": true,
+    "doctor-as-verification": true,
+    "duplicate-registry": true,
+    "expected-label-tampering": true,
+    "failed-observer": true,
+    "malformed-registry": true,
+    "missing-authority-case": true,
+    "missing-evidence": true,
+    "missing-observer": true,
+    "noninteractive-approval": true,
+    "omitted-scenario": true,
+    "private-copy": true,
+    "private-overlap": true,
+    "source-product-mismatch": true,
+    "stale-evidence-store": true,
+    "stale-executable": true,
+    "stale-output": true,
+    "stale-project-registry": true,
+    "stale-reference": true,
+    "symlink-controller": true,
+    "tooling-as-evidence": true,
+    "unapproved-baseline": true
+  },
+  "observations": {
+    "environment": {
+      "docker_engine": "linux/aarch64",
+      "machine": "arm64",
+      "release": "27.0.0",
+      "system": "Darwin",
+      "versions": {
+        "docker": "29.5.2",
+        "node": "v26.0.0",
+        "python3": "Python 3.14.3",
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+      }
+    },
+    "preparation": {
+      "binary_identity": "sha256:f4e61bfc3addaf21044a57a4f40bb428f7b91b330f79f6a190edd8857fc51a4f",
+      "helper_identity": "sha256:28272f070e38d1eb8a30c65eb7d21ec6a75e2a783686a74dd2f555db578e28aa",
+      "mode": "source-build",
+      "seconds": 0.1478
+    },
+    "scenario_seconds": {
+      "docker-correct": {
+        "agent": 0.005,
+        "approve": 0.2205,
+        "doctor": 0.1641,
+        "init": 0.0606,
+        "inspect": 0.0041,
+        "materialize": 0.0045,
+        "prepare": 0.0118,
+        "project": 0.1204,
+        "report": 0.0227,
+        "verify": 0.6291
+      },
+      "docker-mutant": {
+        "agent": 0.0049,
+        "approve": 0.2186,
+        "doctor": 0.1602,
+        "init": 0.0617,
+        "inspect": 0.0041,
+        "materialize": 0.0044,
+        "prepare": 0.0116,
+        "project": 0.0974,
+        "report": 0.0223,
+        "verify": 0.6276
+      },
+      "docker-partial": {
+        "agent": 0.0048,
+        "approve": 0.2079,
+        "doctor": 0.1555,
+        "init": 0.0608,
+        "inspect": 0.0038,
+        "materialize": 0.0045,
+        "prepare": 0.013,
+        "project": 0.0949,
+        "report": 0.0151,
+        "verify": 0.2729
+      },
+      "node-regression": {
+        "agent": 0.0042,
+        "approve": 0.0238,
+        "doctor": 0.0768,
+        "init": 0.0818,
+        "inspect": 0.0048,
+        "materialize": 0.0041,
+        "prepare": 0.0116,
+        "project": 0.0017,
+        "report": 0.0062,
+        "verify": 0.7974
+      },
+      "python-preserving": {
+        "agent": 0.005,
+        "approve": 0.0224,
+        "doctor": 0.0751,
+        "init": 0.0753,
+        "inspect": 0.003,
+        "materialize": 0.0037,
+        "prepare": 0.013,
+        "project": 0.001,
+        "report": 0.0077,
+        "verify": 0.7143
+      },
+      "rust-preserving": {
+        "agent": 0.0096,
+        "approve": 0.0374,
+        "doctor": 0.09,
+        "init": 0.104,
+        "inspect": 0.3941,
+        "materialize": 0.419,
+        "prepare": 0.0262,
+        "project": 0.0801,
+        "report": 0.0111,
+        "verify": 0.6451
+      },
+      "sqlite-corrupt": {
+        "agent": 0.0038,
+        "approve": 0.0218,
+        "doctor": 0.0724,
+        "init": 0.0758,
+        "inspect": 0.0029,
+        "materialize": 0.024,
+        "prepare": 0.0132,
+        "project": 0.0006,
+        "report": 0.0046,
+        "verify": 0.2509
+      },
+      "sqlite-duplicate": {
+        "agent": 0.0037,
+        "approve": 0.0215,
+        "doctor": 0.0714,
+        "init": 0.0759,
+        "inspect": 0.003,
+        "materialize": 0.0242,
+        "prepare": 0.0154,
+        "project": 0.0005,
+        "report": 0.0396,
+        "verify": 0.6656
+      },
+      "sqlite-safe": {
+        "agent": 0.0037,
+        "approve": 0.0207,
+        "doctor": 0.0678,
+        "init": 0.0785,
+        "inspect": 0.0037,
+        "materialize": 0.0509,
+        "prepare": 0.018,
+        "project": 0.0006,
+        "report": 0.0253,
+        "verify": 0.2542
+      }
+    }
+  },
+  "p8_after": {
+    "benchmarks/baseline-v1/README.md": "sha256:5ea60bb66b5c774ac6b770072ed95ebc6d62c602f9a210d107f18396db8c3af0",
+    "benchmarks/baseline-v1/benchmark-run-result.v1.schema.json": "sha256:2b8e8c3aa16c5de5448880145b08e9b271c9669b9c31270d05cfc70e12415a13",
+    "benchmarks/baseline-v1/canonical.sha256": "sha256:114c47305a4018c5761134c29361ebb9bdccfda650f7c88130309278b895a0a3",
+    "benchmarks/baseline-v1/comparison.json": "sha256:d0d23b720da024c9eeb4eef6e71242b21e34222fdeccfc064bba6d94464e709a",
+    "benchmarks/baseline-v1/report.txt": "sha256:262037736498347a39d34be2019d3872eeea89c58cf38e0e60047167379b0c33",
+    "benchmarks/baseline-v1/result.json": "sha256:80ce4bf9c7f0f67fa4ef1fc0005584defaf1c7f0aa18d2e08497a3426d167c37",
+    "benchmarks/baseline-v1/reverse-result.json": "sha256:709ee36f848277a1f3c42562a2241aa8fcf315d55d049a83a4687c4facbac941",
+    "benchmarks/corpus/blindtest.rs": "sha256:40ca3843c7a435fd48baaf60d831252f4a9509ababdc9e2339b67223e7eb7ba1",
+    "benchmarks/corpus/cases.v1.json": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78"
+  },
+  "p8_before": {
+    "benchmarks/baseline-v1/README.md": "sha256:5ea60bb66b5c774ac6b770072ed95ebc6d62c602f9a210d107f18396db8c3af0",
+    "benchmarks/baseline-v1/benchmark-run-result.v1.schema.json": "sha256:2b8e8c3aa16c5de5448880145b08e9b271c9669b9c31270d05cfc70e12415a13",
+    "benchmarks/baseline-v1/canonical.sha256": "sha256:114c47305a4018c5761134c29361ebb9bdccfda650f7c88130309278b895a0a3",
+    "benchmarks/baseline-v1/comparison.json": "sha256:d0d23b720da024c9eeb4eef6e71242b21e34222fdeccfc064bba6d94464e709a",
+    "benchmarks/baseline-v1/report.txt": "sha256:262037736498347a39d34be2019d3872eeea89c58cf38e0e60047167379b0c33",
+    "benchmarks/baseline-v1/result.json": "sha256:80ce4bf9c7f0f67fa4ef1fc0005584defaf1c7f0aa18d2e08497a3426d167c37",
+    "benchmarks/baseline-v1/reverse-result.json": "sha256:709ee36f848277a1f3c42562a2241aa8fcf315d55d049a83a4687c4facbac941",
+    "benchmarks/corpus/blindtest.rs": "sha256:40ca3843c7a435fd48baaf60d831252f4a9509ababdc9e2339b67223e7eb7ba1",
+    "benchmarks/corpus/cases.v1.json": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78"
+  },
+  "scenarios": [
+    {
+      "actual_verdict": "PASS",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "authority_source_case_id": "behavior.preserving",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 0,
+      "expected_classification": "CORRECT",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "behavior",
+      "project": "rust-cli",
+      "recovery_events": [],
+      "runtime": "Rust",
+      "scenario_id": "rust-preserving",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "cases": 1,
+        "verified_evidence_count": 2
+      },
+      "verification_verdict": "PASS"
+    },
+    {
+      "actual_verdict": "FAIL",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "authority_source_case_id": "behavior.stdout",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 1,
+      "expected_classification": "BUGGY",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "behavior",
+      "project": "node-cli",
+      "recovery_events": [],
+      "runtime": "Node.js",
+      "scenario_id": "node-regression",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "cases": 1,
+        "verified_evidence_count": 2
+      },
+      "verification_verdict": "FAIL"
+    },
+    {
+      "actual_verdict": "PASS",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "authority_source_case_id": "behavior.preserving",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 0,
+      "expected_classification": "CORRECT",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "behavior",
+      "project": "python-cli",
+      "recovery_events": [],
+      "runtime": "Python",
+      "scenario_id": "python-preserving",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "cases": 1,
+        "verified_evidence_count": 2
+      },
+      "verification_verdict": "PASS"
+    },
+    {
+      "actual_verdict": "PASS",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "authority_source_case_id": "sideeffect.normal",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 0,
+      "expected_classification": "CORRECT",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "sideeffect",
+      "project": "sqlite-ledger",
+      "recovery_events": [],
+      "runtime": "Python / SQLite",
+      "scenario_id": "sqlite-safe",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "executed_schedules": 1,
+        "required_schedules": 1,
+        "verified_evidence_count": 8
+      },
+      "verification_verdict": "PASS"
+    },
+    {
+      "actual_verdict": "FAIL",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "authority_source_case_id": "sideeffect.unsafe_retry",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 1,
+      "expected_classification": "BUGGY",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "sideeffect",
+      "project": "sqlite-ledger",
+      "recovery_events": [],
+      "runtime": "Python / SQLite",
+      "scenario_id": "sqlite-duplicate",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "executed_schedules": 1,
+        "required_schedules": 1,
+        "verified_evidence_count": 8
+      },
+      "verification_verdict": "FAIL"
+    },
+    {
+      "actual_verdict": "ERROR",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "ERROR"
+      ],
+      "authority_source_case_id": "sideeffect.corrupt",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "loader_rejected",
+      "exit_code": 3,
+      "expected_classification": "INCOMPLETE",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "sideeffect",
+      "project": "sqlite-ledger",
+      "recovery_events": [],
+      "runtime": "Python / SQLite",
+      "scenario_id": "sqlite-corrupt",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 3,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "executed_schedules": 1,
+        "required_schedules": 1,
+        "verified_evidence_count": 8
+      },
+      "verification_verdict": "PASS"
+    },
+    {
+      "actual_verdict": "PASS",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "authority_source_case_id": "blindtest.correct",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 0,
+      "expected_classification": "CORRECT",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "blindtest",
+      "project": "docker-credentials",
+      "recovery_events": [],
+      "runtime": "Node.js / Docker",
+      "scenario_id": "docker-correct",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "completed_hidden_cases": 3,
+        "required_hidden_cases": 3,
+        "verified_evidence_count": 6
+      },
+      "verification_verdict": "PASS"
+    },
+    {
+      "actual_verdict": "FAIL",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "authority_source_case_id": "blindtest.mutant_a",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 1,
+      "expected_classification": "BUGGY",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "blindtest",
+      "project": "docker-credentials",
+      "recovery_events": [],
+      "runtime": "Node.js / Docker",
+      "scenario_id": "docker-mutant",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 1,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "completed_hidden_cases": 3,
+        "required_hidden_cases": 3,
+        "verified_evidence_count": 6
+      },
+      "verification_verdict": "FAIL"
+    },
+    {
+      "actual_verdict": "INCONCLUSIVE",
+      "agent_output_validated": true,
+      "allowed_verdicts": [
+        "INCONCLUSIVE"
+      ],
+      "authority_source_case_id": "blindtest.partial",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "completed": true,
+      "controller_separated": true,
+      "evidence_status": "verified",
+      "exit_code": 2,
+      "expected_classification": "INCOMPLETE",
+      "first_blocking_stage": null,
+      "first_verification_success": true,
+      "product": "blindtest",
+      "project": "docker-credentials",
+      "recovery_events": [],
+      "runtime": "Node.js / Docker",
+      "scenario_id": "docker-partial",
+      "stages": [
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "project"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "inspect"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "init"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "materialize"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "prepare"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "approve"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "doctor"
+        },
+        {
+          "completed": true,
+          "exit_code": 2,
+          "stage": "verify"
+        },
+        {
+          "completed": true,
+          "exit_code": 0,
+          "stage": "agent"
+        },
+        {
+          "completed": true,
+          "exit_code": 2,
+          "stage": "report"
+        }
+      ],
+      "trust_checkpoints": 1,
+      "undocumented_json_edits": false,
+      "verification_coverage": {
+        "completed_hidden_cases": 1,
+        "required_hidden_cases": 3,
+        "verified_evidence_count": 4
+      },
+      "verification_verdict": "INCONCLUSIVE"
+    }
+  ],
+  "schema_version": "1"
+}
