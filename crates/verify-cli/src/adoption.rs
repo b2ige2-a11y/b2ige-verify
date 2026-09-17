@@ -96,19 +96,20 @@ fn id_valid(id: &str) -> bool {
 }
 
 pub fn registry(p: &Path) -> io::Result<Project> {
+    Ok(registry_snapshot(p)?.0)
+}
+fn registry_snapshot(p: &Path) -> io::Result<(Project, Vec<u8>)> {
     let p = existing(p)?;
-    let project: Project = integration::read(&p)?;
+    let bytes = integration::read_bytes(&p)?;
+    let project: Project = serde_json::from_slice(&bytes)?;
     if project.schema_version != "1" {
         return Err(bad("invalid registry version"));
     }
-    Ok(project)
+    Ok((project, bytes))
 }
 
 pub fn inspect(root: &Path) -> io::Result<String> {
-    let root = existing(root)?;
-    if !root.is_dir() {
-        return Err(bad("ROOT must be a directory"));
-    }
+    let root = public_directory(root)?;
     let mut lines = vec!["Factual discovery only; verification_performed: false".to_owned()];
     let mut found = 0;
     for name in [
@@ -512,6 +513,11 @@ fn prepare(a: &Args) -> io::Result<()> {
         ));
     }
     let out = path(Path::new(a.get("--out")?))?;
+    if let Some(sealed) = std::env::var_os("B2IGE_BLINDTEST_SEALED_ROOT") {
+        if !disjoint(&out, &path(Path::new(&sealed))?) {
+            return Err(bad("draft output overlaps sealed root"));
+        }
+    }
     if out.exists() {
         return Err(bad("draft output already exists; never overwritten"));
     }
@@ -547,7 +553,17 @@ fn config_value(c: &Config) -> io::Result<Value> {
     })
 }
 
-fn open_draft(draft: &Path, p: Product, auth: Option<&Path>, store: &Path) -> io::Result<Prepared> {
+struct DraftInputs {
+    prepared: Prepared,
+    config_bytes: Vec<u8>,
+    authorization_bytes: Option<Vec<u8>>,
+}
+fn open_draft(
+    draft: &Path,
+    p: Product,
+    auth: Option<&Path>,
+    store: &Path,
+) -> io::Result<DraftInputs> {
     let file = existing(&draft.join(format!("{}.json", product_name(p))))?;
     // Exactly one typed product file; no product inference or ambiguous draft directory.
     for other in [Product::Behavior, Product::Sideeffect, Product::Blindtest] {
@@ -555,11 +571,34 @@ fn open_draft(draft: &Path, p: Product, auth: Option<&Path>, store: &Path) -> io
             return Err(bad("ambiguous product draft"));
         }
     }
-    Prepared::open(&Entry {
-        product: p,
-        config: file,
-        store: store.to_owned(),
-        authorization: auth.map(Path::to_owned),
+    let config_bytes = integration::read_bytes(&file)?;
+    let authorization_bytes = auth
+        .map(|p| integration::read_bytes(&existing(p)?))
+        .transpose()?;
+    let config = match p {
+        Product::Behavior => Config::Behavior(
+            Box::new(serde_json::from_slice(&config_bytes)?),
+            serde_json::from_slice(
+                authorization_bytes
+                    .as_deref()
+                    .ok_or_else(|| bad("independent Behavior authorization required"))?,
+            )?,
+        ),
+        Product::Sideeffect => Config::Sideeffect(Box::new(serde_json::from_slice(&config_bytes)?)),
+        Product::Blindtest => Config::Blindtest(
+            Box::new(serde_json::from_slice(&config_bytes)?),
+            std::env::var_os("B2IGE_BLINDTEST_SEALED_ROOT")
+                .map(PathBuf::from)
+                .ok_or_else(|| bad("controller sealed root required"))?,
+        ),
+    };
+    Ok(DraftInputs {
+        prepared: Prepared {
+            config,
+            store: store.to_owned(),
+        },
+        config_bytes,
+        authorization_bytes,
     })
 }
 fn disjoint(a: &Path, b: &Path) -> bool {
@@ -652,43 +691,79 @@ fn approve(draft: &Path, a: &Args) -> io::Result<()> {
             "Behavior authorization must be an independently supplied controller file",
         ));
     }
-    let mut project = if registry_path.exists() {
-        registry(&registry_path)?
+    let (mut project, registry_bytes) = if registry_path.exists() {
+        let (project, bytes) = registry_snapshot(&registry_path)?;
+        (project, Some(bytes))
     } else {
-        Project {
-            schema_version: "1".into(),
-            entries: BTreeMap::new(),
-        }
+        (
+            Project {
+                schema_version: "1".into(),
+                entries: BTreeMap::new(),
+            },
+            None,
+        )
     };
     if project.entries.contains_key(id) {
         return Err(bad(
             "identity already registered; existing approval is never replaced",
         ));
     }
-    let prepared = open_draft(&draft, p, auth.as_deref(), &store)?;
+    let inputs = open_draft(&draft, p, auth.as_deref(), &store)?;
+    let prepared = &inputs.prepared;
     if let Config::Blindtest(c, sealed) = &prepared.config {
         blindtest::check_paths(&c.target.workspace, sealed, &store)
+            .map_err(|_| bad("unsafe private path separation"))?;
+        blindtest::check_paths(&project_root, sealed, &store)
             .map_err(|_| bad("unsafe private path separation"))?;
     }
     check_public_paths(&prepared.config)?;
     let source_value = config_value(&prepared.config)?;
-    let auth_bytes = auth.as_ref().map(fs::read).transpose()?;
-    let registry_bytes = if registry_path.exists() {
-        Some(fs::read(&registry_path)?)
-    } else {
-        None
-    };
+    let auth_bytes = &inputs.authorization_bytes;
     let dest = controller.join(id);
     if dest.exists() {
         return Err(bad("controller identity directory already exists"));
     }
-    if let Config::Blindtest(c, _) = &prepared.config {
-        if !disjoint(&controller, &existing(&c.target.workspace)?) {
-            return Err(bad("controller overlaps candidate workspace"));
-        }
+    let workspace = match &prepared.config {
+        Config::Behavior(c, _) => c.case.fixture.source.as_deref(),
+        Config::Sideeffect(c) => c.trigger.fixture.source.as_deref(),
+        Config::Blindtest(c, _) => Some(c.target.workspace.as_path()),
+    };
+    if workspace.is_some_and(|p| existing(p).is_ok_and(|p| !disjoint(&controller, &p))) {
+        return Err(bad("controller overlaps candidate fixture/workspace"));
     }
-    println!("Identity: {id}\nProduct: {}\nConfig identity: {}\n{}\nController config: {}\nRegistry: {}\nStore: {}\n",product_name(p), canonical_hash(&source_value)?,review(&prepared.config)?,dest.display(),registry_path.display(),store.display());
-    check_trust(&prepared).map_err(|_| bad("trust blockers remain: review reference/stability/checker approval, observer completeness, or sealed suite/image/isolation inputs"))?;
+    if !disjoint(&store, &dest)
+        || !disjoint(&store, &registry_path)
+        || !disjoint(&registry_path, &dest)
+        || auth.as_ref().is_some_and(|p| !disjoint(&store, p))
+    {
+        return Err(bad(
+            "store, registry and approved input destinations must not overlap",
+        ));
+    }
+    println!(
+        "Identity: {id}\nProduct: {}\nConfig identity: {}\n{}",
+        product_name(p),
+        canonical_hash(&source_value)?,
+        review(&prepared.config)?
+    );
+    if p == Product::Blindtest {
+        println!("Config/registry/store: private controller destinations outside the project (paths withheld)");
+    } else {
+        println!(
+            "Controller config: {}\nRegistry: {}\nStore: {}\n",
+            serde_json::to_string(&dest)?,
+            serde_json::to_string(&registry_path)?,
+            serde_json::to_string(&store)?
+        );
+    }
+    if let Config::Behavior(_, authorization) = &prepared.config {
+        println!(
+            "Authorization identity: {}\nExplicit baseline_stable: {}",
+            canonical_hash(authorization)?,
+            authorization.baseline_stable
+        );
+    }
+    check_trust(prepared).map_err(|_| bad("trust blockers remain: review reference/stability/checker approval, observer completeness, or sealed suite/image/isolation inputs"))?;
     let statement = match p {
         Product::Behavior => "I independently reviewed the reference baseline, explicit stability assertion, checker binding and candidate role; the coding agent did not supply this trust decision.",
         Product::Sideeffect => "I independently confirm this is a disposable fixture of authoritative durable append-only committed SQLite state, not attempts/stdout/request logs; the coding agent did not supply this trust decision.",
@@ -698,31 +773,37 @@ fn approve(draft: &Path, a: &Args) -> io::Result<()> {
     io::stdout().flush()?;
     let mut answer = String::new();
     io::stdin().read_line(&mut answer)?;
-    if answer.trim() != format!("APPROVE {id}") {
+    if answer.trim_end_matches(['\r', '\n']) != format!("APPROVE {id}") {
         return Err(bad("approval cancelled; no authoritative writes"));
     }
     // Re-read after operator review, not the REVIEW.md or a self-reported draft status.
     let reread = open_draft(&draft, p, auth.as_deref(), &store)?;
-    if config_value(&reread.config)? != source_value
-        || auth.as_ref().map(fs::read).transpose()? != auth_bytes
+    if reread.config_bytes != inputs.config_bytes
+        || reread.authorization_bytes != inputs.authorization_bytes
         || (if registry_path.exists() {
-            Some(fs::read(&registry_path)?)
+            Some(integration::read_bytes(&existing(&registry_path)?)?)
         } else {
             None
         }) != registry_bytes
     {
         return Err(bad("reviewed inputs changed; approval refused"));
     }
-    check_trust(&reread).map_err(|_| bad("reviewed trust prerequisites changed"))?;
+    check_trust(&reread.prepared).map_err(|_| bad("reviewed trust prerequisites changed"))?;
     path(&controller)?;
     path(&registry_path)?;
     path(&store)?;
     // A create-new lock rejects concurrent adoption writers. Registry is published last.
-    let lock = controller.join(".adoption-approval.lock");
+    // Lock the registry itself: nested controller choices can share one registry.
+    let mut lock_name = registry_path
+        .file_name()
+        .ok_or_else(|| bad("registry filename required"))?
+        .to_os_string();
+    lock_name.push(".adoption-approval.lock");
+    let lock = registry_path.with_file_name(lock_name);
     write_new(&lock, b"exclusive adoption registration")?;
     let result = (|| {
         if (if registry_path.exists() {
-            Some(fs::read(&registry_path)?)
+            Some(integration::read_bytes(&existing(&registry_path)?)?)
         } else {
             None
         }) != registry_bytes
@@ -732,7 +813,7 @@ fn approve(draft: &Path, a: &Args) -> io::Result<()> {
         fs::create_dir(&dest)?;
         let config = dest.join("config.json");
         write_json(&config, &source_value)?;
-        let authorization = if let Some(bytes) = &auth_bytes {
+        let authorization = if let Some(bytes) = auth_bytes {
             let p = dest.join("authorization.json");
             write_new(&p, bytes)?;
             Some(p)

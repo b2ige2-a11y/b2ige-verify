@@ -18,6 +18,9 @@ use verify_core::{
 use verify_evidence::store::EvidenceStore;
 
 pub fn read<T: serde::de::DeserializeOwned>(path: &Path) -> io::Result<T> {
+    Ok(serde_json::from_slice(&read_bytes(path)?)?)
+}
+pub(crate) fn read_bytes(path: &Path) -> io::Result<Vec<u8>> {
     let mut bytes = Vec::new();
     fs::File::open(path)?
         .take(4 * 1024 * 1024 + 1)
@@ -25,7 +28,7 @@ pub fn read<T: serde::de::DeserializeOwned>(path: &Path) -> io::Result<T> {
     if bytes.len() > 4 * 1024 * 1024 {
         return Err(io::Error::other("config too large"));
     }
-    Ok(serde_json::from_slice(&bytes)?)
+    Ok(bytes)
 }
 pub fn nonce() -> String {
     use std::sync::atomic::{AtomicU64, Ordering};

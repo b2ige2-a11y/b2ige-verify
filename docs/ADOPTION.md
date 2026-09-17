@@ -156,19 +156,27 @@ image must be an immutable `sha256:` identity and supported Docker must be avail
 The interactive summary shows the identity/product, config identity/schema version,
 reference and candidate roles, actual file identities, fixture/workspace identity,
 required observations, coverage/budgets, blockers and controller destinations.
+Behavior also shows the independent authorization identity and explicit stability
+assertion. BlindTest withholds controller destinations because they may locate the
+sealed root; it confirms separation from the entire declared project instead.
 Private BlindTest values, inventory and paths are never printed. The controller
 validates existing private approvals internally; it does not author or copy them.
 The operator confirms the product-specific trust statement by typing `APPROVE ID`.
 Stdin and stdout must both be terminals. Piped input, `--yes`, environment bypasses,
 MCP and Agent Protocol cannot perform approval.
 
-The typed files and authorization are reread after confirmation, identities and
-prerequisites rechecked, and changed inputs refused. Approved files are exclusively
+The typed files and authorization are parsed from retained byte snapshots and reread
+after confirmation; any byte change is refused, identities and prerequisites are
+rechecked. Registry parsing and change detection use the same retained bytes.
+Approved files are exclusively
 created under `CONTROLLER/ID`; the v1 registry is published last, retaining other
 identities. Existing identities/files are not overwritten. A failed filesystem write
 can leave unregistered controller files or a staging file; inspect and recover those
-explicitly before retrying. Do not remove an approval lock while another operator is
-registering. This is local trusted-host coordination, not hostile-filesystem atomicity.
+explicitly before retrying. The registry's adjacent `.adoption-approval.lock` suffix
+coordinates writers even when nested controller directories are selected. Do not
+remove it while another operator is registering. Store paths must not overlap
+registry/approval files, and controllers must not overlap the actual fixture/workspace.
+This is local trusted-host coordination, not hostile-filesystem atomicity.
 
 ## 4. Readiness, then real verification
 
