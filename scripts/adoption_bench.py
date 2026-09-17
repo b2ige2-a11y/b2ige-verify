@@ -1,11 +1,14 @@
 """V110 adoption measurements only. Never imported by product verdict loaders."""
 import copy
+from contextlib import contextmanager
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import platform
 import pty
+import re
 import select
 import shlex
 import shutil
@@ -28,7 +31,15 @@ CONTROLS = ['missing-evidence', 'unapproved-baseline', 'stale-reference',
             'source-product-mismatch', 'omitted-scenario', 'stale-output',
             'corrupt-previous-result', 'FAIL-exit-zero', 'INCONCLUSIVE-exit-zero',
             'ERROR-exit-zero', 'noninteractive-approval', 'tooling-as-evidence',
-            'stale-evidence-store', 'stale-project-registry']
+            'stale-evidence-store', 'stale-project-registry', 'malformed-agent',
+            'pty-boundary', 'protected-output']
+VERSION_PATTERNS = {
+    'rustc': r'rustc [0-9]+\.[0-9]+\.[0-9]+ \([a-f0-9]+ [0-9]{4}-[0-9]{2}-[0-9]{2}\)',
+    'node': r'v[0-9]+\.[0-9]+\.[0-9]+',
+    'python3': r'Python [0-9]+\.[0-9]+\.[0-9]+',
+    'docker': r'[0-9]+\.[0-9]+\.[0-9]+',
+}
+_ACTIVE_RUNS = set()  # Only execute() owns these disposable roots; never a CLI option.
 
 
 def require(value, message):
@@ -45,7 +56,9 @@ def pairs(items):
 
 
 def decode(data):
-    return json.loads(data, object_pairs_hook=pairs)
+    def invalid_constant(_):
+        raise ValueError('non-finite JSON number')
+    return json.loads(data, object_pairs_hook=pairs, parse_constant=invalid_constant)
 
 
 def read(path):
@@ -117,6 +130,7 @@ def rate(n, d):
 def aggregate(rows, manifest, controls):
     ids = [r['scenario_id'] for r in rows]
     require(ids == [r['scenario_id'] for r in manifest['scenarios']], 'missing, duplicate or reordered scenario')
+    require(set(controls) == set(CONTROLS) and all(type(v) is bool for v in controls.values()), 'control inventory/type')
     total = len(manifest['scenarios'])
     return {
         'completed': rate(sum(r['completed'] for r in rows), total),
@@ -131,6 +145,8 @@ def aggregate(rows, manifest, controls):
 
 def blank_row(scenario):
     return dict(scenario, actual_verdict=None, exit_code=None, verification_verdict=None,
+                verification_exit_code=None, report_verdict=None, report_exit_code=None,
+                measured_outcome_stage='report' if scenario['authority_source_case_id'] == 'sideeffect.corrupt' else 'verify',
                 stages=[], trust_checkpoints=0, undocumented_json_edits=False,
                 recovery_events=[], first_blocking_stage=None, first_verification_success=False,
                 agent_output_validated=False, controller_separated=False,
@@ -142,7 +158,7 @@ def validate_result(result, manifest=None):
     require(set(result) == {'schema_version', 'kind', 'authoritative', 'corpus_version',
             'manifest_identity', 'scenarios', 'negative_controls', 'aggregate', 'p8_before',
             'p8_after', 'observations', 'ci_bootstrap'}, 'result fields')
-    require(result['schema_version'] == '1' and result['kind'] == 'adoption-benchmark-tooling'
+    require(result['schema_version'] == '2' and result['kind'] == 'adoption-benchmark-tooling'
             and result['authoritative'] is False and result['corpus_version'] == 'adoption-v1', 'result version/kind')
     require(result['manifest_identity'] == MANIFEST_PIN, 'manifest binding')
     require(result['ci_bootstrap'] == 'DEFERRED_TO_V110_C', 'CI scope')
@@ -152,12 +168,22 @@ def validate_result(result, manifest=None):
     obs = result['observations']
     require(set(obs) == {'environment', 'preparation', 'scenario_seconds'}, 'observation fields')
     require(set(obs['environment']) == {'system', 'release', 'machine', 'versions', 'docker_engine'}, 'environment fields')
+    environment_info = obs['environment']
+    require(environment_info['system'] in ['Darwin', 'Linux'], 'environment system')
+    require(environment_info['machine'] in ['arm64', 'aarch64', 'x86_64', 'amd64'], 'environment machine')
+    require(re.fullmatch(r'[0-9]+(?:\.[0-9]+){1,3}', environment_info['release']) is not None, 'environment release')
+    require(environment_info['docker_engine'] in ['unavailable', 'linux/aarch64', 'linux/arm64', 'linux/x86_64', 'linux/amd64'], 'Docker environment')
+    require(set(environment_info['versions']) == set(VERSION_PATTERNS), 'version inventory')
+    for name, value in environment_info['versions'].items():
+        require(type(value) is str and (value == 'unavailable' or re.fullmatch(VERSION_PATTERNS[name], value)), 'unsafe version text')
     require(set(obs['preparation']) == {'mode', 'seconds', 'binary_identity', 'helper_identity'}, 'preparation fields')
     require(obs['preparation']['mode'] in ['source-build', 'prebuilt-source-checkout'], 'preparation mode')
-    require(type(obs['preparation']['seconds']) in [int, float] and obs['preparation']['seconds'] >= 0, 'preparation timing')
+    for key in ['binary_identity', 'helper_identity']:
+        require(re.fullmatch(r'sha256:[a-f0-9]{64}', obs['preparation'][key]) is not None, 'binary identity')
+    require(type(obs['preparation']['seconds']) in [int, float] and math.isfinite(obs['preparation']['seconds']) and obs['preparation']['seconds'] >= 0, 'preparation timing')
     require(set(obs['scenario_seconds']) == {r['scenario_id'] for r in manifest['scenarios']}, 'timing inventory')
     for timing in obs['scenario_seconds'].values():
-        require(set(timing).issubset(STAGES) and all(type(v) in [float, int] and v >= 0 for v in timing.values()), 'stage timings')
+        require(set(timing).issubset(STAGES) and all(type(v) in [float, int] and math.isfinite(v) and v >= 0 for v in timing.values()), 'stage timings')
     rows = result['scenarios']
     aggregate(rows, manifest, result['negative_controls'])
     for row, expected in zip(rows, manifest['scenarios']):
@@ -165,6 +191,11 @@ def validate_result(result, manifest=None):
         require(all(row[k] == v for k, v in expected.items()), 'changed expectation/product')
         require(row['actual_verdict'] is None or row['actual_verdict'] in OUTCOMES, 'unknown verdict')
         require(row['verification_verdict'] is None or row['verification_verdict'] in OUTCOMES, 'unknown first verdict')
+        require(row['measured_outcome_stage'] == blank_row(expected)['measured_outcome_stage'], 'changed outcome stage')
+        require(row['report_verdict'] == row['actual_verdict'] and row['report_exit_code'] == row['exit_code'], 'measured/report disagreement')
+        require(row['report_exit_code'] is None or type(row['report_exit_code']) is int, 'report exit type')
+        require(row['verification_exit_code'] is None if row['verification_verdict'] is None else
+                type(row['verification_exit_code']) is int and row['verification_exit_code'] == OUTCOMES[row['verification_verdict']], 'first verdict/exit mismatch')
         require(row['exit_code'] is None if row['actual_verdict'] is None else
                 type(row['exit_code']) is int and row['exit_code'] == OUTCOMES[row['actual_verdict']], 'verdict/exit mismatch')
         require(row['evidence_status'] in ['not_observed', 'verified', 'loader_rejected'], 'evidence status')
@@ -190,11 +221,17 @@ def validate_result(result, manifest=None):
             require('verify' in names and row['stages'][names.index('verify')]['exit_code'] == OUTCOMES[row['verification_verdict']], 'first verdict/exit mismatch')
         if row['actual_verdict'] is not None:
             require('report' in names and row['stages'][names.index('report')]['exit_code'] == row['exit_code'], 'report verdict/exit mismatch')
+            if row['measured_outcome_stage'] == 'verify':
+                require(row['actual_verdict'] == row['verification_verdict'] and row['evidence_status'] == 'verified', 'verify/reload disagreement')
+            else:
+                require(row['evidence_status'] == 'loader_rejected' and row['actual_verdict'] == 'ERROR'
+                        and row['verification_verdict'] in ['PASS', 'FAIL', 'INCONCLUSIVE'], 'corrupt loader boundary')
         if row['evidence_status'] == 'loader_rejected':
             require(row['actual_verdict'] == 'ERROR', 'rejected evidence cannot establish success')
         if row['first_verification_success']:
             require(row['verification_verdict'] in ['PASS', 'FAIL', 'INCONCLUSIVE'] and
                     row['agent_output_validated'] and 'verify' in names and
+                    row['verification_coverage'].get('verified_evidence_count', 0) > 0 and
                     row['stages'][names.index('verify')]['completed'], 'readiness cannot be verification')
         if row['completed']:
             require(names == STAGES and all(s['completed'] for s in row['stages']) and
@@ -206,7 +243,7 @@ def validate_result(result, manifest=None):
                     and row['first_verification_success'] == (row['verification_verdict'] != 'ERROR'), 'incomplete journey')
     require(result['aggregate'] == aggregate(rows, manifest, result['negative_controls']), 'aggregate tampering')
     # Public semantic output is an allowlisted projection: no raw reports, paths or suite values.
-    text = json.dumps({k: v for k, v in result.items() if k != 'observations'})
+    text = json.dumps(result)
     require('BLINDTEST_PRIVATE_' not in text and str(Path.home()) not in text, 'private leakage')
     return result
 
@@ -258,12 +295,28 @@ def fresh_store(store):
     require(not store.exists() and not store.is_symlink(), 'stale evidence store')
 
 
-def _replay_fixture_confirmation(command, *, project, controller, scenario, env):
-    """Private benchmark PTY, fixed 'APPROVE bench' only; no public arbitrary command option."""
-    require(scenario in load_corpus()['scenarios'], 'only pinned benchmark scenarios')
+def _replay_fixture_confirmation(journey, control='primary'):
+    """Replay only an input snapshot fixed before verification in the active benchmark."""
+    require(journey.root.parent in _ACTIVE_RUNS, 'active benchmark sandbox required')
+    require(journey.s in load_corpus()['scenarios'], 'only pinned benchmark scenarios')
+    require(control in ['primary', 'noninteractive', 'unapproved'], 'unknown fixture decision')
+    command, pins, fixed_env = journey.approval_replays[control]
+    require(journey.env == fixed_env, 'reviewed approval environment changed')
+    require(all(not p.is_symlink() and digest(p.read_bytes()) == pin for p, pin in pins.items()), 'reviewed approval inputs changed')
+    project = journey.project
+    controller = Path(command[command.index('--controller') + 1])
+    env = journey.env
     lanes(project, controller)
     require(project.parent == controller.parent and project.parent.parent.name == 'scenarios', 'benchmark sandbox required')
-    require(command[1:3] == ['trust', 'approve'] and command[command.index('--identity') + 1] == 'bench', 'fixed benchmark approval')
+    expected = journey.approval_command()
+    for flag, value in [('--controller', controller), ('--registry', controller / 'registry.json'),
+                        ('--store', controller / 'store'), ('--authorization', controller / 'authorization.json')]:
+        if flag in expected: expected[expected.index(flag) + 1] = value
+    if control == 'unapproved': expected[3] = journey.root / 'unapproved-baseline'
+    require(command == expected and Path(command[0]) == ROOT / 'target/release/b2ige', 'fixed benchmark command')
+    require(not journey.responses and all(s['stage'] not in ['verify', 'agent', 'report'] for s in journey.row['stages']), 'approval must precede candidate execution')
+    fresh_store(controller / 'store')
+    fresh_store(controller / 'registry.json')
     master, slave = pty.openpty()
     child = subprocess.Popen([str(v) for v in command], cwd=controller, env=env,
                              stdin=slave, stdout=slave, stderr=slave)
@@ -314,6 +367,7 @@ class Journey:
         self.timings = {}
         self.responses = {}
         self.controls = {}
+        self.approval_replays = {}
 
     def cli(self, *args):
         return run([self.binary, *args], cwd=self.controller, env=self.env)
@@ -328,7 +382,7 @@ class Journey:
             require(valid(response), 'stage failed: ' + name)
             record['completed'] = True
             return response
-        except (OSError, ValueError, KeyError, subprocess.SubprocessError):
+        except Exception:
             self.row['first_blocking_stage'] = name
             raise
         finally:
@@ -398,8 +452,46 @@ class Journey:
     def approve(self):
         fresh_store(self.store)
         self.row['trust_checkpoints'] = 1
-        return _replay_fixture_confirmation(self.approval_command(), project=self.project,
-                    controller=self.controller, scenario=self.s, env=self.env)
+        return _replay_fixture_confirmation(self)
+
+    def fix_confirmation(self, control, command):
+        # Called only after mechanical fixture preparation, before any verify result exists.
+        require(not self.responses, 'late fixture approval decision')
+        paths = [self.binary, self.controller / 'input.json', Path(command[3]) / (self.s['product'] + '.json'), Path(command[3]) / 'REVIEW.md']
+        if '--authorization' in command:
+            paths.append(Path(command[command.index('--authorization') + 1]))
+        if self.s['product'] == 'behavior': paths.append(self.controller / 'reference')
+        if self.s['product'] == 'blindtest': paths.append(self.sealed / 'suite.json')
+        require(all(p.is_file() and not any(x.is_symlink() for x in [p, *p.parents]) for p in paths), 'missing/symlink approval input')
+        self.approval_replays[control] = (command, {p: digest(p.read_bytes()) for p in paths}, dict(self.env))
+
+    def approval_controls(self):
+        """Fixed negative decisions are exercised before the candidate outcome exists."""
+        if self.s['scenario_id'] != 'rust-preserving': return
+        for control, name in [('noninteractive', 'noninteractive-controller'), ('unapproved', 'unapproved-controller')]:
+            controller = self.root / name
+            controller.mkdir()
+            shutil.copyfile(self.auth, controller / 'authorization.json')
+            command = self.approval_command()
+            for key, value in [('--controller', controller), ('--registry', controller / 'registry.json'),
+                               ('--store', controller / 'store'), ('--authorization', controller / 'authorization.json')]:
+                command[command.index(key) + 1] = value
+            if control == 'unapproved':
+                config = read(self.controller / 'input.json')
+                config['baseline']['approval']['status'] = 'unapproved'
+                path = self.controller / 'unapproved-baseline.json'
+                save(path, config)
+                command[3] = self.root / 'unapproved-baseline'
+                prepared = self.prepare(path, command[3])
+                if prepared.returncode != 0:
+                    self.controls['unapproved-baseline'] = prepared.returncode == 3
+                    continue
+            self.fix_confirmation(control, command)
+            if control == 'noninteractive':
+                piped = run(command, cwd=controller, env=self.env)
+                self.controls['noninteractive-approval'] = piped.returncode == 3 and _replay_fixture_confirmation(self, control).returncode == 0
+            else:
+                self.controls['unapproved-baseline'] = _replay_fixture_confirmation(self, control).returncode == 3
 
     def validate_agent(self, response, operation):
         data = decode(response.stdout)
@@ -409,14 +501,16 @@ class Journey:
         for private in [str(self.root), *self.private]:
             require(private not in response.stdout.decode(), 'Agent private leakage')
         raw = self.controller / ('agent-' + str(len(self.responses)) + '.json')
-        save(raw, data)
-        if operation == 'verify':
-            checked = self.cli('ci-check', raw, str(response.returncode))
-            require(checked.returncode == response.returncode and decode(checked.stdout)['verdict'] == data['verdict'], 'Agent validator disagreement')
-        elif response.returncode != 3:
+        # The real protocol validator accepts verify transports. Retain every other
+        # field for report shape checking; malformed ERROR must not equal a fallback.
+        transport = dict(data, operation='verify')
+        save(raw, transport)
+        checked = self.cli('ci-check', raw, str(response.returncode))
+        require(checked.returncode == response.returncode and decode(checked.stdout) == transport, 'Agent validator disagreement')
+        if operation == 'report' and response.returncode != 3:
             original = dict(self.responses['verify'], operation='report')
             require(data == original, 'report projection differs from verified source')
-        else:
+        elif operation == 'report':
             require(data['source'] is None and data['kind'] == 'infrastructure_error' and data['evidence_refs'] == [], 'invalid report error')
         self.responses[operation] = data
         return data
@@ -441,6 +535,8 @@ class Journey:
             # Blind workspace snapshot must exclude preparation output, which is adjacent.
             if self.s['product'] == 'blindtest': self.draft = self.root / 'draft'
             self.stage('prepare', self.prepare)
+            self.fix_confirmation('primary', self.approval_command())
+            self.approval_controls()
             self.stage('approve', self.approve)
             doctor = self.stage('doctor', lambda: self.cli('doctor', '--registry', self.registry))
             require(decode(doctor.stdout)['verification_performed'] is False, 'doctor semantics')
@@ -450,6 +546,7 @@ class Journey:
             def agent_stage():
                 data = self.validate_agent(verified, 'verify')
                 self.row['verification_verdict'] = data['verdict']
+                self.row['verification_exit_code'] = verified.returncode
                 self.row['verification_coverage'] = data['scope']['coverage'] if data['scope'] else {}
                 self.row['agent_output_validated'] = True
                 self.row['first_verification_success'] = data['source'] is not None and data['verdict'] != 'ERROR'
@@ -475,11 +572,12 @@ class Journey:
                 data = self.validate_agent(response, 'report')
                 if self.mode != 'corrupt': require(data['verdict'] == original['verdict'], 'reload disagreement')
                 self.row['actual_verdict'], self.row['exit_code'] = data['verdict'], response.returncode
+                self.row['report_verdict'], self.row['report_exit_code'] = data['verdict'], response.returncode
                 self.row['evidence_status'] = 'loader_rejected' if self.mode == 'corrupt' else 'verified'
                 return response
             self.stage('report', reporting, lambda p: p.returncode in OUTCOMES.values())
             self.row['completed'] = True
-        except (OSError, ValueError, KeyError, subprocess.SubprocessError):
+        except Exception:
             if self.row['first_blocking_stage'] is None:
                 self.row['first_blocking_stage'] = self.row['stages'][-1]['stage']
                 self.row['stages'][-1]['completed'] = False
@@ -533,6 +631,8 @@ def structural_controls(result, manifest, scratch):
     link = scratch / 'linked-controller'
     link.symlink_to(output, target_is_directory=True)
     controls['symlink-controller'] = rejected(lambda: lanes(scratch / 'project', link))
+    controls['protected-output'] = all(rejected(lambda p=p: check_output_path(p / 'audit-output'))
+                                       for p in [ROOT / 'benchmarks/corpus', ROOT / 'benchmarks/baseline-v1', CORPUS])
     return controls
 
 
@@ -541,21 +641,12 @@ def live_controls(journeys, result, manifest, scratch):
     byid = {j.s['scenario_id']: j for j in journeys}
     b = byid['rust-preserving']
     if b.row['completed']:
-        review_controller = b.root / 'noninteractive-controller'
-        review_controller.mkdir()
-        shutil.copyfile(b.auth, review_controller / 'authorization.json')
-        command = b.approval_command()
-        for key, value in [('--controller', review_controller), ('--registry', review_controller / 'registry.json'), ('--store', review_controller / 'store'), ('--authorization', review_controller / 'authorization.json')]:
-            command[command.index(key) + 1] = value
-        noninteractive = run(command, cwd=b.controller, env=b.env)
-        replay = _replay_fixture_confirmation(command, project=b.project, controller=review_controller, scenario=b.s, env=b.env)
-        controls['noninteractive-approval'] = noninteractive.returncode == 3 and replay.returncode == 0
+        controls.update({k: v for k, v in b.controls.items() if k in CONTROLS})
         config = read(b.controller / 'input.json')
         stale_reference = b.controller / 'stale-reference'
         stale_reference.write_text('#!/bin/sh\nprintf changed\n')
         stale_reference.chmod(0o700)
         for name, mutate in [
-            ('unapproved-baseline', lambda c: c['baseline']['approval'].update(status='unapproved')),
             ('stale-reference', lambda c: c['before'].update(executable=str(stale_reference))),
             ('baseline-poisoning', lambda c: c.update(before=c['after'])),
         ]:
@@ -563,26 +654,7 @@ def live_controls(journeys, result, manifest, scratch):
             mutate(changed)
             path = b.controller / (name + '.json')
             save(path, changed)
-            if name == 'unapproved-baseline':
-                # prepare may legitimately retain an unapproved draft; approval must refuse it.
-                out = b.root / name
-                prepared = b.prepare(path, out)
-                if prepared.returncode == 0:
-                    negative_controller = b.root / 'unapproved-controller'
-                    negative_controller.mkdir()
-                    shutil.copyfile(b.auth, negative_controller / 'authorization.json')
-                    command = b.approval_command()
-                    for key, value in [('--controller', negative_controller), ('--registry', negative_controller / 'registry.json'), ('--store', negative_controller / 'store'), ('--authorization', negative_controller / 'authorization.json')]:
-                        command[command.index(key) + 1] = value
-                    command[3] = out
-                    command[command.index('--identity') + 1] = 'bench'
-                    response = _replay_fixture_confirmation(command, project=b.project,
-                                    controller=negative_controller, scenario=b.s, env=b.env)
-                    controls[name] = response.returncode == 3
-                else:
-                    controls[name] = prepared.returncode == 3
-            else:
-                controls[name] = b.prepare(path, b.root / name).returncode == 3
+            controls[name] = b.prepare(path, b.root / name).returncode == 3
         for name, value in [('malformed-registry', '{bad'),
                             ('duplicate-registry', '{"schema_version":"1","entries":{},"entries":{}}')]:
             path = b.controller / (name + '.json')
@@ -591,6 +663,13 @@ def live_controls(journeys, result, manifest, scratch):
         ready = b.controller / 'readiness.json'
         ready.write_bytes(b.doctor.stdout)
         controls['doctor-as-verification'] = b.cli('ci-check', ready, '0').returncode == 3
+        malformed = copy.deepcopy(b.responses['verify'])
+        malformed['unexpected'] = True
+        bad_agent = b.controller / 'malformed-agent.json'
+        save(bad_agent, malformed)
+        controls['malformed-agent'] = b.cli('ci-check', bad_agent, '0').returncode == 3
+        # Replays after candidate execution must refuse before opening a PTY.
+        controls['pty-boundary'] = rejected(lambda: _replay_fixture_confirmation(b))
         # Simulate a replaced executable after the operator has pinned it.
         with b.target.open('ab') as f: f.write(b'changed executable')
         original_response = b.responses['verify']
@@ -633,10 +712,17 @@ def live_controls(journeys, result, manifest, scratch):
             controls[verdict + '-exit-zero'] = j.cli('ci-check', path, '0').returncode == 3
     tooling = scratch / 'tooling.json'
     save(tooling, result)
-    controls['tooling-as-evidence'] = all(b.cli(*args).returncode == 3 for args in [
+    registry_before = b.registry.read_bytes() if b.registry.exists() else None
+    auth_before = b.auth.read_bytes() if b.auth.exists() else None
+    attempts = [
         ['verify', tooling, '--registry', b.registry, '--output', 'agent', '--protocol', '1'],
         ['report', tooling, '--output', 'agent', '--protocol', '1'],
-    ])
+    ] + [['prepare', '--product', product, '--config', tooling, '--out', scratch / ('tooling-' + product)]
+         for product in ['behavior', 'sideeffect', 'blindtest']]
+    refused = [b.cli(*args).returncode == 3 for args in attempts]
+    controls['tooling-as-evidence'] = (all(refused)
+        and (b.registry.read_bytes() if b.registry.exists() else None) == registry_before
+        and (b.auth.read_bytes() if b.auth.exists() else None) == auth_before)
     require(set(controls).issubset(CONTROLS), 'unexpected control key')
     return {name: controls.get(name, False) for name in CONTROLS}
 
@@ -649,7 +735,7 @@ def environment(env, cwd):
             p = run([name, *args], cwd=cwd, env=env, timeout=15)
             text = p.stdout.decode().strip().splitlines()
             # Do not copy arbitrary version stderr/paths into public observations.
-            versions[name] = text[0] if p.returncode == 0 and text and '/' not in text[0] and len(text[0]) < 150 else 'unavailable'
+            versions[name] = text[0] if p.returncode == 0 and text and re.fullmatch(VERSION_PATTERNS[name], text[0]) else 'unavailable'
         except (OSError, subprocess.SubprocessError): versions[name] = 'unavailable'
     docker_engine = 'unavailable'
     try:
@@ -658,13 +744,33 @@ def environment(env, cwd):
             docker_engine = p.stdout.decode().strip()
     except (OSError, subprocess.SubprocessError):
         pass
-    return {'system': platform.system(), 'release': platform.release(), 'machine': platform.machine(),
+    return {'system': platform.system(), 'release': platform.release().split('-')[0], 'machine': platform.machine(),
             'versions': versions, 'docker_engine': docker_engine}
 
 
-def execute(output, *, build=False):
+def check_output_path(output):
     output = Path(output).absolute()
     require(not any(p.is_symlink() for p in [output, *output.parents]), 'symlink output refused')
+    output = output.resolve()
+    for protected in [ROOT / 'benchmarks/corpus', ROOT / 'benchmarks/baseline-v1', CORPUS]:
+        require(output != protected and protected not in output.parents, 'protected corpus output refused')
+    return output
+
+
+@contextmanager
+def benchmark_sandbox():
+    with tempfile.TemporaryDirectory(prefix='b2ige-adoption-') as temporary:
+        root = Path(temporary).resolve()
+        (root / 'scenarios').mkdir()
+        _ACTIVE_RUNS.add(root / 'scenarios')
+        try:
+            yield root
+        finally:
+            _ACTIVE_RUNS.remove(root / 'scenarios')
+
+
+def execute(output, *, build=False, reverse=False):
+    output = check_output_path(output)
     output.mkdir()  # Create-new, including previous failed or partial output.
     manifest = load_corpus()
     before = p8_inventory()
@@ -682,9 +788,7 @@ def execute(output, *, build=False):
                    'binary_identity': digest(binary.read_bytes()), 'helper_identity': digest(helper.read_bytes())}
     controls = dict.fromkeys(CONTROLS, False)
     rows, journeys = [], []
-    with tempfile.TemporaryDirectory(prefix='b2ige-adoption-') as temporary:
-        root = Path(temporary).resolve()
-        (root / 'scenarios').mkdir()
+    with benchmark_sandbox() as root:
         (root / 'home').mkdir()
         # Never inherit developer B2IGE overrides, startup hooks or project/evidence state.
         env = {k: v for k, v in os.environ.items() if k in ['PATH', 'SYSTEMROOT', 'DOCKER_HOST', 'DOCKER_CONTEXT']}
@@ -699,12 +803,13 @@ def execute(output, *, build=False):
         except (OSError, subprocess.SubprocessError):
             pass  # Docker scenarios still occupy their planned denominator.
         obs = {'environment': environment(env, root), 'preparation': preparation, 'scenario_seconds': {}}
-        for scenario in manifest['scenarios']:
+        for scenario in reversed(manifest['scenarios']) if reverse else manifest['scenarios']:
             j = Journey(root / 'scenarios', scenario, binary, helper, env)
             rows.append(j.execute())
             journeys.append(j)
             obs['scenario_seconds'][scenario['scenario_id']] = j.timings
-        result = dict(schema_version='1', kind='adoption-benchmark-tooling', authoritative=False,
+        rows.sort(key=lambda row: [s['scenario_id'] for s in manifest['scenarios']].index(row['scenario_id']))
+        result = dict(schema_version='2', kind='adoption-benchmark-tooling', authoritative=False,
                       corpus_version='adoption-v1', manifest_identity=MANIFEST_PIN, scenarios=rows,
                       negative_controls=controls, aggregate=aggregate(rows, manifest, controls),
                       p8_before=before, p8_after=p8_inventory(), observations=obs, ci_bootstrap='DEFERRED_TO_V110_C')
@@ -727,18 +832,22 @@ def report(result):
     rows = result['scenarios']
     a = result['aggregate']
     lines = ['# V110 adoption benchmark — measured report', '',
-             'Corpus: adoption-v1; tooling schema: 1; non-authoritative V110 UX/adoption evidence.', '',
+             'Corpus: adoption-v1; tooling schema: 2; non-authoritative V110 UX/adoption evidence.', '',
              'V110-B measures bounded reproducibility of the adoption workflow against semantic expectations inherited from the already-reviewed P8 corpus.',
              'It does not establish independent new correctness labels, third-party project compatibility, external-user usability, real hidden secrecy, or exhaustive correctness. External operator evidence remains V110-D.', '',
              'Source checkout/build preparation is separate from operation; historical v0.2.0 archives do not contain V110-A. CI bootstrap: DEFERRED_TO_V110_C.', '',
              'Environment: ' + json.dumps(result['observations']['environment'], sort_keys=True),
-             'Docker scope: actual local Linux engine; digest-pinned preloaded image, no network build or runtime service.', '',
+             'Required Docker scope: actual local Linux engine; digest-pinned preloaded image, no network build or runtime service.', '',
              '| Metric | Numerator / denominator |', '|---|---:|']
     for name, value in sorted(a.items()):
         lines.append(f"| {name} | {value['numerator']} / {value['denominator']}" + (' (N/A)' if not value['denominator'] else '') + ' |')
-    lines += ['', '| Scenario / P8 authority | Runtime / product | Allowed → actual | Trust checkpoints | Blocking stage |', '|---|---|---|---:|---|']
+    lines += ['', '| Scenario / P8 authority | Runtime / product | Allowed → measured | Verify / exit | Report / exit | Outcome stage | Trust checkpoints | Blocking stage |', '|---|---|---|---|---|---|---:|---|']
     for r in rows:
-        lines.append(f"| {r['scenario_id']} / {r['authority_source_case_id']} | {r['runtime']} / {r['product']} | {','.join(r['allowed_verdicts'])} → {r['actual_verdict'] or 'NOT_OBSERVED'} | {r['trust_checkpoints']} | {r['first_blocking_stage'] or 'none'} |")
+        lines.append(f"| {r['scenario_id']} / {r['authority_source_case_id']} | {r['runtime']} / {r['product']} | {','.join(r['allowed_verdicts'])} → {r['actual_verdict'] or 'NOT_OBSERVED'} | {r['verification_verdict'] or 'NOT_OBSERVED'} / {r['verification_exit_code']} | {r['report_verdict'] or 'NOT_OBSERVED'} / {r['report_exit_code']} | {r['measured_outcome_stage']} | {r['trust_checkpoints']} | {r['first_blocking_stage'] or 'none'} |")
+    totals = {v: sum(r['actual_verdict'] == v for r in rows) for v in OUTCOMES}
+    verify_totals = {v: sum(r['verification_verdict'] == v for r in rows) for v in OUTCOMES}
+    lines += ['', 'Measured scenario outcomes: ' + json.dumps(totals, sort_keys=True) + '.',
+              'Initial verify outcomes: ' + json.dumps(verify_totals, sort_keys=True) + '.']
     lines += ['', f"Measured inventory: {len(rows)} / {len(rows)} selected scenarios retained, including blocked scenarios.",
               'First verification success means a source-backed PASS, FAIL or INCONCLUSIVE response after verify, not doctor readiness and not product PASS alone.',
               'The corrupt SideEffect scenario first verifies intact evidence, then removes evidence and measures the report loader ERROR boundary, matching P8. Generic report errors may carry the CLI’s Behavior product hint; they grant no product success.',

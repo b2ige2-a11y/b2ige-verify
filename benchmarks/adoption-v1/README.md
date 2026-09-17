@@ -26,7 +26,7 @@ From the repository root, choose two **new, real (not symlinked)** output paths:
 
 ```sh
 python3 scripts/adoption-bench.py ./adoption-run-1 --build
-python3 scripts/adoption-bench.py ./adoption-run-2 --build
+python3 scripts/adoption-bench.py ./adoption-run-2 --build --reverse
 python3 scripts/adoption-bench.py --compare ./adoption-run-1/result.json ./adoption-run-2/result.json
 python3 scripts/test-adoption-bench.py
 ```
@@ -46,6 +46,9 @@ user output directory to retry. Temporary private controller evidence is destroy
 at completion, including on exceptions; only the allowlisted measurement summary
 and report survive. Keep output directories outside the public source inventory.
 Failed/incomplete scenarios remain in the planned denominator.
+The runner refuses output under the adoption corpus or either protected P8 tree
+before creating anything. Reverse execution retains the canonical planned inventory
+in summaries. Comparing two identical blocked runs still exits 3.
 
 ## Semantic authority and fixture reuse
 
@@ -85,16 +88,26 @@ the secrecy boundary.
 arbitrary-command entry point. It only accepts a pinned scenario in a fresh
 benchmark layout and replays the fixed `APPROVE bench` decision. All trust inputs
 are materialized from existing constructors **before candidate execution**. The
-helper never evaluates whether a candidate deserves approval. Production approval
+helper never evaluates whether a candidate deserves approval. Primary and negative
+approval decisions are fixed before verification. Replay requires an active disposable
+benchmark root, the fixed source-built CLI/command, unchanged reviewed input bytes
+and environment, fresh controller destinations, and no candidate result. There is
+no arbitrary-command parameter. Production approval
 still requires stdin and stdout TTYs; no flag, environment, MCP or Agent bypass
 was added. Negative-control approvals use separate disposable controller locations.
 
 ## Measurements and interpretation
 
-The independent tooling schema is string version `1`, kind
+The independent tooling schema is string version `2`, kind
 `adoption-benchmark-tooling`, `authoritative: false`. It is validated in Python and
 is never a product schema or input to verdict loaders. Real CLI controls confirm
-that `verify` and `report` refuse it as source evidence.
+that `verify`, `report`, and all three product preparation paths refuse it as source
+evidence/configuration, preserving registry and authorization bytes.
+
+Version decision: v2 adds `verification_exit_code`, `report_verdict`,
+`report_exit_code`, and `measured_outcome_stage` to distinguish an execution verdict
+from a subsequent loader rejection. V1 measurements are not silently upgraded.
+The scenario manifest remains v1; no authoritative product/P8/V100 schema changes.
 
 Each row records source bindings, product/runtime, actual verdict/exit, attempted
 and completed stages, one trust checkpoint, undocumented JSON edits, recovery
@@ -102,7 +115,10 @@ observations, first blocking stage, first verification success, sanitized Agent
 validation and controller separation. A first verification is successful when it
 returns a source-backed PASS, FAIL or INCONCLUSIVE, independently of whether the
 product passes. Doctor can never satisfy this metric. For the corrupt scenario,
-first verification is intact; the final measured outcome is loader ERROR.
+first verification is intact (PASS/0); the final measured outcome is report-loader
+ERROR/3. The human table shows both outcomes and their measured stage. Normal rows
+must preserve verdict/exit agreement between verify and report. All nine rows remain
+in completed/first-verification denominators, including the loader-ERROR scenario.
 
 Report output is compared with the original sanitized verification projection.
 BlindTest's public opaque source alias is resolved only in the controller; private
@@ -117,11 +133,17 @@ ignores **only** preparation seconds and per-stage durations. It retains invento
 expectations, verdicts, evidence status, stages, negative controls, environment,
 binary identities and aggregate counts. No speed threshold gates results.
 
-`test-adoption-bench.py` runs two fresh full journeys and adversarial validator
+Public environment observations use bounded version formats; raw version output,
+arbitrary environment strings and non-finite numeric fields are refused. Entire
+Agent transports, including ERROR responses, must survive the real protocol checker
+without silent fallback or dropped fields.
+
+`test-adoption-bench.py` runs two fresh full journeys in forward/reverse order and adversarial validator
 checks. Runtime controls exercise missing evidence, unapproved/poisoned/stale
 baselines, failed/missing observers, attempt-only output, stale executable,
 malformed/duplicate registries, readiness, overlap/symlinks, source/label tampering,
-omitted scenarios, stale/corrupt output and exit-zero coercion. P8 corpus/baseline
+omitted/crashed scenarios, stale/corrupt output, PTY replay restrictions, protected
+output paths, malformed Agent responses and exit-zero coercion. P8 corpus/baseline
 inventories are hashed before and after every execution.
 
 See [measured report](../../docs/V110-ADOPTION-BENCH.md). These are public project

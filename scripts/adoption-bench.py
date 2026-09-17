@@ -11,15 +11,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output', nargs='?', help='new output directory, never overwritten')
     parser.add_argument('--build', action='store_true', help='measure source preparation separately')
+    parser.add_argument('--reverse', action='store_true', help='execute the fixed inventory in reverse order')
     parser.add_argument('--compare', nargs=2, metavar=('FIRST', 'SECOND'))
     args = parser.parse_args()
     try:
         if args.compare:
-            equal = semantic(read(args.compare[0])) == semantic(read(args.compare[1]))
-            print(json.dumps({'semantic_equal': equal}))
-            return 0 if equal else 3
+            first, second = [read(path) for path in args.compare]
+            equal = semantic(first) == semantic(second)
+            gates = accepted(first) and accepted(second)
+            print(json.dumps({'semantic_equal': equal, 'both_runs_accepted': gates}))
+            return 0 if equal and gates else 3
         if not args.output: parser.error('a new output directory is required')
-        result = execute(Path(args.output), build=args.build)
+        result = execute(Path(args.output), build=args.build, reverse=args.reverse)
         print(json.dumps({'adoption_gate_pass': accepted(result), 'aggregate': result['aggregate']}))
         return 0 if accepted(result) else 3
     except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:

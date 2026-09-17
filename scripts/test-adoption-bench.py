@@ -2,6 +2,7 @@
 """Test tooling admission, contamination controls and two actual fresh journeys."""
 import copy
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -17,7 +18,7 @@ class HarnessTests(unittest.TestCase):
         cls.root = Path(cls.temp.name).resolve()
         cls.before = b.p8_inventory()
         cls.first = b.execute(cls.root / 'first')
-        cls.second = b.execute(cls.root / 'second')
+        cls.second = b.execute(cls.root / 'second', reverse=True)
 
     @classmethod
     def tearDownClass(cls):
@@ -85,7 +86,7 @@ class HarnessTests(unittest.TestCase):
         self.assertFalse(b.accepted(bad))
 
     def test_version_product_outcome_and_unknown_fields(self):
-        for change in [lambda r: r.update(schema_version='2'),
+        for change in [lambda r: r.update(schema_version='1'),
                        lambda r: r.update(authoritative=True),
                        lambda r: r.update(kind='product-evidence'),
                        lambda r: r.update(extra='ignored'),
@@ -171,6 +172,113 @@ class HarnessTests(unittest.TestCase):
         link.symlink_to(target, target_is_directory=True)
         with self.assertRaises(ValueError): b.execute(link / 'output')
         with self.assertRaises(ValueError): b.lanes(self.root, self.root / 'nested')
+
+    def test_verify_report_and_corrupt_outcome_are_distinct_and_bound(self):
+        corrupt = next(r for r in self.first['scenarios'] if r['scenario_id'] == 'sqlite-corrupt')
+        self.assertEqual((corrupt['verification_verdict'], corrupt['verification_exit_code']), ('PASS', 0))
+        self.assertEqual((corrupt['report_verdict'], corrupt['report_exit_code']), ('ERROR', 3))
+        self.assertEqual(corrupt['measured_outcome_stage'], 'report')
+        self.assertTrue(corrupt['first_verification_success'])
+        for change in [lambda r: r['scenarios'][5].update(evidence_status='verified'),
+                       lambda r: r['scenarios'][5].update(measured_outcome_stage='verify'),
+                       lambda r: r['scenarios'][0].update(report_verdict='FAIL'),
+                       lambda r: r['scenarios'][0].update(report_exit_code=False),
+                       lambda r: r['scenarios'][0].update(verification_exit_code=1)]:
+            self.bad_result(change)
+        def inconsistent(r):
+            r['scenarios'][0].update(verification_verdict='FAIL', verification_exit_code=1)
+            r['scenarios'][0]['stages'][7]['exit_code'] = 1
+        self.bad_result(inconsistent)
+
+    def test_public_observations_reject_private_text_and_nonfinite_numbers(self):
+        for change in [lambda r: r['observations']['environment']['versions'].update(node='private-token'),
+                       lambda r: r['observations']['environment'].update(release='/controller/private'),
+                       lambda r: r['observations']['preparation'].update(binary_identity='/controller/private'),
+                       lambda r: r['observations']['preparation'].update(seconds=float('nan')),
+                       lambda r: r['observations']['scenario_seconds']['rust-preserving'].update(project=float('inf'))]:
+            self.bad_result(change)
+        for value in ['NaN', 'Infinity', '-Infinity']:
+            with self.assertRaises(ValueError): b.decode(value)
+
+    def test_protected_output_refused_before_any_write(self):
+        for protected in [b.ROOT / 'benchmarks/corpus', b.ROOT / 'benchmarks/baseline-v1', b.CORPUS]:
+            output = protected / 'never-create-audit-output'
+            with mock.patch.object(b, 'run') as run:
+                with self.assertRaises(ValueError): b.execute(output)
+                run.assert_not_called()
+            self.assertFalse(output.exists())
+
+    def test_crashes_and_failed_controls_remain_in_full_denominator(self):
+        with mock.patch.object(b.Journey, 'project_setup', side_effect=RuntimeError('private crash text')):
+            result = b.execute(self.root / 'crashed')
+        self.assertEqual(result['aggregate']['completed'], b.rate(0, 9))
+        self.assertEqual(result['aggregate']['first_verification'], b.rate(0, 9))
+        self.assertEqual(result['aggregate']['classification_agreement'], b.rate(0, 9))
+        self.assertEqual(result['aggregate']['unsafe_shortcuts_rejected']['denominator'], len(b.CONTROLS))
+        self.assertFalse(b.accepted(result))
+        self.assertEqual(len(b.read(self.root / 'crashed/result.json')['scenarios']), 9)
+        self.assertNotIn('private crash text', json.dumps(result))
+        compared = subprocess.run(['python3', str(b.ROOT / 'scripts/adoption-bench.py'), '--compare',
+                                   str(self.root / 'crashed/result.json'), str(self.root / 'crashed/result.json')], capture_output=True)
+        self.assertEqual(compared.returncode, 3)
+        self.assertEqual(b.decode(compared.stdout), {'semantic_equal': True, 'both_runs_accepted': False})
+        controls = dict(self.first['negative_controls'])
+        controls['extra-success'] = True
+        with self.assertRaises(ValueError): b.aggregate(self.first['scenarios'], self.manifest, controls)
+
+    def test_semantic_mutation_matrix(self):
+        for change in [lambda r: r['scenarios'][0].update(actual_verdict='FAIL'),
+                       lambda r: r['scenarios'][0].update(expected_classification='BUGGY'),
+                       lambda r: r['scenarios'].pop(),
+                       lambda r: r['scenarios'].append(r['scenarios'][0]),
+                       lambda r: r['scenarios'][0].update(product='blindtest'),
+                       lambda r: r['scenarios'][0]['stages'].pop(),
+                       lambda r: r['aggregate']['completed'].update(denominator=8),
+                       lambda r: r['scenarios'][0].update(runtime='Python')]:
+            changed = copy.deepcopy(self.first)
+            change(changed)
+            with self.assertRaises(ValueError): b.semantic(changed)
+
+    def test_terminal_replay_refuses_arbitrary_or_mutated_inputs_before_spawn(self):
+        with b.benchmark_sandbox() as root:
+            j = b.Journey(root / 'scenarios', self.manifest['scenarios'][0],
+                          b.ROOT / 'target/release/b2ige', b.ROOT / 'target/release/examples/adoption_fixture', {})
+            command = j.approval_command()
+            pin_file = j.controller / 'reviewed-input'
+            pin_file.write_text('fixed input')
+            j.approval_replays['primary'] = (command, {pin_file: b.digest(pin_file.read_bytes())}, {})
+            mutations = [lambda: command.__setitem__(0, '/bin/echo'),
+                         lambda: command.__setitem__(3, root / 'arbitrary-draft'),
+                         lambda: command.extend(['--yes']),
+                         lambda: j.env.update(UNREVIEWED='value'),
+                         lambda: pin_file.write_text('changed input'),
+                         lambda: j.row['stages'].append({'stage': 'verify'}),
+                         lambda: j.responses.update(verify={'verdict': 'PASS'}),
+                         lambda: pin_file.unlink()]
+            for mutate in mutations:
+                with self.subTest(mutation=mutate), mock.patch.object(b.subprocess, 'Popen') as spawn:
+                    command[:] = j.approval_command()
+                    j.env.clear(); j.responses.clear(); j.row['stages'].clear()
+                    pin_file.write_text('fixed input')
+                    mutate()
+                    with self.assertRaises((ValueError, OSError)): b._replay_fixture_confirmation(j)
+                    spawn.assert_not_called()
+        with mock.patch.object(b.subprocess, 'Popen') as spawn:
+            with self.assertRaises(ValueError): b._replay_fixture_confirmation(j)
+            spawn.assert_not_called()
+
+    def test_malformed_error_agent_cannot_hide_in_validator_error_fallback(self):
+        j = b.Journey(self.root, self.manifest['scenarios'][0],
+                      b.ROOT / 'target/release/b2ige', b.ROOT / 'target/release/examples/adoption_fixture', {})
+        # Real registered error response, then remove/extend fields without changing ERROR/3.
+        raw = subprocess.run([str(j.binary), 'report', 'missing', '--store', str(j.store),
+                              '--output', 'agent', '--protocol', '1'], capture_output=True)
+        original = b.decode(raw.stdout)
+        for mutate in [lambda r: r.pop('summary'), lambda r: r.update(unexpected=True)]:
+            value = copy.deepcopy(original); mutate(value)
+            response = subprocess.CompletedProcess([], 3, json.dumps(value).encode(), b'')
+            with self.assertRaises(ValueError): j.validate_agent(response, 'report')
+            (j.controller / 'agent-0.json').unlink()
 
 
 if __name__ == '__main__':
