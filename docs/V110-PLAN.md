@@ -18,7 +18,7 @@ paths; it does not replace them.
 
 ## Canonical baseline and release state
 
-The review is anchored to `/Users/kim/Projects/b2ige-verify`:
+The review is anchored to the canonical `main` checkout:
 
 | Item | Canonical fact |
 |---|---|

@@ -1388,3 +1388,84 @@ fn init_preserves_custom_registry_bytes_and_verify_rejects_ambiguous_or_malforme
         assert!(!c.dir.join("runs").exists());
     }
 }
+
+#[test]
+fn system_executable_aliases_resolve_to_the_bytes_pinned_in_prepared_contracts() {
+    for executable in ["/usr/bin/python3", "/bin/sh"] {
+        let input = Path::new(executable);
+        let resolved = verify_cli::adoption::path(input).unwrap();
+        assert_eq!(resolved, fs::canonicalize(input).unwrap());
+        assert!(!fs::symlink_metadata(&resolved)
+            .unwrap()
+            .file_type()
+            .is_symlink());
+        assert_eq!(
+            verify_core::behavior::executable_identity(input).unwrap(),
+            verify_core::behavior::executable_identity(&resolved).unwrap()
+        );
+    }
+    let c = sideeffect::Case::new("safe");
+    let input = c.dir.join("input.json");
+    save(&input, &c.contract);
+    let out = c.dir.join("draft");
+    code(
+        &cli()
+            .args(["prepare", "--product", "sideeffect", "--config"])
+            .arg(&input)
+            .arg("--fixture")
+            .arg(c.dir.join("fixture"))
+            .arg("--out")
+            .arg(&out)
+            .output()
+            .unwrap(),
+        0,
+    );
+    let prepared: verify_core::sideeffect::SideEffectContract =
+        verify_cli::integration::read(&out.join("sideeffect.json")).unwrap();
+    assert_eq!(
+        prepared.trigger.executable,
+        fs::canonicalize("/usr/bin/python3").unwrap()
+    );
+    assert_eq!(
+        prepared.trigger.executable_hash,
+        verify_core::behavior::executable_identity(&prepared.trigger.executable).unwrap()
+    );
+}
+
+#[test]
+fn system_alias_support_never_admits_project_controller_or_fixture_links_or_traversal() {
+    use std::os::unix::fs::symlink;
+    let c = sideeffect::Case::new("safe");
+    let controller = c.dir.join("controller");
+    fs::create_dir(&controller).unwrap();
+    for directory in [&c.dir, &controller, &c.dir.join("fixture")] {
+        // Even a link to the genuine system executable remains user indirection.
+        let executable = directory.join("python3");
+        symlink("/usr/bin/python3", &executable).unwrap();
+        assert!(verify_cli::adoption::path(&executable).is_err());
+        let alias = directory.join("bin");
+        symlink("/usr/bin", &alias).unwrap();
+        assert!(verify_cli::adoption::path(&alias.join("python3")).is_err());
+    }
+    for input in ["/usr/bin/../bin/python3", "/bin/../bin/sh"] {
+        assert!(verify_cli::adoption::path(Path::new(input)).is_err());
+    }
+    let mut contract = c.contract.clone();
+    contract.trigger.executable = controller.join("python3");
+    let input = c.dir.join("input.json");
+    save(&input, &contract);
+    let out = c.dir.join("draft");
+    code(
+        &cli()
+            .args(["prepare", "--product", "sideeffect", "--config"])
+            .arg(input)
+            .arg("--fixture")
+            .arg(c.dir.join("fixture"))
+            .arg("--out")
+            .arg(&out)
+            .output()
+            .unwrap(),
+        3,
+    );
+    assert!(!out.exists());
+}

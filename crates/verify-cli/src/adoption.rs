@@ -32,8 +32,56 @@ fn bad(message: &str) -> io::Error {
     io::Error::other(InputError(message.into()))
 }
 
-/// Resolve paths once for persisted adoption inputs. Reject symlinks, special files,
-/// parent traversal, and missing intermediate directories. No filesystem writes.
+// Linux distributions use /bin -> usr/bin and executable aliases such as
+// /usr/bin/python3 -> python3.10. Accept only direct aliases within the system
+// binary directories, with root-owned, non-writable parents and destinations.
+// A project link to a system executable is still not a system alias.
+#[cfg(target_os = "linux")]
+fn linux_system_alias(p: &Path, link: &fs::Metadata) -> io::Result<Option<PathBuf>> {
+    use std::os::unix::fs::MetadataExt;
+    let directory_target = match p.to_str() {
+        Some("/bin") => Some(Path::new("/usr/bin")),
+        Some("/sbin") => Some(Path::new("/usr/sbin")),
+        _ => None,
+    };
+    let system_bin = |p: &Path| p == Path::new("/usr/bin") || p == Path::new("/usr/sbin");
+    if link.uid() != 0 || (directory_target.is_none() && !p.parent().is_some_and(system_bin)) {
+        return Ok(None);
+    }
+    let target = p
+        .parent()
+        .expect("system alias parent")
+        .join(fs::read_link(p)?);
+    if target.components().any(|p| p == Component::ParentDir)
+        || match directory_target {
+            Some(expected) => target != expected,
+            None => !target.parent().is_some_and(system_bin),
+        }
+    {
+        return Ok(None);
+    }
+    let metadata = fs::symlink_metadata(&target)?;
+    if !(if directory_target.is_some() {
+        metadata.is_dir()
+    } else {
+        metadata.is_file() && metadata.mode() & 0o111 != 0
+    }) {
+        return Ok(None);
+    }
+    // Check the complete source parent and destination chains. Never follow a
+    // second link, a writable system directory, or a link into a user's tree.
+    for path in p.ancestors().skip(1).chain(target.ancestors()) {
+        let m = fs::symlink_metadata(path)?;
+        if m.uid() != 0 || m.mode() & 0o022 != 0 || m.file_type().is_symlink() {
+            return Ok(None);
+        }
+    }
+    Ok(Some(target))
+}
+
+/// Resolve paths once for persisted adoption inputs. Only documented OS aliases
+/// are normalized; reject other symlinks, special files and parent traversal.
+/// No filesystem writes.
 pub fn path(input: &Path) -> io::Result<PathBuf> {
     let absolute = if input.is_absolute() {
         input.to_owned()
@@ -59,7 +107,14 @@ pub fn path(input: &Path) -> io::Result<PathBuf> {
             _ => resolved.push(part),
         }
         match fs::symlink_metadata(&resolved) {
-            Ok(m) if m.file_type().is_symlink() => return Err(bad("symlink path is not accepted")),
+            Ok(m) if m.file_type().is_symlink() => {
+                #[cfg(target_os = "linux")]
+                if let Some(target) = linux_system_alias(&resolved, &m)? {
+                    resolved = target;
+                    continue;
+                }
+                return Err(bad("symlink path is not accepted"));
+            }
             Ok(m) if !m.is_file() && !m.is_dir() => {
                 return Err(bad("path must be a regular file or directory"))
             }

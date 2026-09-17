@@ -46,7 +46,12 @@ overlap the fixture/workspace being hashed. Preparation never executes a target.
 
 Paths in supplied configs resolve from the invocation working directory. Prepared
 paths become absolute; hashes bind actual executable bytes, fixture/workspace
-contents and existing input identities. Named inputs must be public and symlink-free.
+contents and existing input identities. Named inputs must be public. Linux's standard
+`/bin`/`/sbin` aliases and direct executable aliases within `/usr/bin` or `/usr/sbin`
+are resolved only when root owns the link, every parent and the destination, and
+the parents/destination are not group- or world-writable. The resolved path is
+persisted and its actual bytes are hashed. Other symlinks, including project or
+controller links to a system executable, remain rejected.
 Do not pass a production database or a directory containing private artifacts.
 
 ### Behavior: reference and candidate have different roles
