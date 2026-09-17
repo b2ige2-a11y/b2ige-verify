@@ -156,7 +156,7 @@ product-scoped run, absent Docker evidence, or a historical baseline snapshot.
 
 ## P9 packaging version decision
 
-Product/package version is 0.2.0 (local release candidate). The new release manifest is
+Product/package version is 0.2.0 (published GitHub/native release; npm publication deferred/private). The new release manifest is
 independent schema v1 and does not change any authoritative product/evidence/report schema.
 Benchmark comparison rejects benchmark/schema/corpus mismatches and recomputes canonical semantic
 content hashes; stored hash fields are not comparison authority. P1–P8 verdict semantics remain unchanged.

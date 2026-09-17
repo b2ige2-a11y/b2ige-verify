@@ -1,9 +1,23 @@
 # B2IGE V100 State
 
 Program: B2IGE Verify V100
-Branch: automation/v100-longhorizon
-Status: WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT
-Current phase: External CI + Private Holdout
+Branch: main
+State: v0.2.0 released
+Status: COMPLETE
+Current phase: v0.2.0 released
+
+Release record:
+- Release commit/tag target: `1fc1b8cda1e005a8d90ce5b7388cc2a62538b8d8`.
+- Final exact-main GitHub Actions run: `35159158561`.
+  Windows source/build: PASS; macOS Apple Silicon: PASS; macOS Intel: PASS;
+  Linux x86_64 actual-Docker/full benchmark: PASS.
+- Final fresh isolated holdout: PASS. Sanitized aggregate: RealBench 14/14,
+  RedBench/trust 35/35, leakage 6/6, regression 6/6, total 61/61.
+- Holdout authoritative checking was deterministic; an LLM did not directly assign product verdicts.
+  It used a dedicated workspace and isolated Docker-in-Docker candidate execution under the same
+  macOS user account. No OS-account-level separation or stronger independence is claimed.
+- Npm publication remains deferred/private. macOS binaries remain unsigned and unnotarized.
+  Windows remains source/build CI only; no Windows runtime/native archive release is claimed.
 
 Completed:
 - V100-5 Verifier Qualification + Protocol + Release: deterministic phase gate and independent audit passed.
@@ -20,9 +34,9 @@ Completed:
 - Luna / Max LongHorizon execution verified.
 
 Current objective:
-Local V100 implementation and deterministic gates are complete. Final release proof requires external cross-platform CI and an independent private holdout unavailable to the development agent.
+V100 implementation, final external validation, isolated holdout, and v0.2.0 publication are complete.
 
-Next phases:
+V100 phase history:
 1. V100-0 Trust Lock
 2. V100-1 Seal + Identity + Receipt Foundation
 3. V100-2 Adversarial Trust

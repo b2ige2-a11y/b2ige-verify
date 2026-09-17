@@ -29,11 +29,10 @@ With the native binary and Docker image already available, expect about 30–60 
 Docker pull or image build can take longer. Docker is required; missing Docker or image
 prerequisites stop the demo and do not turn into PASS.
 
-### Download the v0.2.0 release candidate
+### Download the v0.2.0 release
 
-0.2.0 is a release candidate, not a published release. Final publication still requires fresh
-external CI and an independent private holdout. Once published, choose the archive for your
-machine from the [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0):
+The v0.2.0 GitHub Release is published. Final external CI and the final fresh isolated holdout
+completed before publication. Choose the archive for your machine from the [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0):
 
 | Platform | Native archive |
 |---|---|
@@ -164,7 +163,7 @@ vulnerability reporting instead.
 ## Install and run
 
 Native archives are the authoritative first distribution. The historical v0.1.0 macOS binaries
-are intentionally unsigned and unnotarized; the 0.2.0 candidate makes no new Developer ID signing
+are intentionally unsigned and unnotarized; the 0.2.0 release makes no new Developer ID signing
 or notarization claim. See [installation and platforms](docs/INSTALL.md) for the complete policy.
 
 For a source checkout, `python3 scripts/setup.py` performs the locked release build when needed
@@ -172,7 +171,7 @@ and safely creates the empty project registry. It never invents contracts or app
 registration and the [Codex/GitHub workflow](docs/CI.md) remain explicit trusted-operator steps.
 
 The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred until
-the `@b2ige` scope is actually controlled; npm is not required for this 0.2.0 release candidate.
+the `@b2ige` scope is actually controlled; npm is not required for this 0.2.0 release.
 The historical GitHub 0.1.0 release likewise did not require npm.
 
 ## Shared core and development

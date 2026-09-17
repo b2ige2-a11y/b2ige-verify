@@ -61,3 +61,24 @@ External native CI, independent audit and private holdout are separate outstandi
 requirements. The development agent never accesses or executes private holdout
 material. Even after every locally achievable check passes, final local state is
 `WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT`, never independent holdout PASS.
+
+## Final v0.2.0 release record
+
+The historical local gate above retained its bounded meaning: its
+`WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT` output did not prove external completion, holdout
+completion, tagging or publication. Those later release steps completed separately before the
+public v0.2.0 release:
+
+- Release commit/tag target: `1fc1b8cda1e005a8d90ce5b7388cc2a62538b8d8`.
+- Final exact-main GitHub Actions run: `35159158561`. Windows source/build, macOS Apple Silicon,
+  macOS Intel and Linux x86_64 actual-Docker/full benchmark checks were PASS.
+- Final fresh isolated holdout: PASS. Sanitized aggregate: RealBench 14/14, RedBench/trust 35/35,
+  leakage 6/6, regression 6/6, total 61/61.
+- Holdout authoritative checking was deterministic; an LLM did not directly assign product verdicts.
+  It used a dedicated workspace and isolated Docker-in-Docker candidate execution under the same
+  macOS user account. This record does not claim OS-account-level separation or stronger
+  independence than that setup established.
+- The `v0.2.0` tag and [GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
+  are published. Npm publication remains deferred/private; macOS binaries remain unsigned and
+  unnotarized, and Windows remains source/build CI only without a Windows runtime/native archive
+  release.

@@ -1,12 +1,14 @@
 # Changelog
 
-## 0.2.0 — release candidate (not released)
+## 0.2.0 — released (npm deferred)
 
 - Trust: Trust Lock and the seal/identity/receipt foundation add executable trust boundaries without assigning verdicts.
 - Adversarial trust hardening: fail-closed admission, identity, evidence and receipt checks strengthen the bounded verifier boundary.
 - Proof and adoption: bounded RealBench/RedBench proof plus adoption and diff-aware verification safeguards reuse verified product execution.
-- Qualification and release: verifier qualification, protocol/conformance and release-foundation tooling make the local candidate stop at an explicit publication boundary.
-- Final publication still requires fresh external CI and an independent private holdout; npm publication remains deferred until the `@b2ige` scope is controlled.
+- Qualification and release: verifier qualification, protocol/conformance and release-foundation tooling document the local qualification boundary and completed publication record.
+- Final external CI and the final fresh isolated holdout completed before publication. The exact-main GitHub Actions run `35159158561` passed Windows source/build, macOS Apple Silicon, macOS Intel and Linux x86_64 actual-Docker/full benchmark checks. The holdout passed with the sanitized aggregate RealBench 14/14, RedBench/trust 35/35, leakage 6/6, regression 6/6, total 61/61.
+- Holdout authoritative checking was deterministic; an LLM did not directly assign product verdicts. The holdout used a dedicated workspace and isolated Docker-in-Docker candidate execution under the same macOS user account; no OS-account-level separation is claimed.
+- Npm publication remains deferred/private.
 
 ## 0.1.0 — released (npm deferred)
 

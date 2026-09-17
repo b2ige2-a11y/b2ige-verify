@@ -1,8 +1,9 @@
-# Installation — B2IGE Verify 0.2.0 release candidate
+# Installation — B2IGE Verify 0.2.0
 
-0.2.0 is a release candidate and is not yet published. Final publication still requires fresh
-external CI and an independent private holdout. Once published, use the [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
-and its public archives and SHA256SUMS. The instructions below apply to that release archive.
+0.2.0 is published. Its [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
+is the installation source, with public archives and SHA256SUMS. The instructions below apply to
+that release archive. Final external CI and the final fresh isolated holdout completed before
+publication.
 Verify its SHA-256 against the accompanying SHA256SUMS from a trusted channel; a checksum alone
 does not authenticate the publisher.
 The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred
@@ -52,7 +53,7 @@ Keep all binaries together. `p5-effect-fixture` is a synthetic benchmark provide
 by `b2ige bench`; `b2ige-demo` and `b2ige-demo-effect` prepare public examples only.
 Do not register these helpers as production verification targets accidentally.
 For the historical v0.1.0 release, macOS binaries were intentionally unsigned and unnotarized.
-The 0.2.0 candidate makes no Developer ID signing or notarization claim. Gatekeeper may show a
+The 0.2.0 release makes no Developer ID signing or notarization claim. Gatekeeper may show a
 warning; signing is a future release improvement.
 See [provenance](RELEASE-PROVENANCE.md). No script removes quarantine or bypasses OS controls automatically.
 
@@ -94,5 +95,5 @@ workspace-external benchmark/example/test sources require the whole source distr
 No `cargo install verify-cli` registry command is claimed. Source builds require Rust stable,
 a C toolchain, and Cargo dependencies (download on first build; Cargo.lock pins versions).
 See [release packaging](RELEASE.md). The [npm wrapper](../npm/b2ige/README.md) keeps its
-publication guard active; npm remains deferred and is not required for this 0.2.0 release candidate.
+publication guard active; npm remains deferred and is not required for this 0.2.0 release.
 The historical GitHub 0.1.0 release also did not require npm.
