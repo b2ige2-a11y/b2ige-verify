@@ -94,3 +94,6 @@ Docker controller setup is bounded by the existing product's 30 seconds per call
 and corpus image builds by 120 seconds per Docker command. These are operational
 bounds, not performance release thresholds. Keep `RUST_TEST_THREADS=4` for host
 contention when running the full tests.
+
+V110 adoption workflow measurements are separately versioned in
+[adoption-v1](adoption-v1/README.md); they do not alter P8 labels or baselines.

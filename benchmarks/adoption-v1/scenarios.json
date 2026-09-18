@@ -1,0 +1,150 @@
+{
+  "schema_version": "1",
+  "corpus_version": "adoption-v1",
+  "authority_source_path": "benchmarks/corpus/cases.v1.json",
+  "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+  "trusted_constructors": {
+    "crates/verify-mcp/tests/support/behavior.rs": "sha256:c66a9be8e2e87bbcf0fd078c8b9f2e6fdfe01bd7480d0129ce97e19c7f5c6d49",
+    "crates/verify-mcp/tests/support/sideeffect.rs": "sha256:30250df48e7e7f44eaacefb1dc96ef8105becc1b8a846d569b14da6c2c1d28ee",
+    "benchmarks/corpus/blindtest.rs": "sha256:40ca3843c7a435fd48baaf60d831252f4a9509ababdc9e2339b67223e7eb7ba1"
+  },
+  "scenarios": [
+    {
+      "scenario_id": "rust-preserving",
+      "authority_source_case_id": "behavior.preserving",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "behavior",
+      "expected_classification": "CORRECT",
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "project": "rust-cli",
+      "runtime": "Rust"
+    },
+    {
+      "scenario_id": "node-regression",
+      "authority_source_case_id": "behavior.stdout",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "behavior",
+      "expected_classification": "BUGGY",
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "project": "node-cli",
+      "runtime": "Node.js"
+    },
+    {
+      "scenario_id": "python-preserving",
+      "authority_source_case_id": "behavior.preserving",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "behavior",
+      "expected_classification": "CORRECT",
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "project": "python-cli",
+      "runtime": "Python"
+    },
+    {
+      "scenario_id": "sqlite-safe",
+      "authority_source_case_id": "sideeffect.normal",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "sideeffect",
+      "expected_classification": "CORRECT",
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "project": "sqlite-ledger",
+      "runtime": "Python / SQLite"
+    },
+    {
+      "scenario_id": "sqlite-duplicate",
+      "authority_source_case_id": "sideeffect.unsafe_retry",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "sideeffect",
+      "expected_classification": "BUGGY",
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "project": "sqlite-ledger",
+      "runtime": "Python / SQLite"
+    },
+    {
+      "scenario_id": "sqlite-corrupt",
+      "authority_source_case_id": "sideeffect.corrupt",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "sideeffect",
+      "expected_classification": "INCOMPLETE",
+      "allowed_verdicts": [
+        "ERROR"
+      ],
+      "project": "sqlite-ledger",
+      "runtime": "Python / SQLite"
+    },
+    {
+      "scenario_id": "docker-correct",
+      "authority_source_case_id": "blindtest.correct",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "blindtest",
+      "expected_classification": "CORRECT",
+      "allowed_verdicts": [
+        "PASS"
+      ],
+      "project": "docker-credentials",
+      "runtime": "Node.js / Docker"
+    },
+    {
+      "scenario_id": "docker-mutant",
+      "authority_source_case_id": "blindtest.mutant_a",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "blindtest",
+      "expected_classification": "BUGGY",
+      "allowed_verdicts": [
+        "FAIL"
+      ],
+      "project": "docker-credentials",
+      "runtime": "Node.js / Docker"
+    },
+    {
+      "scenario_id": "docker-partial",
+      "authority_source_case_id": "blindtest.partial",
+      "authority_source_path": "benchmarks/corpus/cases.v1.json",
+      "authority_source_identity": "sha256:ce7fefccbd99d119b249fe32c350111a4c395073db12b2ee90a13874747cda78",
+      "product": "blindtest",
+      "expected_classification": "INCOMPLETE",
+      "allowed_verdicts": [
+        "INCONCLUSIVE"
+      ],
+      "project": "docker-credentials",
+      "runtime": "Node.js / Docker"
+    }
+  ],
+  "project_inventory": {
+    "docker-credentials/Dockerfile": "sha256:7cf5c2aeefb2153e899ea94f4faa3dfe162ec3989c9d722b12cc2597430a77c7",
+    "docker-credentials/README.md": "sha256:7b84f0af547448edc0dd264a7eb87f843cd960e05139af05f0d7ef6f07723938",
+    "docker-credentials/correct.js": "sha256:5b0b3d7ed481e86521e74e01f57f3299a39a1fd7a03bb0480affb6fab8322676",
+    "docker-credentials/mutant_a.js": "sha256:aa3c2c215a82beabd7ab86fe959258409026a1bf76ab534a1e918fbd7d04ba85",
+    "docker-credentials/package.json": "sha256:dec59601acfa4999fc96319233370d0145a5ecd32a000240343e681cc5eae3a9",
+    "node-cli/README.md": "sha256:e7035d3dc49b4bd587ad79e9e6859df72a48b6fa6de629c6add300e93787c415",
+    "node-cli/package.json": "sha256:807c512196ea49e9eca0b756d4de7872911fe5d440eb606b7a3b40964cbacd9f",
+    "node-cli/src/cli.js": "sha256:5df737617b18125f00be9d9c3c3439979803d00145af85a31a80844ceacaec88",
+    "node-cli/src/status.js": "sha256:b60e06f0018975638873c8bd44e46ef6092fbd84d9b5b774406b0b2628801682",
+    "python-cli/README.md": "sha256:e7035d3dc49b4bd587ad79e9e6859df72a48b6fa6de629c6add300e93787c415",
+    "python-cli/pyproject.toml": "sha256:38925df1d08b26525e39f267816d980ea44a2b2cb6b9490f07d5785f39f1a2d6",
+    "python-cli/src/cli.py": "sha256:1ed6f726953f53e72ee9a5077a6b77001406268a9144f71c9a62d5cf7eaadc72",
+    "python-cli/src/status.py": "sha256:81ecf165fdf62fd53af786a8798fe69afc8d5a51880ff954f6b63d57e9729f20",
+    "rust-cli/Cargo.toml": "sha256:2051cd1916c87bee4c8f28c0237831cb3190ff81063b2a0b5c0dd4cfdf1c2d88",
+    "rust-cli/README.md": "sha256:e7035d3dc49b4bd587ad79e9e6859df72a48b6fa6de629c6add300e93787c415",
+    "rust-cli/src/main.rs": "sha256:e4fd3167bd7b1bbba0406b529304e42108c0c68654dc97193f796d2b3fe30c1f",
+    "sqlite-ledger/README.md": "sha256:d1f239d525c6321d243620f842aeb04b6a7d8643ec91fba2e2aa6a996026fbc0",
+    "sqlite-ledger/pyproject.toml": "sha256:d694e3ad34a63616027d1fa5bf65633664e10e6c92f5f24fe92975663bb7791b"
+  }
+}
