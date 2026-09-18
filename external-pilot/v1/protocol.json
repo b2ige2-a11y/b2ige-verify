@@ -1,0 +1,24 @@
+{
+  "kind": "external-adoption-pilot",
+  "schema_version": "2",
+  "pilot_version": "external-pilot-v1",
+  "authoritative": false,
+  "status": "EVIDENCE_PENDING",
+  "journeys": [
+    {"product": "behavior", "scenario": "rust-preserving"},
+    {"product": "sideeffect", "scenario": "sqlite-safe"},
+    {"product": "blindtest", "scenario": "docker-correct"}
+  ],
+  "stages": ["setup", "inspect", "init", "materialize", "prepare", "approve", "doctor", "human", "agent", "report"],
+  "friction": ["installation", "product_selection", "terminology", "path_or_identity", "trusted_controller", "approval", "readiness", "docker", "evidence", "ci", "agent", "mcp", "recovery", "other"],
+  "assistance": ["none", "public_docs", "normal_tool_docs", "ai_assistant", "external_human", "b2ige_developer"],
+  "questions": [
+    {"id": "q1", "question": "Can missing verdict-critical evidence become PASS?", "expected": "no", "context": "Missing required evidence cannot establish PASS."},
+    {"id": "q2", "question": "Can observer failure be mistaken for product failure?", "expected": "no", "context": "The verifier must distinguish observer/infrastructure failure from a supported product violation."},
+    {"id": "q3", "question": "Can nondeterminism create a false divergence?", "expected": "yes", "context": "Uncontrolled nondeterminism can; stability policy and equivalent inputs bound this risk, not exhaustively eliminate it."},
+    {"id": "q4", "question": "Can baseline poisoning hide a regression?", "expected": "yes", "context": "A poisoned trusted baseline can hide a regression; candidates cannot auto-update it."},
+    {"id": "q5", "question": "Can the agent read verifier secrets/private controller material?", "expected": "yes", "context": "An unrestricted same-user host agent can. An isolated Docker target must not receive controller material; the public fixture is not secret."},
+    {"id": "q6", "question": "Is a failure reproducible from recorded experiment inputs?", "expected": "yes", "context": "Within recorded scope when replay is available; otherwise replayability must explicitly be unavailable with a reason. Not universal paired replay."}
+  ],
+  "claim_boundary": "Bounded external operator sample only: no universal usability or compatibility, exhaustive verifier correctness, same-user host secrecy, statistically representative adoption, independent correctness labels, publisher authentication, or market demand. Does not override V100. Public archetypes do not establish third-party project compatibility. Self-attestation is not cryptographic identity proof. Hashes are integrity identifiers, not signatures."
+}

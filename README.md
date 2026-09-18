@@ -17,6 +17,8 @@ Buggy implementation   → FAIL
 
 Start with the [30-second BlindTest demo](#30-second-blindtest-demo).
 
+The [external operator pilot kit](docs/V110-EXTERNAL-PILOT.md) prepares a bounded V110-D study; genuine external evidence remains **EVIDENCE_PENDING**.
+
 For your own project, the current source checkout provides the [Easy Adoption path](docs/ADOPTION.md):
 `inspect → init → prepare → trusted approve → doctor → verify ID`.
 These new commands are not in the unchanged v0.2.0 archives. Preparation is public and
