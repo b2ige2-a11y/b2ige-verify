@@ -155,7 +155,8 @@ pipeline `|| true`, forced zero exit or `continue-on-error` is used.
 The repository workflow includes a `windows-latest` source/build job for
 `x86_64-pc-windows-msvc`: locked Cargo fetch, fmt, clippy, workspace test compilation
 and release build. V110-C adds bounded version/help/inspect/idempotent init/setup/CI
-preview runtime smoke; its Windows execution is pending external CI. It is deliberately separate from the Unix/Docker release smoke. This Mac run does
+preview runtime smoke, passed in the prior V110-C CI recorded in `v110/STATE.md`.
+Fresh 0.3.0 Windows PR/exact-main CI is pending. It is deliberately separate from the Unix/Docker release smoke. This Mac run does
 not claim Windows runtime, product PASS, BlindTest Docker, or Windows release-archive
 evidence; the job is the CI design and its eventual run is the platform evidence.
 

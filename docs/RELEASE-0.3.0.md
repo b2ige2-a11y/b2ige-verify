@@ -6,8 +6,9 @@ Publication, independent release audit, fresh cross-platform PR/exact-main CI an
 final isolated private holdout: **PENDING**. No future run IDs or hashes are assigned.
 
 Branch: `release/0.3.0`. Preparation base: `8e4d60dbeba64d8aff6bf328e4ced3174597ffa3`.
-The candidate source identity is the single `release: prepare 0.3.0 candidate` commit;
-resolve it with `git rev-parse HEAD` after committing. Pre-commit local artifacts
+The preparation commit is `3448a07835f5f2268b896f7899de042a445cb536`.
+If the independent audit requires repairs, one subsequent repair commit becomes the
+audited candidate HEAD; resolve it with `git rev-parse HEAD`. Pre-commit local artifacts
 record that base plus `working_tree_dirty: true` and their source inventory hash.
 They are not clean final-commit artifacts and must not be published. Regenerate the
 final artifacts against the exact qualified main commit after merge.
@@ -37,9 +38,9 @@ approval/evidence expectations change.
 
 | Platform | Candidate scope | Fresh 0.3.0 qualification |
 |---|---|---|
-| macOS Apple Silicon | Native archive; VERIFIED_NATIVE within recorded scope | Local gate records only actual execution; remote PR/final CI PENDING |
-| macOS Intel | Native archive; VERIFIED_NATIVE within documented partial no-Docker scope | Fresh PR/final native CI PENDING |
-| Linux x86_64 | Native archive; actual Docker/runtime/full benchmark scope | Fresh PR/final native CI PENDING |
+| macOS Apple Silicon | Native archive; prior VERIFIED_NATIVE within recorded scope | Local gate records only actual execution; remote PR/final CI PENDING |
+| macOS Intel | Native archive; prior VERIFIED_NATIVE within documented partial no-Docker scope | Fresh PR/final native CI PENDING |
+| Linux x86_64 | Native archive; prior VERIFIED_NATIVE with actual Docker/runtime/full benchmark scope | Fresh PR/final native CI PENDING |
 | Windows x64 | Source/build + bounded CLI runtime smoke; not VERIFIED_NATIVE | Fresh Windows runner CI PENDING; no public native archive |
 | Linux arm64 | DEFERRED | No native runner or archive; macOS Docker arm64 is not native Linux evidence |
 
@@ -110,6 +111,9 @@ CLI/product/report/MCP smoke and the complete public 31-case benchmark. Do not u
 `--without-docker` or `--skip-benchmark` to claim this full local gate. The separate
 adoption regression validates its existing public measured data and fresh bounded
 journeys; do not overwrite the measured record. Final private holdout is NOT run here.
+Installed smoke executes inspect/init/prepare/interactive-approval refusal/readiness/
+registered verification and CI bootstrap; PATH traps and a missing installed CLI
+negative control reject fallback. Help/readiness checks do not establish product PASS.
 
 The generated manifest must bind actual base/dirty state, target/runtime scope,
 source inventory, binary/archive/notice/SBOM hashes, benchmark identity and supplied
@@ -117,8 +121,9 @@ CI metadata. Packaging alone grants no runtime or publication readiness. Keep
 `publication_ready=false`, `owner_publication_authorized=false`. Embedded manifests
 record pre-smoke state; only the external index records subsequent runtime scope.
 
-Before the one local commit, restore the historical tracked
-`release/release-manifest.json` from the preparation base. Keep candidate artifacts
+Package from clean audited HEAD after committing any repairs, then validate its
+commit and `working_tree_dirty=false` in all generated manifests. After validation,
+restore the historical tracked `release/release-manifest.json` from HEAD. Keep candidate artifacts
 and diagnostic logs ignored; never commit dirty-build hashes, target caches, raw
 runtime/holdout stores, credentials or participant data. The historical manifest
 is not expected to validate under the new product constraint; validate the generated

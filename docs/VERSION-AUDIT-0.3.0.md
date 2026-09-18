@@ -1,7 +1,7 @@
 # Release version occurrence audit
 
 Scope: every literal 0.1.0 / 0.2.0 / 0.3.0 occurrence in the public Git inventory,
-including untracked release-prep files, before packaging. The rows group occurrences
+including the reviewed audit repair, before packaging. The rows group occurrences
 by file/version/category; repeated line numbers mean multiple occurrences on that line.
 This audit document itself is current release documentation and excluded from its own
 enumeration. Ignored build caches, local diagnostics and candidate artifacts are generated
@@ -9,7 +9,7 @@ state, not release source. Generated candidate product versions are independentl
 by packaging, SBOM, manifest, archive and installed-binary gates. No stale product reference
 is intentionally retained. Old plugin/MCPB pins are a separate historical distribution.
 Dependency/license identifiers and frozen fixture producer versions are independent
-historical values, not B2IGE product-version requirements. Negative 9.9.9 fixtures remain.
+historical values, not B2IGE product-version requirements. Negative 9.9.9 fixtures and the deliberately stale CLI negative control remain.
 
 | File | Literal | Classification | Line occurrences |
 |---|---|---|---|
@@ -47,16 +47,16 @@ historical values, not B2IGE product-version requirements. Negative 9.9.9 fixtur
 | `docs/ADOPTION.md` | 0.2.0 | documentation referring specifically to old public release | 3 |
 | `docs/ADOPTION.md` | 0.3.0 | current product version updated (including release procedure/tests) | 3 |
 | `docs/CI.md` | 0.2.0 | documentation referring specifically to old public release | 5 |
-| `docs/CI.md` | 0.3.0 | current product version updated (including release procedure/tests) | 3 |
+| `docs/CI.md` | 0.3.0 | current product version updated (including release procedure/tests) | 3, 159 |
 | `docs/CONTRACTS.md` | 0.3.0 | current product version updated (including release procedure/tests) | 15, 159 |
 | `docs/INSTALL.md` | 0.1.0 | documentation referring specifically to old public release | 76, 120 |
 | `docs/INSTALL.md` | 0.2.0 | documentation referring specifically to old public release | 14, 16, 16, 16, 57, 60, 63, 69, 77, 119, 127 |
 | `docs/INSTALL.md` | 0.3.0 | current product version updated (including release procedure/tests) | 1, 3, 6, 7, 11, 11, 12, 12, 118, 124, 127 |
 | `docs/QUICKSTART.md` | 0.2.0 | documentation referring specifically to old public release | 64, 88 |
 | `docs/QUICKSTART.md` | 0.3.0 | current product version updated (including release procedure/tests) | 63, 88 |
-| `docs/RELEASE-0.3.0.md` | 0.1.0 | documentation referring specifically to old public release | 73, 140 |
-| `docs/RELEASE-0.3.0.md` | 0.2.0 | documentation referring specifically to old public release | 85, 140 |
-| `docs/RELEASE-0.3.0.md` | 0.3.0 | current product version updated (including release procedure/tests) | 1, 4, 8, 9, 30, 38, 58, 59, 60, 61, 62, 63, 73, 77, 78, 85, 86, 131, 139, 153 |
+| `docs/RELEASE-0.3.0.md` | 0.1.0 | documentation referring specifically to old public release | 74, 145 |
+| `docs/RELEASE-0.3.0.md` | 0.2.0 | documentation referring specifically to old public release | 86, 145 |
+| `docs/RELEASE-0.3.0.md` | 0.3.0 | current product version updated (including release procedure/tests) | 1, 4, 8, 31, 39, 59, 60, 61, 62, 63, 64, 74, 78, 79, 86, 87, 136, 144, 158 |
 | `docs/RELEASE-PROVENANCE.md` | 0.1.0 | historical record retained | 1, 3, 7, 10, 13, 15, 17, 27, 33 |
 | `docs/RELEASE.md` | 0.1.0 | historical record retained | 1, 3, 9, 17, 17, 128 |
 | `docs/RELEASE.md` | 0.2.0 | historical record retained | 135 |
@@ -94,7 +94,8 @@ historical values, not B2IGE product-version requirements. Negative 9.9.9 fixtur
 | `scripts/test-distribution.py` | 0.2.0 | documentation/test/code retaining old exact public release support | 109, 110, 110, 111, 305 |
 | `scripts/test-distribution.py` | 0.3.0 | current product version updated (including release procedure/tests) | 42, 49, 52, 294, 295, 295, 296, 305, 310, 315, 320 |
 | `scripts/test-distribution.py` | 0.3.0 | test negative fixture deliberately mismatched | 298, 298, 328, 329, 393 |
-| `scripts/test-release.py` | 0.3.0 | current product version updated (including release procedure/tests) | 20, 33, 34, 35, 36, 53, 58, 73, 81 |
+| `scripts/test-release.py` | 0.2.0 | test negative fixture deliberately mismatched | 63 |
+| `scripts/test-release.py` | 0.3.0 | current product version updated (including release procedure/tests) | 22, 35, 37, 38, 39, 72, 77, 82, 87, 102, 110 |
 | `scripts/validate-archive.py` | 0.3.0 | current product version updated (including release procedure/tests) | 34, 45 |
 | `server.json` | 0.1.0 | historical: independently pinned plugin/MCPB retained | 10, 14, 14 |
 | `skills/b2ige-verify/references/distribution.md` | 0.1.0 | documentation referring specifically to old public release | 8, 8 |

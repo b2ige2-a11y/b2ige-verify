@@ -6,10 +6,12 @@ import shutil
 import subprocess
 import importlib.util
 import pathlib
+import os
 import tarfile
 import tempfile
 import unittest
 from hygiene import ROOT, scan
+from installed_cli_smoke import check_cli
 
 spec = importlib.util.spec_from_file_location('validate_archive', pathlib.Path(__file__).with_name('validate-archive.py'))
 module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
@@ -31,6 +33,7 @@ class ReleaseSafety(unittest.TestCase):
                 ('Cargo.toml', 'publish = false', 'publish = true'),
                 ('crates/verify-cli/Cargo.toml', 'publish = false', 'publish = true'),
                 ('Cargo.lock', '0.3.0', '9.9.9'),
+                ('Cargo.lock', 'name = "verify-cli"', 'name = "missing-workspace-package"'),
                 ('npm/b2ige/package.json', '0.3.0', '9.9.9'),
                 ('npm/b2ige/native-manifest.json', '0.3.0', '9.9.9'),
                 ('release/release-manifest.schema.json', '0.3.0', '9.9.9'),
@@ -47,6 +50,32 @@ class ReleaseSafety(unittest.TestCase):
                     p.write_text(original)
         guard = json.loads((ROOT / 'npm/b2ige/package.json').read_text())['scripts']['prepublishOnly']
         self.assertNotEqual(subprocess.run(guard, shell=True, capture_output=True).returncode, 0)
+
+    def test_installed_smoke_rejects_stale_or_missing_commands_and_fallback(self):
+        binary = ROOT / 'target/release/b2ige'
+        self.assertTrue(binary.is_file(), 'build release workspace first')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp)
+            wrapper = root / 'b2ige'
+            # Delegate untouched commands to the actual CLI. Help remains current
+            # while each mutation independently breaks an installed surface.
+            for index, mutation in enumerate([
+                'if [ "$1" = "--version" ]; then echo "verify-cli 0.2.0"; exit 0; fi',
+                'if [ "$1" = "inspect" ]; then exit 64; fi',
+                'if [ "$1" = "trust" ] && [ "$3" != "--help" ]; then exit 0; fi',
+            ]):
+                work = root / str(index)
+                work.mkdir()
+                wrapper.write_text('#!/bin/sh\n' + mutation + '\nexec "' + str(binary) + '" "$@"\n')
+                wrapper.chmod(0o755)
+                with self.assertRaises(AssertionError):
+                    check_cli(wrapper, '0.3.0', work)
+            marker = root / 'fallback-used'
+            wrapper.write_text('#!/bin/sh\n: > "' + str(marker) + '"\nexit 0\n')
+            env = dict(os.environ, PATH=str(root) + os.pathsep + os.environ['PATH'])
+            with self.assertRaisesRegex(AssertionError, 'fallback forbidden'):
+                check_cli(root / 'absent/b2ige', '0.3.0', root, env)
+            self.assertFalse(marker.exists())
 
     def test_platform_signing_and_candidate_attestation_boundaries(self):
         targets = ['aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu']

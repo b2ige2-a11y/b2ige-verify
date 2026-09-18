@@ -44,12 +44,15 @@ def product_metadata(root):
     version = workspace['package']['version']
     assert version == '0.3.0', 'release product version'
     assert workspace['package']['publish'] is False, 'Cargo publication enabled'
+    packages = {}
     for member in workspace['members']:
         package = tomllib.loads((root / member / 'Cargo.toml').read_text())['package']
         assert package['version'] == {'workspace': True}
         assert package['publish'] is False or package['publish'] == {'workspace': True}, 'crate publication enabled'
+        packages[package['name']] = version
     locked = tomllib.loads((root / 'Cargo.lock').read_text())['package']
-    assert all(p['version'] == version for p in locked if 'source' not in p)
+    local = [p for p in locked if 'source' not in p]
+    assert len(local) == len(packages) and {p['name']: p['version'] for p in local} == packages, 'workspace lock inventory mismatch'
     npm = json.loads((root / 'npm/b2ige/package.json').read_text())
     assert npm['version'] == version and npm['private'] is True
     assert "throw Error('Publication blocked:" in npm['scripts']['prepublishOnly']
