@@ -1,11 +1,11 @@
 # V110-C platform and distribution (source / future candidate)
 
-This is source-checkout tooling for a future release decision. Published **v0.2.0**
+This tooling is included in the 0.3.0 local release candidate; publication is pending. Published **v0.2.0**
 and its tag/artifacts remain immutable. v0.2.0 does not contain V110-A adoption,
-V110-B adoption bench, or V110-C `ci init`. Package versions remain 0.2.0 during
-candidate testing; that version string alone does not identify V110 functionality.
+V110-B adoption bench, or V110-C `ci init`. Product packages are now 0.3.0; independent schemas remain unchanged.
+See [the release-specific procedure](RELEASE-0.3.0.md).
 No public release, npm publication or Cargo publication is part of this package.
-V110-C completion and external CI qualification remain separate decisions.
+V110-C completion is recorded in `v110/STATE.md`; fresh 0.3.0 external CI is pending.
 
 ## CI preview and explicit create-new write
 
@@ -87,17 +87,18 @@ commits are retained. These are bounded controls, not exhaustive secrecy proof.
 ## Version-pinned and offline installation
 
 Use the reviewed source copy of the Python stdlib helper (Python 3.12+). It is also
-included in future candidate native archives, not retroactively in public v0.2.0.
+included in 0.3.0 candidate native archives, not retroactively in public v0.2.0.
 
 ```sh
 python3 scripts/install-release.py --version 0.2.0 --destination /existing/new-install
 python3 scripts/install-release.py --offline \
-  --archive /trusted/b2ige-0.2.0-aarch64-apple-darwin.tar.gz \
+  --version 0.3.0 --archive /trusted/b2ige-0.3.0-aarch64-apple-darwin.tar.gz \
   --checksums /trusted/SHA256SUMS --destination /existing/new-install --smoke
 ```
 
-Online inventory is deliberately limited to the reviewed v0.2.0 target matrix.
-Both downloads use exact `/releases/download/v0.2.0/` assets; unknown versions fail
+Online inventory retains v0.2.0 and accepts the same reviewed three-target layout
+for v0.3.0 after publication. Before then, use local offline 0.3.0 artifacts.
+Both downloads use exact `/releases/download/vVERSION/` assets; unknown versions fail
 instead of falling back to latest. HTTPS delivery is restricted to the exact selected
 GitHub release URL and approved GitHub asset CDN hosts; redirects to another release,
 latest, an arbitrary host, credentials or a custom port are refused.
@@ -144,7 +145,7 @@ Obtain both assets and the helper from independently trusted channels.
 | macOS Apple Silicon | VERIFIED_NATIVE, documented no-Docker partial scope | Local candidate install/CLI/product smoke can be measured here; external workflow evidence remains separate |
 | macOS Intel | VERIFIED_NATIVE, documented no-Docker partial scope | Fresh installer/archive gate added to existing native CI; new external run required |
 | Linux x86_64 | VERIFIED_NATIVE, actual Docker and full fixed/reverse bench | Fresh installer/archive gate added to existing native CI; new external run required |
-| Windows x64 | SOURCE/BUILD/CI_ONLY; no public archive | Added runner gate for version/help/inspect/idempotent init/setup/CI preview; **pending a Windows runner run**, no new runtime evidence claimed locally |
+| Windows x64 | SOURCE/BUILD/CI_ONLY; no public archive | Added runner gate for version/help/inspect/idempotent init/setup/CI preview; V110-C bounded smoke passed (see state record); fresh 0.3.0 Windows CI PENDING, not VERIFIED_NATIVE |
 | Linux arm64 | DEFERRED | No native Linux arm64 runner; Docker Linux/aarch64 on macOS is not native Linux host evidence |
 
 Windows product verification, Unix process cleanup, P6 Docker runtime and Windows
@@ -166,7 +167,7 @@ installed binaries from an empty project; it checks V110 help and bundled instal
 presence, then existing product/MCP/benchmark smoke. No source fallback is accepted.
 These local tests do not substitute for remote native runners or private holdouts.
 
-**Schema decision:** no authoritative/product/evidence/Agent/approval/release schema
-or version changes. CI bootstrap uses human tooling output only; the installer
+**V110-C schema decision:** no authoritative/product/evidence/Agent/approval/release schema
+changes. The later 0.3.0 product-version decision is documented separately. CI bootstrap uses human tooling output only; the installer
 consumes existing embedded manifest v3 without modifying it. No new verdict path,
-benchmark input, baseline, P8 label, package version or completion-state update.
+benchmark input, baseline or P8 label change.

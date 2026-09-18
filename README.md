@@ -17,9 +17,14 @@ Buggy implementation   → FAIL
 
 Start with the [30-second BlindTest demo](#30-second-blindtest-demo).
 
+**0.3.0 is a local release candidate, not published.** It packages V110-A/B/C and
+the external pilot framework. See the [candidate procedure](docs/RELEASE-0.3.0.md)
+for local installation, archive contents and pending publication gates. The public
+download links below intentionally remain pinned to the historical 0.2.0 release.
+
 The [external operator pilot kit](docs/V110-EXTERNAL-PILOT.md) prepares a bounded V110-D study; genuine external evidence remains **EVIDENCE_PENDING**.
 
-For your own project, the current source checkout provides the [Easy Adoption path](docs/ADOPTION.md):
+For your own project, the 0.3.0 native candidate and current source checkout provide the [Easy Adoption path](docs/ADOPTION.md):
 `inspect → init → prepare → trusted approve → doctor → verify ID`.
 These new commands are not in the unchanged v0.2.0 archives. Preparation is public and
 non-authoritative; approval belongs to an independent trusted operator.

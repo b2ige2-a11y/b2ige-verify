@@ -1,6 +1,6 @@
 # Local-first GitHub Actions
 
-For current V110 source, use reviewed `b2ige ci init` preview and explicit `--write`;
+For the 0.3.0 native candidate or current V110 source, use reviewed `b2ige ci init` preview and explicit `--write`;
 see [V110-C distribution and CI](V110-DISTRIBUTION.md) for exact commands, protections
 and required candidate provisioning. Public v0.2.0 does not include this command.
 The [example workflow](../.github/workflows/b2ige-verify.yml.example) intentionally

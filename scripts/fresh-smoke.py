@@ -27,10 +27,15 @@ work.mkdir()
 os.chdir(work)
 cli = bin_dir / 'b2ige'
 help_text = run([cli, '--help'])
-for surface in ['inspect', 'prepare', 'trust approve', 'verify ID', 'ci init']:
+for surface in ['inspect', 'init', 'prepare', 'trust approve', 'doctor', 'verify ID', 'ci init',
+                'behavior', 'sideeffect', 'blindtest', 'report', 'bench']:
     assert surface in help_text, surface
-run([cli, '--version'])
+assert run([cli, '--version']).strip() == 'verify-cli ' + json.loads((package / 'release-manifest.json').read_text())['version']
 run([cli, 'bench', '--help'])
+# ci-check is an operation-only surface, absent from top-level help.
+check = subprocess.run([str(cli), 'ci-check', 'missing-agent.json', '0'],
+                       capture_output=True, text=True, timeout=45)
+assert check.returncode == 3 and json.loads(check.stdout)['verdict'] == 'ERROR'
 assert (package / 'scripts/install-release.py').is_file()
 run([cli, 'init', '--dry-run']); run([cli, 'init'])
 setup = package / 'scripts' / 'setup.py'

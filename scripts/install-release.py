@@ -19,8 +19,8 @@ import unicodedata
 import zlib
 
 TARGETS = ('aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu')
-# Historical release inventory. Unknown future online releases require review.
-RELEASES = {'0.2.0': TARGETS}
+# Reviewed exact layouts; 0.3.0 online assets remain pending publication.
+RELEASES = {'0.2.0': TARGETS, '0.3.0': TARGETS}
 BINARIES = ('b2ige', 'b2ige-mcp', 'b2ige-demo', 'b2ige-demo-effect', 'p5-effect-fixture')
 MAX_ARCHIVE = 512 * 1024 * 1024
 MAX_CONTENT = 2 * 1024 * 1024 * 1024
@@ -241,8 +241,11 @@ def install(archive, checksums, destination, version=None, target=None, smoke=Fa
         # Absolute installed paths and an empty cwd prevent source-tree fallback.
         with tempfile.TemporaryDirectory(prefix='b2ige-smoke-') as work:
             for binary, option in [('b2ige', '--version'), ('b2ige-mcp', '--help')]:
-                subprocess.run([str(package / 'bin' / binary), option], cwd=work,
-                               check=True, timeout=60)
+                result = subprocess.run([str(package / 'bin' / binary), option], cwd=work,
+                                        check=True, timeout=60, capture_output=True, text=True)
+                if binary == 'b2ige' and result.stdout.strip() != f'verify-cli {version}':
+                    raise ValueError('installed CLI version mismatch')
+                print(result.stdout, end='')
     return package
 
 

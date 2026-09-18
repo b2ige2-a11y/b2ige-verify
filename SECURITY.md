@@ -7,7 +7,7 @@
 | 0.1.x | Latest patch only |
 | Other versions | No maintenance commitment |
 
-0.1.0 is the current public release. Report older-patch issues against the latest patch
+0.2.0 is the current public release; 0.3.0 is an unpublished candidate. Report older-patch issues against the latest patch
 when available. No backport, fixed support lifetime or guaranteed remediation deadline is
 promised. Package and evidence schema versions are independent. Support is best-effort
 community support with no SLA.
@@ -54,4 +54,4 @@ separate from evidence digests; see [release provenance](docs/RELEASE-PROVENANCE
 
 Best-effort community support is provided through sanitized issues in the public
 repository. No SLA or guaranteed response/fix time is offered, unless a future separate
-commercial agreement explicitly provides one. No such agreement is part of 0.1.0.
+commercial agreement explicitly provides one. No such agreement is part of this product.

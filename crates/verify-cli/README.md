@@ -1,4 +1,4 @@
-# b2ige — public CLI 0.2.0
+# b2ige — public CLI 0.3.0
 
 [Install](../../docs/INSTALL.md) · [Quickstart](../../docs/QUICKSTART.md)
 

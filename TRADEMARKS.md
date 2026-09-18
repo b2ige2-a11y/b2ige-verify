@@ -1,6 +1,6 @@
 # Trademarks and brand use
 
-This brand-use notice covers B2IGE Verify 0.1.0. It does not assert
+This brand-use notice covers B2IGE Verify, including the 0.3.0 candidate. It does not assert
 that any listed term is registered, owned, or subject to exclusive rights.
 
 ## Names in scope

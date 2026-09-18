@@ -33,7 +33,9 @@ def public_member(info):
 
 
 def main():
-    version = tomllib.loads((ROOT / 'Cargo.toml').read_text())['workspace']['package']['version']
+    spec = importlib.util.spec_from_file_location('validate_archive', ROOT / 'scripts/validate-archive.py')
+    validator = importlib.util.module_from_spec(spec); spec.loader.exec_module(validator)
+    version = validator.product_metadata(ROOT)
     info = subprocess.check_output(['rustc', '-vV'], text=True)
     target = next(line.split(': ', 1)[1] for line in info.splitlines() if line.startswith('host:'))
     targets = ['aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu']
@@ -62,7 +64,7 @@ def main():
         public = files(); scan(public)
         for p in public:
             rel = p.relative_to(ROOT)
-            if rel.parts[0] in {'docs', 'conformance', 'examples', 'schemas', 'skills', 'npm', 'benchmarks', 'release'} or (len(rel.parts) == 1 and p.suffix in {'.md', '.txt'}) or p.name in {'LICENSE', 'ci-verify.py', 'ci-summary.py', 'ci_summary.py', 'diff-verify.py', 'setup.py', 'install-release.py', 'demo.py', 'demo-all.sh', 'demo-behavior.sh', 'demo-sideeffect.sh', 'demo-blindtest.sh', 'readme-bench.py'}:
+            if rel.parts[0] in {'docs', 'external-pilot', 'conformance', 'examples', 'schemas', 'skills', 'npm', 'benchmarks', 'release'} or (len(rel.parts) == 1 and p.suffix in {'.md', '.txt'}) or p.name in {'LICENSE', 'ci-verify.py', 'ci-summary.py', 'ci_summary.py', 'diff-verify.py', 'setup.py', 'install-release.py', 'demo.py', 'demo-all.sh', 'demo-behavior.sh', 'demo-sideeffect.sh', 'demo-blindtest.sh', 'readme-bench.py'}:
                 if rel.as_posix() == 'release/release-manifest.json': continue
                 dest = stage / rel; dest.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(p, dest)
         # std is statically linked; use the exact installed toolchain's library notices.
@@ -100,7 +102,7 @@ def main():
                                   'Remote native platforms, real release host/pins, namespace ownership, private security reporting and owner decisions pending',
                                   'Unsigned by a publisher and not notarized; checksums do not authenticate',
                                   'Bounded corpus; trusted controller; no same-host-user/admin/root secrecy',
-                                  'Linux arm64 and Windows unsupported in this candidate'],
+                                  'Linux arm64 deferred; Windows source/build plus bounded CLI smoke only, no native archive'],
             'source_inventory_sha256': hashlib.sha256(b''.join(str(p.relative_to(ROOT)).encode() + b'\0' + hashlib.sha256(p.read_bytes()).digest()
                                         for p in sorted(public) if p.relative_to(ROOT).as_posix() != 'release/release-manifest.json')).hexdigest(),
             'ci_provenance': {k: os.environ.get(k) for k in ['GITHUB_REPOSITORY', 'GITHUB_SHA', 'GITHUB_REF', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_WORKFLOW']},

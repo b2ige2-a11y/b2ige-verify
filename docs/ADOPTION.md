@@ -1,6 +1,6 @@
 # Adopt an existing project (V110-A source checkout)
 
-This path is available when building this checkout. The published v0.2.0 archives
+This path is available in the 0.3.0 native candidate or when building this checkout. The published v0.2.0 archives
 are unchanged and do not contain these new adoption commands. Build with
 `cargo build --workspace --release --locked`, then use `target/release/b2ige` or put
 that directory on PATH. Existing product commands and release demos remain supported.

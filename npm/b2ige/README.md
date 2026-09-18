@@ -1,5 +1,7 @@
 # @b2ige/verify — thin launcher (npm unpublished/private)
 
+The 0.3.0 wrapper is a local candidate only.
+
 The wrapper contains distribution and process-launch code only. All product verification
 runs in the version-matched native executable. No npm dependencies or postinstall hook.
 The final package name is `@b2ige/verify`. The public [GitHub/native v0.2.0 release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
@@ -13,7 +15,7 @@ Unscoped npm `blindtest` is occupied and is not used by this project.
 When configured, the flow is:
 
 GitHub Release → exact version/platform archive → pinned archive SHA-256 → safe
-USTAR extraction → pinned binary SHA-256 → exact `verify-cli 0.2.0` version probe → execution.
+USTAR extraction → pinned binary SHA-256 → exact `verify-cli 0.3.0` version probe → execution.
 
 `native-manifest.json` schema v2 carries `release_repository` and, for each platform,
 `sha256` (binary) and `archive_sha256`. The repository is currently **null** and platform

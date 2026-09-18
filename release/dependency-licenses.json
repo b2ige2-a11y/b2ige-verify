@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "cargo_lock_sha256": "e23794bb58f126d160ea0d66d28703294b3abdb4abf993c527f606ac3fd449d9",
+  "cargo_lock_sha256": "590c3c5bbac19b7f1a6c49123d73b32b2fff761dd08e3a503bc7cd6467d26e13",
   "scope": "complete locked graph; not an SBOM or vulnerability scan",
   "packages": [
     {
