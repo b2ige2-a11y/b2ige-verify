@@ -15,6 +15,7 @@ import sys
 import tempfile
 import time
 import uuid
+from zipfile import BadZipFile
 
 sys.dont_write_bytecode = True
 import adoption_bench as bench
@@ -24,12 +25,16 @@ PROTOCOL_PATH = ROOT / 'external-pilot/v1/protocol.json'
 PROTOCOL = bench.read(PROTOCOL_PATH)
 PRODUCTS = [j['product'] for j in PROTOCOL['journeys']]
 STAGES = PROTOCOL['stages']
+BLOCKING_CATEGORY = dict(setup='installation', inspect='product_selection', init='installation',
+                         materialize='trusted_controller', prepare='path_or_identity', approve='approval',
+                         doctor='readiness', human='evidence', agent='agent', report='evidence')
 OUTCOMES = bench.OUTCOMES
 HEX = r'[a-f0-9]{40}'
 HASH = r'sha256:[a-f0-9]{64}'
-RANDOM = r'[a-f0-9]{32}'
+RANDOM = r'[a-f0-9]{12}4[a-f0-9]{3}[89ab][a-f0-9]{15}'
 ATTEST = ['participant_is_b2ige_developer', 'authored_implementation_or_fixtures',
-          'saw_private_material', 'own_environment', 'followed_public_instructions',
+          'saw_private_material', 'synthetic_or_reused_evidence',
+          'performed_recorded_actions_personally', 'own_environment', 'followed_public_instructions',
           'assistance_disclosed', 'publication_consent']
 BINARY = ROOT / 'target/release/b2ige'
 HELPER = ROOT / 'target/release/examples/adoption_fixture'
@@ -75,6 +80,7 @@ def categories(value, allowed):
     need(len(set(value)) == len(value), 'duplicate category')
     for entry in value:
         enum(entry, allowed)
+    need('none' not in value or len(value) == 1, 'none cannot hide disclosed assistance')
 
 
 def check_pair(verdict, code):
@@ -131,28 +137,32 @@ def blank_journey(product):
 
 
 def blank_result(sha, participant, environment):
-    return dict(kind='external-adoption-pilot', schema_version='1', authoritative=False,
+    return dict(kind='external-adoption-pilot', schema_version='2', authoritative=False,
                 pilot_version='external-pilot-v1', pilot_commit=sha, verifier_commit=sha,
                 **bindings(), run_id=uuid.uuid4().hex, participant_id=participant,
                 provenance='external_operator', test_data=False, attestation=None,
                 environment=environment, installation=dict(status='not_started', command_count=0, assistance=[]), journeys=[blank_journey(p) for p in PRODUCTS],
-                questions=[], mcp=None, ci=[], denominators=dict(operators=1, journeys=3))
+                questions=[], mcp=None, ci=[], integration_attempts=[], denominators=dict(operators=1, journeys=3))
 
 
 def attestation(value):
     shape(value, ' '.join(ATTEST))
     for v in value.values():
         boolean(v)
-    need(not any(value[k] for k in ATTEST[:3]), 'non-external participant cannot qualify')
-    need(all(value[k] for k in ATTEST[3:]), 'externality/consent attestation required')
+    need(not any(value[k] for k in ATTEST[:4]), 'non-external/synthetic participant cannot qualify')
+    need(all(value[k] for k in ATTEST[4:]), 'externality/consent/personal participation attestation required')
 
 
 def agent_fields(value):
-    shape(value, 'product operation protocol_version verdict exit_code source_backed validated')
+    shape(value, 'product operation protocol_version verdict exit_code source_backed source_identity validated')
     enum(value['product'], PRODUCTS)
     need(value['operation'] == 'verify' and value['protocol_version'] == '1', 'verify protocol required')
     check_pair(value['verdict'], value['exit_code'])
     boolean(value['source_backed'])
+    if value['source_backed']:
+        pattern(value['source_identity'], HASH)
+    else:
+        need(value['source_identity'] is None, 'unverified source identity')
     need(value['validated'] is True, 'Agent transport must validate')
     if value['verdict'] != 'ERROR':
         need(value['source_backed'], 'missing evidence')
@@ -179,7 +189,7 @@ def validate_journey(j):
         duration(s['elapsed_seconds'])
         boolean(s['completed'])
         if s['exit_code'] is not None:
-            integer(s['exit_code'], 255)
+            need(type(s['exit_code']) is int and -128 <= s['exit_code'] <= 255, 'invalid command exit/signal')
         if s['completed']:
             need(s['exit_code'] in (range(3) if s['stage'] == 'human' else range(4) if s['stage'] in ['agent', 'report'] else [0]),
                  'unsuccessful stage counted as complete')
@@ -189,6 +199,8 @@ def validate_journey(j):
         enum(j['first_blocking_stage'], STAGES)
         need(names and names[-1] == j['first_blocking_stage'] and not j['stages'][-1]['completed'],
              'blocking stage inconsistent')
+    if names and not j['stages'][-1]['completed']:
+        need(j['first_blocking_stage'] == names[-1], 'failed/abandoned stage must remain visible')
     categories(j['friction'], PROTOCOL['friction'])
     categories(j['terminology'], PROTOCOL['friction'])
     items(j['assistance'])
@@ -225,6 +237,7 @@ def validate_journey(j):
     else:
         need(names, 'attempted stages missing')
     if j['status'] == 'completed':
+        need(j['command_count'] >= 11, 'completed path lacks recorded commands')
         need(names == STAGES and all(s['completed'] for s in j['stages'])
              and j['first_blocking_stage'] is None and j['manual_trust_checkpoints'] == 1
              and j['controller_separated'] and j['verified_reload']
@@ -234,38 +247,47 @@ def validate_journey(j):
 
 
 def ci_fields(c, sha):
-    shape(c, 'repository_url base_sha head_sha verifier_sha workflow_path workflow_sha256 pr_url run_url run_id job_id verdict exit_code check_conclusion verification_step_conclusion independently_provisioned public_consent observed_via artifacts no_private_artifacts')
+    shape(c, 'repository_url base_sha head_sha verifier_sha workflow_path workflow_sha256 pr_url run_url run_id job_id verdict exit_code response assistance check_conclusion verification_step_conclusion independently_provisioned public_consent observed_via artifacts no_private_artifacts')
     pattern(c['repository_url'], r'https://github\.com/[A-Za-z0-9_-]{1,100}/[A-Za-z0-9_.-]{1,100}')
     repo = c['repository_url']
-    need(not any(v.lower() in ['example', 'test', 'fake', 'simulated', 'localhost'] for v in repo.split('/')[-2:]), 'placeholder CI repository')
+    markers = {'example', 'test', 'fake', 'simulated', 'synthetic', 'fixture', 'mock', 'placeholder', 'localhost'}
+    need(not any(markers.intersection(re.split(r'[-_.]+', v.lower())) for v in repo.split('/')[-2:]), 'placeholder CI repository')
+    # Consented GitHub owners are allowed, credentials/IPs masquerading as URLs are not.
+    need(re.search(r'gh[pousr]_|github_pat_|(?:AKIA|ASIA)[A-Z0-9]{16}|(?i:bearer)[_-]|\d+\.\d+\.\d+\.\d+', repo) is None,
+         'private value in public reference')
     for k in ['base_sha', 'head_sha', 'verifier_sha']:
         pattern(c[k], HEX)
         need(len(set(c[k])) > 1, 'placeholder SHA')
     need(c['base_sha'] != c['head_sha'] and c['verifier_sha'] == sha, 'CI commit binding')
-    pattern(c['workflow_path'], r'\.github/workflows/[A-Za-z0-9_-]{1,64}\.yml')
+    need(c['workflow_path'] == '.github/workflows/b2ige-verify.yml', 'generated pilot workflow required')
     pattern(c['workflow_sha256'], HASH)
     pattern(c['pr_url'], re.escape(repo) + r'/pull/[1-9][0-9]{0,11}')
     integer(c['run_id'], 10**15)
     integer(c['job_id'], 10**15)
     need(c['run_id'] > 0 and c['job_id'] > 0 and c['run_url'] == repo + '/actions/runs/' + str(c['run_id']), 'CI run binding')
     check_pair(c['verdict'], c['exit_code'])
+    agent_fields(c['response'])
+    need(c['response']['product'] == 'blindtest' and c['response']['verdict'] == c['verdict']
+         and c['response']['exit_code'] == c['exit_code'], 'CI Agent response binding')
+    enum(c['assistance'], PROTOCOL['assistance'])
     conclusion = 'success' if c['verdict'] == 'PASS' else 'failure'
     need(c['check_conclusion'] == c['verification_step_conclusion'] == conclusion, 'PASS-only-green boundary')
     need(c['independently_provisioned'] is True and c['public_consent'] is True
-         and c['observed_via'] == 'github_api' and c['no_private_artifacts'] is True, 'external CI/control missing')
+         and c['observed_via'] == 'github_api', 'external CI/control missing')
+    boolean(c['no_private_artifacts'])
     items(c['artifacts'], 1)
     need(len(c['artifacts']) == 1, 'sanitized artifact inventory missing')
     a = c['artifacts'][0]
     shape(a, 'name file_count kind archive_sha256')
     need(a['name'] == 'b2ige-sanitized-agent-reports' and a['kind'] == 'validated-agent-protocol-v1-json', 'artifact category')
     integer(a['file_count'], 100)
-    need(a['file_count'] > 0, 'empty artifact')
+    need(a['file_count'] == 1, 'exactly one registered identity artifact required')
     pattern(a['archive_sha256'], HASH)
 
 
 def validate(r, *, complete=False, expected_commit=None):
-    shape(r, 'kind schema_version authoritative pilot_version pilot_commit verifier_commit protocol_identity corpus_identity run_id participant_id provenance test_data attestation environment installation journeys questions mcp ci denominators')
-    need(r['kind'] == 'external-adoption-pilot' and r['schema_version'] == '1'
+    shape(r, 'kind schema_version authoritative pilot_version pilot_commit verifier_commit protocol_identity corpus_identity run_id participant_id provenance test_data attestation environment installation journeys questions mcp ci integration_attempts denominators')
+    need(r['kind'] == 'external-adoption-pilot' and r['schema_version'] == '2'
          and r['pilot_version'] == 'external-pilot-v1' and r['authoritative'] is False, 'tooling kind/version')
     need(r['test_data'] is False and r['provenance'] == 'external_operator', 'synthetic/internal evidence forbidden')
     pattern(r['participant_id'], RANDOM)
@@ -289,6 +311,10 @@ def validate(r, *, complete=False, expected_commit=None):
     need([j['product'] for j in r['journeys']] == PRODUCTS, 'exactly three distinct planned journeys required')
     for j in r['journeys']:
         validate_journey(j)
+        if j['stages']:
+            for kind in r['installation']['assistance']:
+                if kind != 'none':
+                    need(dict(stage='setup', kind=kind) in j['assistance'], 'installation assistance must remain inherited')
         if j['product'] == 'blindtest' and j['status'] == 'completed':
             need(r['environment']['docker'] == 'available', 'actual Docker required')
     items(r['questions'], 6)
@@ -310,7 +336,30 @@ def validate(r, *, complete=False, expected_commit=None):
     items(r['ci'], 2)
     for c in r['ci']:
         ci_fields(c, r['pilot_commit'])
+    items(r['integration_attempts'], 2)
+    attempts = {}
+    for attempt in r['integration_attempts']:
+        shape(attempt, 'stage product status assistance friction recovery_attempts')
+        enum(attempt['stage'], ['mcp', 'ci'])
+        need(attempt['stage'] not in attempts, 'integration retry requires a new run')
+        attempts[attempt['stage']] = attempt
+        need(attempt['product'] == ('behavior' if attempt['stage'] == 'mcp' else 'blindtest'), 'integration product')
+        enum(attempt['status'], ['incomplete', 'completed'])
+        enum(attempt['assistance'], PROTOCOL['assistance'])
+        categories(attempt['friction'], PROTOCOL['friction'])
+        integer(attempt['recovery_attempts'])
+        if attempt['status'] == 'incomplete':
+            need(attempt['stage'] in attempt['friction'], 'integration drop-off must remain visible')
+        else:
+            need(r['mcp'] is not None if attempt['stage'] == 'mcp' else len(r['ci']) == 2,
+                 'integration completed without responses')
+    if r['mcp'] is not None:
+        need('mcp' in attempts and r['mcp']['assistance'] == attempts['mcp']['assistance'], 'MCP attempt/assistance missing')
+    if r['ci']:
+        need('ci' in attempts and all(c['assistance'] == attempts['ci']['assistance'] for c in r['ci']), 'CI attempt/assistance missing')
     need(len({(c['repository_url'], c['run_id']) for c in r['ci']}) == len(r['ci']), 'duplicate CI run')
+    identities = observation_identities(r)
+    need(len(identities) == len(set(identities)), 'copied source cannot satisfy separate exercises')
     shape(r['denominators'], 'operators journeys')
     need(type(r['denominators']['operators']) is int and type(r['denominators']['journeys']) is int
          and r['denominators'] == {'operators': 1, 'journeys': 3}, 'denominator tampering')
@@ -321,7 +370,28 @@ def validate(r, *, complete=False, expected_commit=None):
         need(r['mcp'] is not None and r['mcp']['response']['source_backed']
              and r['mcp']['response']['verdict'] != 'ERROR', 'actual MCP evidence required')
         need(len(r['ci']) == 2 and sum(c['verdict'] == 'PASS' for c in r['ci']) == 1, 'CI PASS/non-PASS pair required')
+        need(all(c['response']['source_backed'] and c['verdict'] != 'ERROR' for c in r['ci']),
+             'CI setup/infrastructure ERROR is not an evidence-backed verification control')
+        need(all(c['no_private_artifacts'] for c in r['ci']), 'private-artifact inspection required')
+        need(set(attempts) == {'mcp', 'ci'} and all(a['status'] == 'completed' for a in attempts.values()),
+             'integration attempt incomplete')
     return r
+
+
+def observation_identities(r):
+    responses = [j['agent'] for j in r['journeys']]
+    responses += [r['mcp']['response']] if r['mcp'] else []
+    responses += [c['response'] for c in r['ci']]
+    return [v['source_identity'] for v in responses if v and v['source_backed']]
+
+
+def assisted(r):
+    kinds = list(r['installation']['assistance'])
+    kinds += [a['kind'] for j in r['journeys'] for a in j['assistance']]
+    kinds += [r['mcp']['assistance']] if r['mcp'] else []
+    kinds += [c['assistance'] for c in r['ci']]
+    kinds += [a['assistance'] for a in r['integration_attempts']]
+    return any(k in ['ai_assistant', 'external_human', 'b2ige_developer'] for k in kinds)
 
 
 def classification(j):
@@ -335,6 +405,10 @@ def report(results, *, expected_commit=None):
     for r in results:
         validate(r, expected_commit=expected_commit)
     need(len({r['run_id'] for r in results}) == len(results), 'copied run rejected')
+    identities = [v for r in results for v in observation_identities(r)]
+    need(len(identities) == len(set(identities)), 'reused observations across runs')
+    ci_runs = [(c['repository_url'], c['run_id']) for r in results for c in r['ci']]
+    need(len(ci_runs) == len(set(ci_runs)), 'reused external CI across runs')
     # All attempts stay in denominators; repeat operators are not new operators.
     operators = len({r['participant_id'] for r in results})
     qualified = set()
@@ -354,13 +428,16 @@ def report(results, *, expected_commit=None):
     for r in sorted(results, key=lambda v: (v['participant_id'], v['run_id'])):
         lines += [f'Participant {r["participant_id"]}; run {r["run_id"]}; commit {r["pilot_commit"]}.',
                   'Platform: ' + json.dumps(r['environment'], sort_keys=True),
+                  'Run assistance: ' + ('assisted' if assisted(r) else 'unassisted/doc-only'),
                   'Installation: ' + json.dumps(r['installation'], sort_keys=True)]
+        lines.append('Integration attempts: ' + json.dumps(r['integration_attempts'], sort_keys=True))
         for j in r['journeys']:
             metrics = {k: j[k] for k in ['product', 'status', 'command_count', 'first_result_seconds',
                        'manual_trust_checkpoints', 'undocumented_edits', 'recovery_attempts', 'first_blocking_stage',
                        'friction', 'terminology', 'assistance', 'final_verdict', 'final_exit_code', 'confidence',
                        'doctor_is_verification', 'controller_separated', 'note']}
             metrics['classification'] = classification(j)
+            metrics['blocking_category'] = BLOCKING_CATEGORY.get(j['first_blocking_stage'])
             metrics['agent_validated'] = j['agent'] is not None
             lines.append(json.dumps(metrics, sort_keys=True))
         matches = sum(q['answer'] == PROTOCOL['questions'][i]['expected'] for i, q in enumerate(r['questions']))
@@ -433,7 +510,8 @@ def check_agent(data, code, cwd, env, product, operation='verify'):
               and data['scope']['coverage'].get('verified_evidence_count', 0) > 0)
     need(code == 3 or backed, 'non-ERROR response lacks verified source evidence')
     return dict(product=product, operation='verify', protocol_version='1', verdict=data['verdict'],
-                exit_code=code, source_backed=backed, validated=True)
+                exit_code=code, source_backed=backed, validated=True,
+                source_identity=bench.digest(json.dumps(data['source'], sort_keys=True).encode()) if backed else None)
 
 
 def mcp_exercise(j):
@@ -461,8 +539,19 @@ def mcp_exercise(j):
     fixed = check_agent(data, OUTCOMES[data['verdict']], j.controller, j.env, 'behavior')
     print('Sanitized MCP result:', json.dumps(fixed))
     return dict(registered_identity='bench', tools_listed=True, response=fixed,
-                approval_authority=choose('Does receiving an MCP result give MCP approval authority?', ['yes', 'no', 'unsure']),
-                assistance=choose('MCP assistance used (strongest category)', PROTOCOL['assistance']))
+                approval_authority=choose('Does receiving an MCP result give MCP approval authority?', ['yes', 'no', 'unsure']))
+
+
+def integration_attempt(stage):
+    return dict(stage=stage, product='behavior' if stage == 'mcp' else 'blindtest', status='incomplete',
+                assistance=choose(stage.upper() + ' assistance used (strongest category)', PROTOCOL['assistance']),
+                friction=[stage], recovery_attempts=0)
+
+
+def strongest_help(previous, prompt):
+    answer = choose(prompt, PROTOCOL['assistance'])
+    # Later answers cannot erase already disclosed help.
+    return max([previous, answer], key=PROTOCOL['assistance'].index)
 
 
 def collect(output, sha):
@@ -505,6 +594,10 @@ def collect(output, sha):
         r['installation']['command_count'] += 1
         snapshot()
         p = execute(command, cwd=ROOT, env=env, interactive=True)
+        actual_help = choose('Additional assistance during this installation command?', PROTOCOL['assistance'])
+        if actual_help != 'none' and actual_help not in r['installation']['assistance']:
+            r['installation']['assistance'] = [k for k in r['installation']['assistance'] if k != 'none'] + [actual_help]
+        snapshot()
         need(p.returncode == 0, 'installation blocked; initial planned denominator retained')
     r['installation']['status'] = 'completed'
     snapshot()
@@ -513,8 +606,7 @@ def collect(output, sha):
         print('\nJourney:', row['product'])
         if choose('Start journey?', ['yes', 'no']) == 'no':
             continue
-        j = bench.Journey(run_root, scenarios[planned['scenario']], BINARY, HELPER, env)
-        j.draft = j.root / 'draft'
+        j = None
         began = time.monotonic()
         verified = None
         human_exit = None
@@ -523,13 +615,17 @@ def collect(output, sha):
         old_run = bench.run
         def visible_setup(command, *, cwd, env, timeout=120):
             row['command_count'] += 1
-            return execute(command, cwd=cwd, env=env, timeout=timeout)
+            snapshot()
+            result = execute(command, cwd=cwd, env=env, timeout=timeout)
+            row['stages'][-1]['exit_code'] = result.returncode
+            snapshot()
+            return result
         try:
             for name in STAGES:
                 help_kind = choose('Assistance needed at ' + name + '?', PROTOCOL['assistance'])
-                if name == 'setup' and install_help != 'none':
-                    row['assistance'].append(dict(stage=name, kind=install_help))
-                if help_kind != 'none' and (name != 'setup' or help_kind != install_help):
+                if name == 'setup':
+                    row['assistance'] += [dict(stage=name, kind=k) for k in r['installation']['assistance'] if k != 'none']
+                if help_kind != 'none' and dict(stage=name, kind=help_kind) not in row['assistance']:
                     row['assistance'].append(dict(stage=name, kind=help_kind))
                 stage = dict(stage=name, started_unix=int(time.time()), elapsed_seconds=0,
                              exit_code=None, completed=False)
@@ -540,6 +636,9 @@ def collect(output, sha):
                 started = time.monotonic()
                 try:
                     if name in ['setup', 'materialize']:
+                        if name == 'setup':
+                            j = bench.Journey(run_root, scenarios[planned['scenario']], BINARY, HELPER, env)
+                            j.draft = j.root / 'draft'
                         bench.run = visible_setup
                         p = j.project_setup() if name == 'setup' else j.materialize()
                         bench.run = old_run
@@ -619,10 +718,17 @@ def collect(output, sha):
                 except (ValueError, OSError, subprocess.SubprocessError, KeyError):
                     print('Stage blocked; no raw output is exported. Preserve local controller files for private review.')
                     row['first_blocking_stage'] = name
+                    if BLOCKING_CATEGORY[name] not in row['friction']:
+                        row['friction'].append(BLOCKING_CATEGORY[name])
                     break
                 finally:
                     bench.run = old_run
                     stage['elapsed_seconds'] = round(time.monotonic() - started, 4)
+                    snapshot()
+                    actual_help = choose('Additional assistance during ' + name + '?', PROTOCOL['assistance'])
+                    event = dict(stage=name, kind=actual_help)
+                    if actual_help != 'none' and event not in row['assistance']:
+                        row['assistance'].append(event)
                     snapshot()
         finally:
             bench.run = old_run
@@ -634,16 +740,24 @@ def collect(output, sha):
             row['note'] = sanitize_note(input('Note or Enter to omit: ')[:240])
             for field in ['friction', 'terminology']:
                 for category in PROTOCOL['friction']:
-                    if choose(field + ': ' + category + '?', ['no', 'yes']) == 'yes':
+                    if choose(field + ': ' + category + '?', ['no', 'yes']) == 'yes' and category not in row[field]:
                         row[field].append(category)
             if len(row['stages']) == len(STAGES) and all(s['completed'] for s in row['stages']) and row['first_result_seconds'] is not None:
                 row['status'] = 'completed'
             snapshot()
         if row['product'] == 'behavior' and row['status'] == 'completed':
+            attempt = integration_attempt('mcp')
+            r['integration_attempts'].append(attempt)
+            snapshot()
             try:
-                r['mcp'] = mcp_exercise(j)
+                result = mcp_exercise(j)
+                attempt['assistance'] = strongest_help(attempt['assistance'], 'MCP assistance used (strongest category)')
+                r['mcp'] = dict(result, assistance=attempt['assistance'])
+                attempt.update(status='completed', friction=[])
             except (ValueError, OSError, KeyError, subprocess.SubprocessError):
                 print('MCP incomplete; collection gate remains pending.')
+                attempt['assistance'] = strongest_help(attempt['assistance'], 'MCP assistance used before drop-off')
+                attempt['recovery_attempts'] = count('MCP manual recovery attempts')
             snapshot()
     for question in PROTOCOL['questions']:
         print(question['question'])
@@ -697,15 +811,37 @@ def main():
     elif args.action == 'ci':
         from external_pilot_ci import collect_ci
         r = validate(load(args.result))
-        need(not r['ci'], 'CI already captured; never rewrite it')
-        r['ci'] = collect_ci(r['pilot_commit'], BINARY, sys.modules[__name__])
+        need(not r['ci'] and not any(a['stage'] == 'ci' for a in r['integration_attempts']), 'CI already attempted; never rewrite it')
+        dest = output_path(args.out)
+        need(not dest.exists(), 'CI output already exists')
+        attempt = integration_attempt('ci')
+        r['integration_attempts'].append(attempt)
+        sequence = 0
+        def snapshot_ci():
+            nonlocal sequence
+            validate(r)
+            sequence += 1
+            save(dest.with_name(dest.name + f'.attempt-{sequence:04d}.json'), r)
+        snapshot_ci()
+        try:
+            collect_ci(r['pilot_commit'], BINARY, sys.modules[__name__], r['ci'], attempt, snapshot_ci)
+            attempt['recovery_attempts'] = count('CI manual recovery attempts')
+            attempt.update(status='completed', friction=[])
+        except (ValueError, OSError, KeyError, TypeError, BadZipFile, subprocess.SubprocessError):
+            attempt['assistance'] = strongest_help(attempt['assistance'], 'CI assistance used before drop-off')
+            attempt['recovery_attempts'] = count('CI manual recovery attempts')
+            for c in r['ci']:
+                c['assistance'] = attempt['assistance']
+            raise
+        finally:
+            snapshot_ci()
         validate(r)
-        save(args.out, r)
+        save(dest, r)
 
 
 if __name__ == '__main__':
     try:
         main()
-    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError, EOFError, KeyboardInterrupt):
+    except (ValueError, OSError, KeyError, TypeError, BadZipFile, subprocess.SubprocessError, EOFError, KeyboardInterrupt):
         print('BLOCKED: invalid/incomplete input or interrupted operation. Existing snapshots are preserved; no completion claimed.', file=sys.stderr)
         sys.exit(3)

@@ -16,7 +16,9 @@ both protocol bytes and the existing adoption-v1 corpus. No mutable branch/tag i
 The historical public v0.2.0 archive does not contain this kit.
 
 - Protocol: [protocol.json](protocol.json), `external-pilot-v1`.
-- Tooling schema: string version `1`, `kind: external-adoption-pilot`, `authoritative: false`.
+- Tooling schema: string version `2`, `kind: external-adoption-pilot`, `authoritative: false`.
+  Version 2 adds source identities, personal/non-synthetic attestation and integration
+  attempt/assistance records. Version 1 is refused, never silently upgraded.
 - Normative validator: [external-pilot.py](../../scripts/external-pilot.py), `validate`.
 - CI capture: [external_pilot_ci.py](../../scripts/external_pilot_ci.py).
 - All public measurements are categorical, numeric, hashes or explicitly consented GitHub references.

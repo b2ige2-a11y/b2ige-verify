@@ -15,12 +15,15 @@ PASS exits 0. Doctor is readiness, never verification. Models cannot assign verd
 You must self-attest that you did not develop B2IGE, did not author V100/V110 code or
 fixtures, did not see private hidden-suite/oracle material, use your own environment,
 follow public instructions, disclose assistance and consent to anonymous sanitized
-measurements. Reading this kit's **public** fixtures is allowed. Self-attestation is
+measurements. You must also attest that you personally performed the recorded actions
+and did not supply synthetic, AI-authored, benchmark or reused evidence. Disclosed AI
+assistance is allowed; AI-generated participant observations are not. Reading this
+kit's **public** fixtures is allowed. Self-attestation is
 not cryptographic identity proof. The validator cannot detect a person lying or an
 entire plausible record forged without its declared synthetic markers; independent
 review and actual external run inspection remain mandatory.
 
-Generate a random ID with `python3 scripts/external-pilot.py id`. Do not use a name,
+Generate a random UUIDv4 ID with `python3 scripts/external-pilot.py id`. Do not use a name,
 handle, email, account ID or existing personal identifier. Reuse this ID for reruns so
 one operator is not counted repeatedly. The kit does not collect IPs, device serials,
 home directories, environment dumps or tokens. GitHub repository/PR/run references are
@@ -125,8 +128,12 @@ undocumented edits categorically. No partial record passes `validate --complete`
 ## Agent and MCP exercises
 
 The Agent exercise above runs the exact existing Protocol 1 surface. Only product,
-operation, protocol version, verdict/exit and validation/source-backed booleans are
+operation, protocol version, verdict/exit, validation/source-backed booleans and a
+SHA-256 identity of the source reference are
 exported; raw Agent transports and human-only fields are not participant measurements.
+The source identity detects copied observations within and across submitted runs, even
+if a run ID or product label is edited. It is not a signature: replacement of every
+observation and hash still requires independent review, not trust in arbitrary JSON.
 Transport validation is not source authentication; product executors and verified loaders
 remain authoritative.
 
@@ -230,6 +237,17 @@ wrong workflow pin/hash, skipped verification and non-PASS green. The operator a
 attests private-artifact inspection: protocol shape and pattern scans alone cannot prove
 absence of arbitrary encoded secrets. Only fixed measurements, consented URLs and hashes
 survive. Workflow hash is an integrity identifier, not a signature or independent audit.
+CI capture writes create-new `.attempt-NNNN.json` snapshots beside the requested output
+before collection and after each observed run. A missing second run, declined inspection
+or interruption retains the first observation and the incomplete CI attempt. Submit the
+latest snapshot if collection stops. A failed integration is not retried within that run.
+Only the fixed generated `.github/workflows/b2ige-verify.yml` and one `bench.json`
+artifact qualify. Explicit test/simulated repository names are refused locally.
+Run, verification-job and artifact run/base identities must agree. GitHub reruns of
+an existing run ID are refused to avoid mixing artifacts across attempts; create a
+fresh run and retain the earlier failure for review.
+The non-PASS completion control must be an evidence-backed FAIL or INCONCLUSIVE;
+ERROR remains reportable infrastructure friction and cannot complete this control.
 
 GitHub does not always retain populated `pull_requests` linkage (for example some fork
 runs). Such a run is conservatively refused rather than guessing head/base from a mutable
@@ -248,7 +266,10 @@ truth or operator qualification; an incorrect answer remains evidence of confusi
 
 Assistance categories: `none`, `public_docs`, `normal_tool_docs`, `ai_assistant`,
 `external_human`, `b2ige_developer`. Each journey event stores its first affected stage;
-MCP separately records its strongest assistance category. Public reports distinguish
+MCP and CI separately record their strongest assistance category before starting,
+including incomplete attempts. Later disclosure can increase but never erase recorded
+help. Journey stages ask again after execution so help received during a command is
+retained. Public reports distinguish
 unassisted/doc-only completion, assisted completion and incomplete/drop-off.
 Friction/terminology categories: installation, product_selection, terminology,
 path_or_identity, trusted_controller, approval, readiness, docker, evidence, ci, agent,
@@ -257,15 +278,19 @@ recovery attempts remain visible. No failure or assistance is normalized into su
 
 ## Schema, admission and report
 
-Tooling schema **1**, pilot **external-pilot-v1**, `kind: external-adoption-pilot`,
+Tooling schema **2**, pilot **external-pilot-v1**, `kind: external-adoption-pilot`,
 `authoritative: false`. The stdlib Python validator is the normative schema; no JSON
 Schema dependency or authoritative product schema changes. Every object has an exact
 field allowlist, bounded enums/counts and finite durations. Unknown fields/versions,
 duplicate JSON keys, NaN/Infinity, paths/raw prose, missing/duplicate products, stale code
 or protocol/corpus pins, developer/synthetic declarations and inconsistent exit/stage
 records are rejected. Environment is only OS, architecture and Docker availability.
-Participant/run IDs are random 32-hex; commit pins are 40-hex, content IDs SHA-256.
+Participant/run IDs are random 32-hex UUIDv4; commit pins are 40-hex, content IDs SHA-256.
 Shared participant/pilot/environment fields apply to each of the three journey rows.
+Schema decision: the unshipped tooling v1 is replaced by v2 because source identities,
+personal/non-synthetic attestation, CI response/assistance and integration attempts are
+required fields. Old results are rejected without migration. Pilot corpus, questions,
+Agent Protocol v1 and every authoritative/product/approval schema remain unchanged.
 
 All writes reserve new files/directories. Snapshots never replace previous measurements;
 `ci` creates a new augmented snapshot with the **same run ID**, preserving its original
@@ -281,7 +306,14 @@ completed evidence-backed paths, manual checkpoints, Agent validation and stored
 six answers, actual MCP and the CI PASS/non-PASS pair with private-artifact control.
 The CLI `validate --complete` also re-fetches the actual GitHub runs/artifacts; unavailable
 or expired evidence blocks this check. Offline deterministic structural tests do not
-perform that network operation. It means **collection structurally ready for review**, not V110-D complete, proof of
+perform that network operation. Report generation is offline structural validation;
+`READY_FOR_INDEPENDENT_REVIEW` does not assert that GitHub was independently inspected.
+The collection gate requires a non-synthetic personal externality declaration, completed
+installation, all three distinct evidence-backed journeys and manual checkpoints, six
+answers, source-backed non-ERROR MCP, completed integration attempts, distinct CI
+PASS-green and evidence-backed non-PASS-failure runs, both artifact inspections, exact
+clean commit/protocol/corpus pins and sanitized fields. No checkbox replaces these checks.
+It means **collection structurally ready for review**, not V110-D complete, proof of
 external identity, trustworthy arbitrary JSON, or a new product verdict. Product loaders,
 verify/report/registry/trust surfaces reject these tooling documents. Internal benchmark
 results and synthetic TEST DATA cannot substitute. Hashes do not authenticate publishers.

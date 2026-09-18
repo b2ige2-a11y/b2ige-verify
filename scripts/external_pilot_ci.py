@@ -24,13 +24,13 @@ def api(endpoint, *, binary=False):
 
 def inspect_archive(raw, binary, pilot):
     pilot.need(len(raw) <= 16 * 1024 * 1024, 'oversized artifact')
-    verdicts = []
+    responses = []
     with zipfile.ZipFile(io.BytesIO(raw)) as archive, tempfile.TemporaryDirectory() as tmp:
         files = archive.infolist()
         pilot.need(0 < len(files) <= 100 and len({f.filename for f in files}) == len(files), 'artifact inventory')
         pilot.need(sum(f.file_size for f in files) <= 8 * 1024 * 1024, 'expanded artifact limit')
         for f in files:
-            pilot.pattern(f.filename, r'[A-Za-z0-9_-]{1,64}\.json')
+            pilot.need(f.filename == 'bench.json', 'exact registered identity artifact required')
             pilot.need(not f.is_dir() and not f.flag_bits & 1 and not stat.S_ISLNK(f.external_attr >> 16)
                        and stat.S_IFMT(f.external_attr >> 16) in [0, stat.S_IFREG], 'artifact special file')
             data = pilot.bench.decode(archive.read(f))
@@ -49,10 +49,19 @@ def inspect_archive(raw, binary, pilot):
             # also inspect downloaded contents privately before attesting absence.
             encoded = json.dumps(data)
             for expression in [r"/(?:Us" + r"ers|home)/", r"[A-Za-z]:\\", r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}",
-                               r"gh[pousr]_[A-Za-z0-9]+", r"github_pat_", r"BLINDTEST_PRIVATE", r"-----BEGIN .*PRIVATE KEY"]:
+                               r"gh[pousr]_[A-Za-z0-9]+", r"github_pat_", r"BLINDTEST_PRIVATE", r"-----BEGIN .*PRIVATE KEY",
+                               r"(?:AKIA|ASIA)[A-Z0-9]{16}", r"(?i:bearer)\s+", r"\b[A-Z][A-Z0-9_]{2,}=",
+                               r'[/](?:private|opt|var|tmp|etc|root|run)/', r'\b(?:\d{1,3}\.){3}\d{1,3}\b']:
                 pilot.need(re.search(expression, encoded) is None, 'private artifact content')
-            verdicts.append(verdict)
-    return verdicts, dict(name='b2ige-sanitized-agent-reports', file_count=len(verdicts),
+            scope = data.get('scope')
+            backed = (data.get('source') is not None and scope is not None
+                      and scope['coverage'].get('verified_evidence_count', 0) > 0)
+            pilot.need(verdict == 'ERROR' or backed, 'CI response lacks source evidence')
+            responses.append(dict(product='blindtest', operation='verify', protocol_version='1',
+                                  verdict=verdict, exit_code=pilot.OUTCOMES[verdict], validated=True,
+                                  source_backed=backed,
+                                  source_identity=pilot.bench.digest(json.dumps(data['source'], sort_keys=True).encode()) if backed else None))
+    return responses, dict(name='b2ige-sanitized-agent-reports', file_count=len(responses),
                          kind='validated-agent-protocol-v1-json', archive_sha256=pilot.bench.digest(raw))
 
 
@@ -63,6 +72,8 @@ def observe(repository, pr_number, run_id, sha, workflow, workflow_hash, binary,
     pilot.need(repo.get('private') is False and repo.get('html_url') == 'https://github.com/' + repository, 'public consented repository required')
     pr = fetch(prefix + '/pulls/' + str(pr_number))
     run = fetch(prefix + '/actions/runs/' + str(run_id))
+    pilot.need(run.get('id') == run_id and run.get('html_url') == 'https://github.com/' + repository + '/actions/runs/' + str(run_id), 'actual run identity mismatch')
+    pilot.need(run.get('run_attempt') == 1, 'CI rerun may mix stale artifacts; use a fresh run identity')
     pilot.need(run['event'] == 'pull_request_target' and run['status'] == 'completed'
                and run['repository']['full_name'] == repository and run['path'] == workflow,
                'external workflow run mismatch')
@@ -89,29 +100,33 @@ def observe(repository, pr_number, run_id, sha, workflow, workflow_hash, binary,
     selected = [j for j in jobs['jobs'] if j['name'] == 'verify']
     pilot.need(len(selected) == 1, 'exact verification check required')
     job = selected[0]
+    pilot.need(job.get('run_id') == run_id and job.get('run_attempt') == 1, 'verification job run binding')
     steps = [s for s in job['steps'] if s['name'] == 'Verify all registered contracts (only PASS is green)']
     pilot.need(len(steps) == 1 and steps[0]['status'] == 'completed', 'actual verification step required')
     inventory = fetch(prefix + '/actions/runs/' + str(run_id) + '/artifacts?per_page=100')
     pilot.need(inventory['total_count'] == len(inventory['artifacts']) == 1, 'all run artifacts must be inspected; only sanitized artifact allowed')
     artifact = inventory['artifacts'][0]
+    pilot.need(artifact.get('workflow_run', {}).get('id') == run_id
+               and artifact['workflow_run'].get('head_sha') == base, 'artifact run/base binding')
     pilot.need(not artifact['expired'] and artifact['name'] == 'b2ige-sanitized-agent-reports'
                and artifact['size_in_bytes'] <= 16 * 1024 * 1024, 'sanitized artifact missing/expired')
     raw = fetch(prefix + '/actions/artifacts/' + str(artifact['id']) + '/zip', binary=True)
-    verdicts, inspection = inspect_archive(raw, binary, pilot)
+    responses, inspection = inspect_archive(raw, binary, pilot)
     # The minimum kit is one identity. Avoid inventing aggregate verdict precedence.
-    pilot.need(len(verdicts) == 1, 'minimum pilot CI expects exactly one registered identity')
-    verdict = verdicts[0]
+    pilot.need(len(responses) == 1, 'minimum pilot CI expects exactly one registered identity')
+    verdict = responses[0]['verdict']
     conclusion = 'success' if verdict == 'PASS' else 'failure'
     pilot.need(job['conclusion'] == steps[0]['conclusion'] == run['conclusion'] == conclusion, 'PASS-only-green disagreement')
     return dict(repository_url='https://github.com/' + repository, base_sha=base, head_sha=head,
                 verifier_sha=sha, workflow_path=workflow, workflow_sha256=workflow_hash,
                 pr_url=pr['html_url'], run_url=run['html_url'], run_id=run_id, job_id=job['id'],
                 verdict=verdict, exit_code=pilot.OUTCOMES[verdict], check_conclusion=conclusion,
+                response=responses[0],
                 verification_step_conclusion=conclusion, independently_provisioned=True,
-                public_consent=True, observed_via='github_api', artifacts=[inspection], no_private_artifacts=True)
+                public_consent=True, observed_via='github_api', artifacts=[inspection], no_private_artifacts=False)
 
 
-def collect_ci(sha, binary, pilot):
+def collect_ci(sha, binary, pilot, results, attempt, snapshot):
     pilot.need(pilot.choose('Consent to publishing supplied repository/PR/run references?', ['yes', 'no']) == 'yes', 'CI consent required')
     pilot.need(pilot.choose('Was candidate approval independently provisioned by the trusted operator for EACH head, outside candidate control?', ['yes', 'no']) == 'yes', 'independent approval required')
     repository = input('Public repository OWNER/REPO: ').strip()
@@ -119,7 +134,6 @@ def collect_ci(sha, binary, pilot):
     pilot.pattern(workflow, r'\.github/workflows/[A-Za-z0-9_-]{1,64}\.yml')
     workflow_hash = input('SHA-256 of the exact independently reviewed deployed workflow (sha256:...): ').strip()
     pilot.pattern(workflow_hash, pilot.HASH)
-    results = []
     for label in ['PASS green', 'non-PASS non-green']:
         print('Supply the actual external ' + label + ' run. Never use local or simulated runs.')
         pr = input('PR number: ').strip()
@@ -127,11 +141,17 @@ def collect_ci(sha, binary, pilot):
         pilot.pattern(pr, r'[1-9][0-9]{0,11}')
         pilot.pattern(run, r'[1-9][0-9]{0,14}')
         c = observe(repository, int(pr), int(run), sha, workflow, workflow_hash, binary, pilot)
+        attempt['assistance'] = pilot.strongest_help(attempt['assistance'], 'CI assistance used (strongest category)')
+        c['assistance'] = attempt['assistance']
+        for previous in results:
+            previous['assistance'] = attempt['assistance']
         pilot.ci_fields(c, sha)
         results.append(c)
-    pilot.need(pilot.choose('After privately inspecting ALL downloaded artifacts in both runs: are raw stores, sealed material, private paths, oracle/canary values, human reports, credentials and logs absent?', ['yes', 'no', 'unsure']) == 'yes', 'private-artifact human inspection required')
+        snapshot()  # Preserve the first observation if the second run is unavailable.
+        c['no_private_artifacts'] = pilot.choose('After privately inspecting ALL downloaded artifacts in this run: are raw stores, sealed material, private paths, oracle/canary values, human reports, credentials and logs absent?', ['yes', 'no', 'unsure']) == 'yes'
+        snapshot()
+        pilot.need(c['no_private_artifacts'], 'private-artifact human inspection required')
     pilot.need(results[0]['verdict'] == 'PASS' and results[1]['verdict'] != 'PASS', 'CI pair missing')
-    return results
 
 
 def approval_file(registry, head, output, pilot):
@@ -218,4 +238,6 @@ def recheck(record, binary, pilot, fetch=api):
         pr = int(expected['pr_url'].rsplit('/', 1)[1])
         observed = observe(repository, pr, expected['run_id'], record['pilot_commit'],
                            expected['workflow_path'], expected['workflow_sha256'], binary, pilot, fetch)
+        observed['assistance'] = expected['assistance']  # Declaration, not inferred from GitHub.
+        observed['no_private_artifacts'] = expected['no_private_artifacts']
         pilot.need(observed == expected, 'external CI recheck differs; do not rewrite previous evidence')
