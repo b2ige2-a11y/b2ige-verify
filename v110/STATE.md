@@ -116,8 +116,37 @@ Platform claim boundary:
 
 V110-C did not publish or modify a public release, tag, npm package or Cargo package.
 
-## Remaining V110 packages
+## V110-D — External Adoption Evidence
 
-- V110-D — External Adoption Evidence: NEXT
+Status: EVIDENCE_PENDING
+
+Pilot framework merge commit:
+- `fb36650dadcd445a0daa0ea3046e824b441344fe`
+
+Framework evidence:
+- external-pilot protocol and participant guide implemented
+- independent high-reasoning framework audit: PASS
+- framework audit repair: `d5bba4da80bc65e5ed8ad23a91c21463bb61993f`
+- Pull request: `#6 — V110-D: external adoption pilot framework`
+- external Candidate checks run `35315068951`, attempt 2: PASS
+- Behavior, SideEffect and BlindTest external journeys defined
+- Agent and MCP exercises defined
+- external CI PASS-green / non-PASS-non-green evidence protocol defined
+- participant privacy and sanitization controls implemented
+- synthetic/internal evidence cannot satisfy the completion predicate
+
+Still required before V110-D COMPLETE:
+- at least one genuine external operator
+- all three product journeys with evidence-backed results
+- actual manual trust checkpoint
+- six verifier-understanding answers
+- actual Agent and MCP evidence
+- actual external GitHub CI PASS and non-PASS runs
+- no-private-artifact control
+- independent verification of referenced external evidence
+- sanitized bounded public report
+- final V110-D audit and external CI after evidence commit
+
+V110-D remains EVIDENCE_PENDING. No external evidence has been fabricated.
 
 V100 remains COMPLETE and its verification/evidence/isolation semantics remain frozen.
