@@ -16,14 +16,18 @@ The setup status, diff map/selection plan and step summary are non-authoritative
 messages (`schema_version: "1"` where emitted); product contracts and verified loaders
 remain the only verdict authority.
 
-Build candidate executables on a separate unprivileged isolated runner, then have the
-trusted controller approve their actual identities and provision product inputs.
+Build candidates on a separate unprivileged isolated runner, then have the trusted
+controller approve their actual identities and provision product inputs.
 Do not execute PR build scripts in this `pull_request_target` job or expose its
-controller inputs to candidate jobs. Before verify, provide an
-approved Behavior baseline/authorization, resettable SideEffect SQLite fixture, or an
-approved sealed BlindTest suite outside the checkout. For BlindTest use an actual Linux
-Docker runner and locally available target image. The doctor prerequisite fails when
-Docker is unavailable. Missing fixture/suite/approval is an error, never a demo PASS.
+controller inputs to candidate jobs. The generated workflow uses `--trusted-controller`
+and admits only BlindTest contracts requiring `DOCKER_ISOLATION`, with an approved
+sealed suite outside the checkout and a locally available immutable target image.
+It rejects the entire inventory if any Behavior or SideEffect contract is present:
+their existing host process execution is unsafe for an untrusted PR on this controller.
+A reviewed build or candidate hash approval does not provide runtime isolation.
+Those products remain blocked in generated CI pending a separately reviewed isolated
+execution route; their existing trusted local CLI/adapter paths are unchanged.
+Missing Docker, image, suite or approval is an error, never a demo PASS.
 
 ```sh
 python3 scripts/setup.py                 # build once and create an empty registry safely
@@ -34,7 +38,9 @@ python3 scripts/diff-verify.py \
   --required-registry .b2ige/project.json \
   --registry .b2ige/project.json \
   --candidate-approval "$CONTROLLER_CANDIDATE_APPROVAL" \
+  --trusted-controller \
   --b2ige target/release/b2ige \
+  --artifact-dir "$RUNNER_TEMP/b2ige-agent-artifacts" \
   --report-dir b2ige-agent-reports \
   --summary "$GITHUB_STEP_SUMMARY"
 ```
@@ -134,9 +140,13 @@ ERROR/3 at the CI boundary. The step summary contains only fixed verdict text, b
 numeric scope counters and fixed-shape public observables; raw paths, logs, environment,
 sealed data and human reports are never uploaded.
 
-Each selected contract gets one sanitized Agent Protocol JSON file under the exact
-`b2ige-agent-reports/*.json` path. Missing or invalid reports are not accepted as a
-successful selection, and stale report directories are refused. Never broaden artifact
+Each selected contract gets one sanitized Agent Protocol JSON file in the private
+working report directory. The adapter serializes only validated responses into a
+separate new `$RUNNER_TEMP/b2ige-agent-artifacts` directory; unrelated files and
+symlinks are not copied. Upload is enabled only by the adapter's `artifacts_ready`
+output after this step completes. Only that directory's `*.json` files are retained
+for 14 days. Missing or invalid reports are not accepted as a successful selection,
+and stale report or artifact directories are refused. Never broaden artifact
 paths to `.b2ige/**`, the sealed root, raw store, Docker internals or human reports. No
 pipeline `|| true`, forced zero exit or `continue-on-error` is used.
 

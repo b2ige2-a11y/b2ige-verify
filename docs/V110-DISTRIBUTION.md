@@ -58,8 +58,13 @@ candidate approval, exact approved runtime targets/fixtures and product prerequi
 are provisioned. An artifact, its self-reported hash, a successful build or previous
 PASS is not approval. Configure this protected mechanism by reviewing the workflow;
 bootstrap has no automatic approval flag, Agent approval or MCP approval tool.
-Approved product execution still uses the existing product-specific runtime model;
-bootstrap adds no stronger isolation for Behavior or SideEffect host processes.
+The generated controller additionally uses `--trusted-controller` and accepts only
+an all-BlindTest inventory whose configs require `DOCKER_ISOLATION`. It refuses
+Behavior and SideEffect before target execution because their existing host process
+model cannot isolate a hostile PR from the controller. Separate builds and hash
+approvals do not fix this runtime boundary. Those products require a separately
+reviewed isolated execution route before enabling hosted CI; existing trusted local
+product commands and approval semantics are unchanged.
 
 The candidate approval format and admission checks remain those in [CI.md](CI.md):
 exact head SHA, complete contract inventory, config/authorization hashes and target
@@ -70,9 +75,11 @@ BlindTest sealed inputs remain controller-owned. No authority is created by CI i
 Only PASS/0 makes the verification step green. FAIL/1, INCONCLUSIVE/2, ERROR/3,
 malformed/missing output and readiness remain non-green. No `continue-on-error`,
 `|| true`, doctor-only gate or plan-only gate is generated. `ci-check` retains
-existing Agent Protocol sanitization. Upload runs only after the verification step
-was reached, and only `project/b2ige-agent-reports/*.json` is retained for **14 days**.
-A preexisting report directory is refused before verification. Raw stores, `.b2ige`,
+existing Agent Protocol sanitization. Only validated responses are serialized into a
+new `$RUNNER_TEMP/b2ige-agent-artifacts` directory. The adapter enables upload only
+after this completes; only that directory's `*.json` files are retained for **14 days**.
+Unrelated files and symlinks are not copied. Preexisting report or artifact directories
+are refused. Raw stores, `.b2ige`,
 authorizations, sealed suites, oracle/canary, human reports, logs, secrets and Docker
 internals are never upload inputs. Read-only GitHub permissions and pinned action
 commits are retained. These are bounded controls, not exhaustive secrecy proof.
@@ -91,7 +98,9 @@ python3 scripts/install-release.py --offline \
 
 Online inventory is deliberately limited to the reviewed v0.2.0 target matrix.
 Both downloads use exact `/releases/download/v0.2.0/` assets; unknown versions fail
-instead of falling back to latest. HTTPS delivery is used, with HTTPS-only redirects.
+instead of falling back to latest. HTTPS delivery is restricted to the exact selected
+GitHub release URL and approved GitHub asset CDN hosts; redirects to another release,
+latest, an arbitrary host, credentials or a custom port are refused.
 Offline mode never calls the downloader. Optional `--version` and `--target` constrain
 local filenames; absent target means the supported native host target. Offline
 candidate archives can be checked with their exact version and known target, without
@@ -103,9 +112,11 @@ entries), the selected archive digest, all member paths/types, known package roo
 manifest v3 version/target, all five installed binaries and their digests, executable
 bits, and required license/notices before creating the destination. Validation and
 extraction use one immutable in-process archive snapshot. Absolute/traversal paths,
-links (including internal links), hardlinks, devices/FIFOs, special modes, duplicate
-or case-colliding members and file/directory conflicts are refused. Archive sizes and
-unpacked content are bounded. Extraction uses exclusive regular-file creation and
+links (including internal links), hardlinks, devices/FIFOs, sparse files, extension
+headers, special modes, duplicate or Unicode/case-colliding paths (including implicit
+parents) and file/directory conflicts are refused. Complete gzip CRC/trailer and tar
+end-marker validation precede all writes. Archive sizes, unpacked content, member
+count, path lengths and nesting depth are bounded. Extraction uses exclusive regular-file creation and
 never follows archive links. Only then can optional installed-binary smoke execute.
 
 The destination must be new, with an existing real parent; existing state is never

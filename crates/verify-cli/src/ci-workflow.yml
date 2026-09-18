@@ -29,8 +29,9 @@ jobs:
         run: |
           test "$(git rev-parse HEAD)" = '__PIN__'
           cargo build --workspace --release --locked
-      # Candidate workflows/build hooks are never executed here. Provision builds
-      # separately on an unprivileged isolated runner; existence/hash is not approval.
+      # Candidate workflows/build hooks/native targets are never executed here.
+      # Native Behavior/SideEffect stay blocked pending a reviewed isolated runtime.
+      # Separate build provisioning and approval do not isolate target execution.
       - name: Require protected controller inputs (no automatic approval)
         working-directory: project
         run: |
@@ -41,6 +42,8 @@ jobs:
           test ! -L .b2ige/project.json
           test ! -e b2ige-agent-reports
           test ! -L b2ige-agent-reports
+          test ! -e "$RUNNER_TEMP/b2ige-agent-artifacts"
+          test ! -L "$RUNNER_TEMP/b2ige-agent-artifacts"
           test -f "$RUNNER_TEMP/b2ige-candidate-approval.json"
           test ! -L "$RUNNER_TEMP/b2ige-candidate-approval.json"
           "$GITHUB_WORKSPACE/verifier/target/release/b2ige" ci init --identity __IDENTITY__ --provider github-actions --registry .b2ige/project.json --verifier-repo __REPO__ --verifier-ref __PIN__ --root "$RUNNER_TEMP"
@@ -62,12 +65,14 @@ jobs:
           --registry .b2ige/project.json
           --candidate-approval "$RUNNER_TEMP/b2ige-candidate-approval.json"
           --b2ige "$GITHUB_WORKSPACE/verifier/target/release/b2ige"
+          --trusted-controller
+          --artifact-dir "$RUNNER_TEMP/b2ige-agent-artifacts"
           --report-dir b2ige-agent-reports
           --summary "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: ${{ always() && steps.verification.outcome != 'skipped' }}
+        if: ${{ always() && steps.verification.outputs.artifacts_ready == 'true' }}
         with:
           name: b2ige-sanitized-agent-reports
-          path: project/b2ige-agent-reports/*.json
+          path: ${{ runner.temp }}/b2ige-agent-artifacts/*.json
           if-no-files-found: ignore
           retention-days: 14

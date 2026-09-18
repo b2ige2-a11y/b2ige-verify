@@ -7,6 +7,7 @@ parser.add_argument('--skip-benchmark', action='store_true')
 parser.add_argument('--without-docker', action='store_true', help='Explicit partial platform smoke, never a full release gate')
 args = parser.parse_args()
 archive = pathlib.Path(args.archive).resolve()
+tool_scripts = pathlib.Path(__file__).resolve().parent
 root = pathlib.Path(tempfile.mkdtemp(prefix='b2ige-install-'))
 spec = importlib.util.spec_from_file_location('install_release', pathlib.Path(__file__).with_name('install-release.py'))
 installer = importlib.util.module_from_spec(spec)
@@ -57,6 +58,8 @@ assert not (work / '.github').exists()
 assert preview == run(ci_args)
 run([*ci_args, '--write'])
 assert (work / '.github/workflows/b2ige-verify.yml').read_text() == preview.split('--- workflow ---\n')[1].rstrip() + '\n'
+subprocess.run([sys.executable, str(tool_scripts / 'validate-workflows.py'),
+                str(work / '.github/workflows/b2ige-verify.yml')], check=True)
 recovery = root / 'recovery-check'
 (recovery / '.b2ige').mkdir(parents=True)
 recovery_registry = recovery / '.b2ige/project.json'

@@ -34,15 +34,17 @@ def validate_bootstrap(doc, example=False):
     assert '--required-registry .b2ige/project.json' in commands
     assert '--project-root "$GITHUB_WORKSPACE/project"' in commands
     assert '--candidate-approval "$RUNNER_TEMP/b2ige-candidate-approval.json"' in commands
+    assert '--trusted-controller' in commands
+    assert '--artifact-dir "$RUNNER_TEMP/b2ige-agent-artifacts"' in commands
     assert 'test -f "$RUNNER_TEMP/b2ige-candidate-approval.json"' in commands
     assert 'git fetch --no-tags origin "$B2IGE_CANDIDATE_REVISION"' in commands
     assert not re.search(r'git\s+(checkout|switch|reset|restore|merge|rebase)\b', commands)
     assert not any(s.get('continue-on-error') for s in steps)
     assert not any(v in commands for v in ['trust approve', '--plan-only', '|| true', 'b2ige doctor'])
     upload = steps[-1]
-    assert upload['with']['path'] == 'project/b2ige-agent-reports/*.json'
+    assert upload['with']['path'] == '${{ runner.temp }}/b2ige-agent-artifacts/*.json'
     assert upload['with']['retention-days'] == 14
-    assert upload['if'] == "${{ always() && steps.verification.outcome != 'skipped' }}"
+    assert upload['if'] == "${{ always() && steps.verification.outputs.artifacts_ready == 'true' }}"
     source = steps[1]['with']
     repo, pin = source['repository'], source['ref']
     assert re.fullmatch(r'[A-Za-z0-9_-]+/[A-Za-z0-9_-]+', repo)

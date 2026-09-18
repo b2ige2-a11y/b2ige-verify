@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Install exact native archives. Integrity is not publisher authentication."""
 import argparse
+import gzip
 import hashlib
 import io
 import json
@@ -13,6 +14,9 @@ import sys
 import tarfile
 import tempfile
 import urllib.request
+import urllib.parse
+import unicodedata
+import zlib
 
 TARGETS = ('aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu')
 # Historical release inventory. Unknown future online releases require review.
@@ -20,6 +24,10 @@ RELEASES = {'0.2.0': TARGETS}
 BINARIES = ('b2ige', 'b2ige-mcp', 'b2ige-demo', 'b2ige-demo-effect', 'p5-effect-fixture')
 MAX_ARCHIVE = 512 * 1024 * 1024
 MAX_CONTENT = 2 * 1024 * 1024 * 1024
+MAX_MEMBERS = 100000
+MAX_DEPTH = 32
+MAX_PATH = 1024
+MAX_CHECKSUMS = 1024 * 1024
 REPOSITORY = 'https://github.com/b2ige2-a11y/b2ige-verify/releases/download'
 WINDOWS_DEVICES = {'con', 'prn', 'aux', 'nul', *(f'{p}{n}' for p in ('com', 'lpt') for n in range(1, 10))}
 
@@ -46,7 +54,7 @@ def urls(version, target):
 
 
 def checksum_document(data):
-    if len(data) > 1024 * 1024:
+    if len(data) > MAX_CHECKSUMS:
         raise ValueError('checksum document too large')
     entries = {}
     for line in data.decode('ascii').splitlines():
@@ -82,9 +90,51 @@ def safe_destination(destination):
     return p
 
 
+def validated_container(data):
+    """Require complete gzip and ordinary tar framing before creating files.
+
+    Native release archives use ordinary file/directory headers. Refuse extension
+    headers before tarfile can interpret sparse maps or replace header fields.
+    """
+    with gzip.GzipFile(fileobj=io.BytesIO(data)) as stream:
+        total = count = 0
+        while True:
+            header = stream.read(tarfile.BLOCKSIZE)
+            if len(header) != tarfile.BLOCKSIZE:
+                raise ValueError('truncated archive header/end markers')
+            if header == bytes(tarfile.BLOCKSIZE):
+                if stream.read(tarfile.BLOCKSIZE) != bytes(tarfile.BLOCKSIZE):
+                    raise ValueError('missing archive end markers')
+                # Drain through the gzip trailer to verify CRC/size and reject
+                # hidden trailing members/data, without unbounded allocation.
+                padding = 2 * tarfile.BLOCKSIZE
+                while chunk := stream.read(1024 * 1024):
+                    padding += len(chunk)
+                    if any(chunk) or padding > 1024 * 1024:
+                        raise ValueError('unexpected archive trailing data')
+                if padding % tarfile.BLOCKSIZE:
+                    raise ValueError('truncated archive padding')
+                return
+            member = tarfile.TarInfo.frombuf(header, 'utf-8', 'strict')
+            if (member.type not in (tarfile.REGTYPE, tarfile.AREGTYPE, tarfile.DIRTYPE)
+                    or member.size < 0 or (member.isdir() and member.size != 0)):
+                raise ValueError('archive extensions, sparse/special files or directory payloads refused')
+            count += 1
+            total += member.size
+            if total > MAX_CONTENT or count > MAX_MEMBERS:
+                raise ValueError('archive exceeds extraction limits')
+            remaining = (member.size + tarfile.BLOCKSIZE - 1) // tarfile.BLOCKSIZE * tarfile.BLOCKSIZE
+            while remaining:
+                chunk = stream.read(min(remaining, 1024 * 1024))
+                if not chunk:
+                    raise ValueError('truncated archive member data')
+                remaining -= len(chunk)
+
+
 def validated_members(tar, root, version, target):
     members = []
     seen = set()
+    outputs = {}
     total = 0
     for m in tar:
         members.append(m)
@@ -93,17 +143,29 @@ def validated_members(tar, root, version, target):
                 or any(part in ('', '.', '..') for part in m.name.rstrip('/').split('/'))
                 or any(part.rstrip(' .') != part or part.split('.')[0].casefold() in WINDOWS_DEVICES for part in path.parts)
                 or '\\' in m.name or ':' in m.name or any(ord(c) < 32 or ord(c) == 127 for c in m.name)
-                or path.as_posix().casefold() in seen or not (m.isfile() or m.isdir())
-                or m.mode & 0o7000 or m.size < 0):
+                or len(path.parts) > MAX_DEPTH or len(m.name.encode('utf-8')) > MAX_PATH
+                or any(len(part.encode('utf-8')) > 255 for part in path.parts)
+                or m.type not in (tarfile.REGTYPE, tarfile.AREGTYPE, tarfile.DIRTYPE)
+                or m.sparse is not None or m.pax_headers
+                or m.mode & 0o7000 or m.size < 0 or (m.isdir() and m.size != 0)):
             raise ValueError('unsafe archive member/layout (links, traversal, duplicates and special files refused)')
-        seen.add(path.as_posix().casefold())
+        # Track implicit parents as well as explicit members on every platform.
+        # macOS commonly folds canonical Unicode forms; Windows also folds case.
+        for depth in range(1, len(path.parts) + 1):
+            spelling = '/'.join(path.parts[:depth])
+            normalized = unicodedata.normalize('NFC', spelling).casefold()
+            kind = 'directory' if depth < len(path.parts) or m.isdir() else 'file'
+            previous = outputs.get(normalized)
+            if previous is not None and previous != (spelling, kind):
+                raise ValueError('archive normalized path/file/directory collision')
+            outputs[normalized] = (spelling, kind)
+        if normalized in seen:
+            raise ValueError('duplicate archive member')
+        seen.add(normalized)
         total += m.size
-        if total > MAX_CONTENT or len(members) > 100000:
+        if total > MAX_CONTENT or len(members) > MAX_MEMBERS:
             raise ValueError('archive exceeds extraction limits')
     files = {m.name: m for m in members if m.isfile()}
-    for m in members:
-        if any(str(parent) in files for parent in pathlib.PurePosixPath(m.name).parents):
-            raise ValueError('archive file/directory collision')
     def read(name, limit):
         member = files.get(f'{root}/{name}')
         if member is None or member.size > limit:
@@ -144,7 +206,8 @@ def install(archive, checksums, destination, version=None, target=None, smoke=Fa
     if archive.name != filename(version, target):
         raise ValueError('archive filename version/target mismatch')
     destination = safe_destination(destination)
-    entries = checksum_document(pathlib.Path(checksums).read_bytes())
+    with pathlib.Path(checksums).open('rb') as stream:
+        entries = checksum_document(stream.read(MAX_CHECKSUMS + 1))
     if archive.name not in entries:
         raise ValueError('missing archive checksum; obtain trusted SHA256SUMS')
     # Immutable in-process snapshot: validation and extraction use the same bytes.
@@ -152,6 +215,7 @@ def install(archive, checksums, destination, version=None, target=None, smoke=Fa
         data = stream.read(MAX_ARCHIVE + 1)
     if len(data) > MAX_ARCHIVE or hashlib.sha256(data).hexdigest() != entries[archive.name]:
         raise ValueError('archive checksum mismatch; preserve destination and reacquire trusted archive/checksums')
+    validated_container(data)
     root = archive.name[:-7]
     with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as tar:
         members = validated_members(tar, root, version, target)
@@ -183,14 +247,26 @@ def install(archive, checksums, destination, version=None, target=None, smoke=Fa
 
 
 class HTTPSOnly(urllib.request.HTTPRedirectHandler):
+    def __init__(self, release_url):
+        super().__init__()
+        self.release_url = release_url
+
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        if not newurl.startswith('https://'):
-            raise ValueError('insecure release redirect refused')
+        parsed = urllib.parse.urlsplit(newurl)
+        cdn = (parsed.scheme == 'https' and parsed.netloc in
+               ('release-assets.githubusercontent.com', 'objects.githubusercontent.com')
+               and parsed.path.startswith('/github-production-release-asset/')
+               and not parsed.fragment)
+        if newurl != self.release_url and not cdn:
+            raise ValueError('redirect outside the exact release asset/GitHub asset CDN refused')
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 def download(url, path, limit):
-    with urllib.request.build_opener(HTTPSOnly()).open(url, timeout=60) as response:
+    expected = {url for version, targets in RELEASES.items() for target in targets for url in urls(version, target)}
+    if url not in expected:
+        raise ValueError('download must start at an exact reviewed release asset URL')
+    with urllib.request.build_opener(HTTPSOnly(url)).open(url, timeout=60) as response:
         data = response.read(limit + 1)
     if len(data) > limit:
         raise ValueError('release download exceeds limit')
@@ -221,13 +297,13 @@ def main(argv=None):
             with tempfile.TemporaryDirectory(prefix='b2ige-download-') as tmp:
                 archive = pathlib.Path(tmp) / filename(a.version, target)
                 sums = pathlib.Path(tmp) / 'SHA256SUMS'
-                download(checksums_url, sums, 1024 * 1024)
+                download(checksums_url, sums, MAX_CHECKSUMS)
                 checksum_document(sums.read_bytes())
                 download(archive_url, archive, MAX_ARCHIVE)
                 package = install(archive, sums, a.destination, a.version, target, a.smoke)
         print(f'Installed native archive: {package}\nAdd its bin directory to PATH manually. No product verification performed.\nChecksums establish integrity, not publisher authentication. macOS Developer ID/notarization unavailable.\nBlindTest requires a local Docker engine; run b2ige blindtest doctor and restore missing prerequisites.\nFor broken registry/setup state, preserve it and recover reviewed inputs; never auto-approve.\nnpm and Cargo registry publication remain deferred.')
         return 0
-    except (OSError, EOFError, ValueError, KeyError, TypeError, tarfile.TarError, subprocess.SubprocessError) as error:
+    except (OSError, EOFError, ValueError, KeyError, TypeError, tarfile.TarError, zlib.error, subprocess.SubprocessError) as error:
         print(f'Installation refused: {error}', file=sys.stderr)
         return 3
 
