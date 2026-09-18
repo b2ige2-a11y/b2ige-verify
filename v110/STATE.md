@@ -76,9 +76,48 @@ Claim boundary:
 - it is not an independent hidden holdout
 - it is not exhaustive correctness proof
 
+## V110-C — Platform & Distribution
+
+Status: COMPLETE
+
+Merge commit:
+- `f7d95ac857323a6ea952b37f2c4348ee8301f232`
+
+Implementation history:
+- Initial implementation: `8ae85d7f2edf954c34b3536af5a9fa16017e2436`
+- Independent-audit hardening: `b3b5973b11ad998b337fd15a1534ce096dd34ff0`
+- Pull request: `#5 — V110-C: platform and distribution`
+- Final external Candidate checks run: `35304521568` — PASS
+
+Completion evidence:
+- reviewed `b2ige ci init` preview/write flow implemented
+- immutable full-SHA verifier pin required
+- trusted `pull_request_target` controller boundary preserved
+- candidate build/approval remains externally provisioned and fail-closed
+- only sanitized Agent output is retained by generated CI
+- exact-version online installer implemented
+- offline checksum-backed installer implemented
+- archive traversal/link/special-file/overwrite controls validated
+- fresh package/install smoke passed
+- macOS Apple Silicon external CI: PASS
+- macOS Intel external CI: PASS
+- Linux x86_64 actual-Docker external CI: PASS
+- Windows x64 source/build + bounded CLI runtime smoke: PASS
+
+Platform claim boundary:
+- macOS Apple Silicon: VERIFIED_NATIVE within documented scope
+- macOS Intel: VERIFIED_NATIVE within documented scope
+- Linux x86_64: VERIFIED_NATIVE within documented scope
+- Windows x64: SOURCE/BUILD plus bounded CLI runtime smoke; not VERIFIED_NATIVE
+- Linux arm64: DEFERRED; no native host runtime evidence
+- macOS Developer ID signing/notarization: not provided
+- npm publication: DEFERRED
+- Cargo registry publication: DEFERRED
+
+V110-C did not publish or modify a public release, tag, npm package or Cargo package.
+
 ## Remaining V110 packages
 
-- V110-C — Platform & Distribution: NEXT
-- V110-D — External Adoption Evidence: PENDING
+- V110-D — External Adoption Evidence: NEXT
 
 V100 remains COMPLETE and its verification/evidence/isolation semantics remain frozen.
