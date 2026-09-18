@@ -34,6 +34,23 @@ manifest v2, registry, evidence, approval, adoption benchmark and pilot schemas
 remain independent and unchanged. No V100 semantics, P8 labels/baselines or V110
 approval/evidence expectations change.
 
+The publication-assembly repair retains manifest schema 3: its existing arbitrary
+`artifact_sha256` map already permits the narrower target-owned inventory. No wire
+field, product evidence schema or version changes. In an external `release-index`,
+this map binds **public target-owned artifacts**, exactly
+`b2ige-0.3.0-TARGET.tar.gz` for `built_target`. It excludes source, npm, SBOM
+sidecars, other targets and the manifest itself. Embedded SBOM metadata/hashes
+continue to describe the native archive's own dependency inventory.
+
+The prior exact-main candidate at `71f058c6aeeda53c529b61268792f1e3f44d692d`
+passed CI `35330052486` and the controller-reported V3 holdout (70/70/70;
+false PASS/FAIL/leakage all zero). Its publication assembly was BLOCKED: per-target
+indexes also bound runner-local common files, yielding 16 conflicting common-file
+hashes and three candidate-only npm bindings (19 unsatisfied bindings). Those
+records remain historical qualification of that exact artifact. After this repair
+merges, **fresh exact-main CI and a fresh final V4 holdout are required**. V3 cannot
+qualify artifacts from the changed source. v0.3.0 remains unpublished.
+
 ## Platform matrix
 
 | Platform | Candidate scope | Fresh 0.3.0 qualification |
@@ -54,14 +71,42 @@ Cargo retains `publish=false`. Neither registry is a publication target here.
 
 ## Artifacts and installation
 
-Expected names (only the actual host native archive is generated locally):
+The future public GitHub Release contains exactly eight files:
 
 - `b2ige-0.3.0-aarch64-apple-darwin.tar.gz`
+- `b2ige-0.3.0-aarch64-apple-darwin.manifest.json`
 - `b2ige-0.3.0-x86_64-apple-darwin.tar.gz`
+- `b2ige-0.3.0-x86_64-apple-darwin.manifest.json`
 - `b2ige-0.3.0-x86_64-unknown-linux-gnu.tar.gz`
+- `b2ige-0.3.0-x86_64-unknown-linux-gnu.manifest.json`
 - `b2ige-0.3.0-source.tar.gz`
-- `b2ige-verify-0.3.0.tgz` (private wrapper candidate, not npm publication)
-- `b2ige-0.3.0-TARGET.manifest.json`, `SHA256SUMS`, npm/native CycloneDX SBOMs
+- `SHA256SUMS`
+
+Each CI candidate bundle contains only its host native archive and external index,
+plus source, the private `b2ige-verify-0.3.0.tgz`, six native SBOM sidecars and the
+npm SBOM. Its candidate `SHA256SUMS` covers **every** uploaded candidate file except
+itself, including all sidecars. GitHub Actions candidate retention is qualification
+evidence, not the public release asset list. npm tgz and npm SBOM are
+**CANDIDATE_ONLY**; neither is a public GitHub Release asset or npm registry
+publication. npm remains private/unpublished; Cargo remains `publish=false`/unpublished.
+
+Six native CycloneDX SBOMs are shipped **inside each native archive**, with hashes
+bound by that archive's embedded manifest and schema/dependency inventory validated.
+Do not publicly stage SBOM sidecars for v0.3.0; no SBOM sidecar publication is required.
+An SBOM is dependency inventory, not a vulnerability scan. Runner-specific truthful
+timestamps, UUIDs and provenance may differ; no cross-run SBOM byte identity is claimed.
+
+The source archive is release-global. Select one qualified exact-main source archive,
+preferably Apple Silicon because its exact bundle is exercised by the final holdout.
+Compare normal source member names/bytes across all runners and against exact main,
+excluding only generated `release/release-manifest.json`; review each generated
+manifest's truthful provenance separately. Do not require equal raw source archive
+SHA256 values or normalize away provenance. The selected original bytes are bound
+by final public `SHA256SUMS`, not by any target index.
+
+Generate combined public `SHA256SUMS` only during final staging after cross-platform
+CI. It covers the seven other public files and excludes itself. This release-level
+integrity index does not authenticate a publisher or grant publication authority.
 
 Native archives contain CLI/MCP and existing demo/benchmark helpers, the installer,
 CI adapters, V110 docs, public benchmark/adoption corpus and pilot protocol/guide.
@@ -106,6 +151,19 @@ cargo run --locked -p verify-cli --example validate_release -- \
 python3 scripts/validate-archive.py release/artifacts
 ```
 
+`test-release.py` also exercises a deterministic synthetic three-target public set
+and rejects extra assets, incomplete checksums and inconsistent bindings. At future
+final staging, run the structural validator with the independently qualified commit:
+
+```sh
+python3 scripts/validate-public-release.py /trusted/public-staging --commit FULL_MAIN_SHA
+```
+
+It requires the exact eight-file set, clean matching commit/CI identities, matching
+native/index/source metadata, complete checksums, archive safety and all embedded
+SBOM hashes/inventory. It executes no platform binaries and does not replace
+cross-platform runtime CI, direct exact-main source comparison or final holdout.
+
 The full platform gate runs actual Docker and one fresh extracted offline install,
 CLI/product/report/MCP smoke and the complete public 31-case benchmark. Do not use
 `--without-docker` or `--skip-benchmark` to claim this full local gate. The separate
@@ -143,11 +201,16 @@ all frozen semantics, schema versions, P8 inputs and historical tags/releases.
    to publish. Resolve any missing evidence before proceeding.
 6. Create the annotated `v0.3.0` tag at that exact qualified main commit. Preserve
    `v0.1.0` and `v0.2.0` without moving/replacing tags, assets or hashes.
-7. Publish a GitHub Release using the qualified three native archives, source,
-   external per-target manifests, SBOMs and a reviewed combined SHA256SUMS. Common
-   cross-run assets may differ in nonsemantic timestamps: select one consistent
-   set and revalidate every manifest/hash binding; do not overwrite collisions
-   silently. Do not publish npm/Cargo, Windows/Linux-arm64 archives or old MCPB.
+7. Stage exactly the three qualified native archives, three matching external target
+   manifests, one selected qualified source archive and one reviewed combined
+   `SHA256SUMS` covering the seven other files. Compare normal source contents across
+   runners and against exact main, then prefer the Apple Silicon source bytes.
+   Preserve all original selected candidate bytes and truthful runner provenance.
+   Run `validate-public-release.py` before publishing these eight files as the GitHub
+   Release. Native CycloneDX SBOMs remain embedded and validated inside each native
+   archive; do not stage sidecar SBOMs. npm tgz/npm SBOM remain candidate-only, with
+   no npm registry publication. Cargo remains unpublished. Exclude Windows/Linux-arm64
+   archives and old MCPB. No target manifest duplicates the release-global checksum role.
 8. Download the real release assets, verify checksums/manifest/binary identities
    and exact-version install on supported native hosts. Verify tag/commit and links.
 9. Close state/docs with only actual final CI/holdout/publication evidence. Keep

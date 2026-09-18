@@ -126,10 +126,12 @@ def main():
         with tarfile.open(source, 'w:gz') as t:
             for p in files(): t.add(p, arcname=f'b2ige-{version}-source/{p.relative_to(ROOT)}', recursive=False, filter=public_member)
         manifest['manifest_role'] = 'release-index'
-        manifest['artifact_sha256'] = {p.name: sha(p) for p in [native, source, npm_archive, npm_sbom]}
-        manifest['artifact_sha256'].update(sbom['files'])
+        # A target index owns only its public native archive. Candidate checksums
+        # separately cover common assets and candidate-only npm/SBOM sidecars.
+        manifest['artifact_sha256'] = {native.name: sha(native)}
         dump(out / f'{name}.manifest.json', manifest); dump(ROOT / 'release/release-manifest.json', manifest)
-        artifacts = [out / n for n in manifest['artifact_sha256']] + [out / f'{name}.manifest.json']
+        artifacts = [native, source, npm_archive, npm_sbom, out / f'{name}.manifest.json',
+                     *[out / n for n in sbom['files']]]
         (out / 'SHA256SUMS').write_text(''.join(sha(p) + '  ' + p.name + '\n' for p in sorted(artifacts)))
         print('Local archives created; runtime readiness NOT granted by packaging:', native.name)
 
