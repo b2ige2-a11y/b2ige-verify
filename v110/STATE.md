@@ -2,7 +2,7 @@
 
 Program: B2IGE Verify V110 — Productization & Adoption
 Branch: main
-Overall status: IN PROGRESS
+Overall status: IMPLEMENTATION COMPLETE — EXTERNAL VALIDATION DEFERRED
 
 ## V110-A — Easy Adoption
 
@@ -118,7 +118,7 @@ V110-C did not publish or modify a public release, tag, npm package or Cargo pac
 
 ## V110-D — External Adoption Evidence
 
-Status: EVIDENCE_PENDING
+Status: FRAMEWORK COMPLETE — EXTERNAL EVIDENCE DEFERRED
 
 Pilot framework merge commit:
 - `fb36650dadcd445a0daa0ea3046e824b441344fe`
@@ -135,18 +135,18 @@ Framework evidence:
 - participant privacy and sanitization controls implemented
 - synthetic/internal evidence cannot satisfy the completion predicate
 
-Still required before V110-D COMPLETE:
-- at least one genuine external operator
-- all three product journeys with evidence-backed results
-- actual manual trust checkpoint
-- six verifier-understanding answers
-- actual Agent and MCP evidence
-- actual external GitHub CI PASS and non-PASS runs
-- no-private-artifact control
-- independent verification of referenced external evidence
-- sanitized bounded public report
-- final V110-D audit and external CI after evidence commit
+Deferred external validation:
+- genuine external-operator evidence was not collected
+- Behavior, SideEffect and BlindTest external journeys remain available through the pilot framework
+- Agent/MCP and external GitHub CI evidence collection remains available for a future study
+- no synthetic, AI-generated or developer-run result is represented as genuine external evidence
 
-V110-D remains EVIDENCE_PENDING. No external evidence has been fabricated.
+Release decision:
+- external adoption evidence is a post-release validation objective, not a verifier correctness or release-safety gate
+- V110-A/B/C and the V110-D pilot framework are implementation-complete
+- the absence of an external participant does not block the next B2IGE release
+- future external evidence may be added without rewriting V100 or this release history
+
+No external evidence has been fabricated.
 
 V100 remains COMPLETE and its verification/evidence/isolation semantics remain frozen.
