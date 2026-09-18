@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 """Validate every distributable, extracted inventory, and external manifest hashes."""
 import hashlib
+import importlib.util
 import json
+import os
 import pathlib
 import re
 import sys
+import subprocess
 import tarfile
 import tempfile
 import tomllib
 from hygiene import ROOT, scan
+
+spec = importlib.util.spec_from_file_location('install_release', ROOT / 'scripts/install-release.py')
+installer = importlib.util.module_from_spec(spec); spec.loader.exec_module(installer)
+TARGETS = installer.TARGETS
 
 
 def digest(path):
@@ -65,7 +72,7 @@ def product_metadata(root):
 
 
 def candidate_manifest(data, version):
-    targets = {'aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu'}
+    targets = set(TARGETS)
     assert data['version'] == version and data['schema_version'] == '3'
     assert set(data['supported_platforms']) == targets
     assert data['built_target'] in targets
@@ -77,22 +84,93 @@ def candidate_manifest(data, version):
     assert data['publication_ready'] is False and data['owner_publication_authorized'] is False
 
 
-def validate(folder):
-    version = product_metadata(ROOT)
-    listed = {}
-    for line in (folder / 'SHA256SUMS').read_text().splitlines():
-        expected, name = line.split('  ', 1)
-        assert pathlib.Path(name).name == name and name not in listed
-        assert re.fullmatch('[a-f0-9]{64}', expected)
+def target_artifacts(data, version):
+    """Schema 3 target indexes bind public target-owned artifacts, not candidates."""
+    candidate_manifest(data, version)
+    assert data['manifest_role'] == 'release-index'
+    name = f'b2ige-{version}-{data["built_target"]}.tar.gz'
+    assert set(data['artifact_sha256']) == {name}, 'Expected only the target-owned native archive binding'
+    assert re.fullmatch('[a-f0-9]{64}', data['artifact_sha256'][name])
+    return name
+
+
+def checksums(folder):
+    listed = installer.checksum_document((folder / 'SHA256SUMS').read_bytes())
+    paths = list(folder.iterdir())
+    assert all(p.is_file() and not p.is_symlink() for p in paths), 'Unexpected directory/link in release set'
+    assert set(listed) == {p.name for p in paths} - {'SHA256SUMS'}, 'Checksum inventory mismatch'
+    for name, expected in listed.items():
         assert digest(folder / name) == expected, name
-        listed[name] = expected
+    return listed
+
+
+def native_sbom_names(version):
+    locked = tomllib.loads((ROOT / 'Cargo.lock').read_text())['package']
+    names = {f'b2ige-{version}-native-{p["name"]}.cdx.json' for p in locked if 'source' not in p}
+    assert len(names) == 6
+    return names
+
+
+def sbom_hashes(data, folder, version):
+    assert data['sbom']['status'] == 'GENERATED'
+    hashes = data['sbom']['files']
+    assert set(hashes) == native_sbom_names(version), 'Missing/unexpected native SBOM inventory'
+    assert {p.name for p in folder.glob('*-native-*.cdx.json')} == set(hashes)
+    for name, expected in hashes.items():
+        assert digest(folder / name) == expected, 'Native SBOM hash mismatch: ' + name
+
+
+def validate_sboms(folder):
+    subprocess.run([os.environ.get('B2IGE_SBOM_PYTHON', sys.executable),
+                    str(ROOT / 'scripts/validate-sbom.py'), str(folder)], check=True)
+
+
+def validate(folder, *, public=False, expected_commit=None):
+    version = product_metadata(ROOT)
+    listed = checksums(folder)
+    external = {}
+    for m in folder.glob('*.manifest.json'):
+        data = json.loads(m.read_text(), object_pairs_hook=installer.unique_object)
+        name = target_artifacts(data, version)
+        assert m.name == name[:-7] + '.manifest.json', 'Target manifest filename mismatch'
+        assert listed.get(name) == data['artifact_sha256'][name], 'Target archive hash mismatch'
+        external[data['built_target']] = data
+    assert external, 'Missing external target manifest'
+    expected = {f'b2ige-{version}-source.tar.gz'}
+    for target in external:
+        expected.update({f'b2ige-{version}-{target}.tar.gz', f'b2ige-{version}-{target}.manifest.json'})
+    if public:
+        assert expected_commit and re.fullmatch('[a-f0-9]{40}', expected_commit), 'An exact qualified commit is required'
+        assert set(external) == set(TARGETS), 'Expected all three public targets'
+        for data in external.values():
+            assert data['git_commit'] == expected_commit and data['working_tree_dirty'] is False, 'Public commit/clean identity mismatch'
+            assert data['ci_provenance']['GITHUB_SHA'] == expected_commit, 'Public CI commit mismatch'
+            assert data['actually_verified_platforms'] == [data['built_target']], 'Missing native runtime gate'
+    else:
+        assert len(external) == 1, 'Expected one target per candidate bundle'
+        expected.update({f'b2ige-verify-{version}.tgz', f'b2ige-{version}-npm.cdx.json', *native_sbom_names(version)})
+        data = next(iter(external.values()))
+        sbom_hashes(data, folder, version)
+        npm_sbom = data['sbom']['npm']
+        assert npm_sbom['status'] == 'GENERATED' and npm_sbom['file'] == f'b2ige-{version}-npm.cdx.json'
+        assert listed.get(npm_sbom['file']) == npm_sbom['sha256'], 'npm SBOM hash mismatch'
+        validate_sboms(folder)
+    assert set(listed) == expected, 'Unexpected/missing public or candidate assets'
+    embedded = {}
+    source_data = None
     archives = sorted([*folder.glob('*.tar.gz'), *folder.glob('*.tgz')])
     assert archives and all(p.name in listed for p in archives), 'Unchecksummed archive'
     for archive in archives:
         with tempfile.TemporaryDirectory(prefix='b2ige-archive-check-') as tmp:
             root = pathlib.Path(tmp)
+            if archive.name.endswith('.tar.gz') and not archive.name.endswith('-source.tar.gz'):
+                installer.validated_container(archive.read_bytes())
             with tarfile.open(archive) as t:
-                members_safe(t.getmembers()); t.extractall(root, filter='data')
+                members_safe(t.getmembers())
+                if archive.name.endswith('.tar.gz') and not archive.name.endswith('-source.tar.gz'):
+                    target = archive.name.removeprefix(f'b2ige-{version}-').removesuffix('.tar.gz')
+                    installer.validated_members(t, archive.name[:-7], version, target)
+                t.extractall(root, filter='data')
             scan([p for p in root.rglob('*') if p.is_file()])
             expected_names = {f'b2ige-{version}-source.tar.gz', f'b2ige-verify-{version}.tgz',
                               *[f'b2ige-{version}-{t}.tar.gz' for t in ['aarch64-apple-darwin', 'x86_64-apple-darwin', 'x86_64-unknown-linux-gnu']]}
@@ -102,8 +180,10 @@ def validate(folder):
             elif archive.name.endswith('.tar.gz'):
                 assert (root / archive.name[:-7] / 'release-manifest.json').is_file()
             for manifest in root.glob('*/release-manifest.json'):
-                data = json.loads(manifest.read_text()); package = manifest.parent
+                data = json.loads(manifest.read_text(), object_pairs_hook=installer.unique_object); package = manifest.parent
                 candidate_manifest(data, version)
+                assert data['manifest_role'] == 'embedded' and data['artifact_sha256'] == {}
+                embedded[data['built_target']] = data
                 assert archive.name == f'b2ige-{version}-{data["built_target"]}.tar.gz'
                 assert package.name == archive.name[:-7]
                 for binary, expected in data['binary_sha256'].items():
@@ -115,16 +195,19 @@ def validate(folder):
                 for required in ['docs/VERIFICATION-PROTOCOL.md', 'docs/V100-RELEASE.md',
                                  'conformance/V100-PROTOCOL.md', *V110_DOCS]:
                     assert (package / required).is_file(), required
+                sbom_hashes(data, package, version)
+                validate_sboms(package)
             for m in root.glob('*/release/release-manifest.json'):
                 source = m.parent.parent
                 assert source.name == f'b2ige-{version}-source'
                 assert product_metadata(source) == version
-                candidate_manifest(json.loads(m.read_text()), version)
+                source_data = json.loads(m.read_text(), object_pairs_hook=installer.unique_object)
+                candidate_manifest(source_data, version)
                 for required in [*V110_DOCS, *SOURCE_TOOLS]:
                     assert (source / required).is_file(), required
                 paths = sorted(p for p in source.rglob('*') if p.is_file() and p != m)
                 actual = hashlib.sha256(b''.join(str(p.relative_to(source)).encode() + b'\0' + hashlib.sha256(p.read_bytes()).digest() for p in paths)).hexdigest()
-                assert actual == json.loads(m.read_text())['source_inventory_sha256'], 'source inventory mismatch'
+                assert actual == source_data['source_inventory_sha256'], 'source inventory mismatch'
             if archive.suffix == '.tgz':
                 package = root / 'package'; meta = json.loads((package / 'package.json').read_text())
                 assert meta['version'] == version
@@ -132,14 +215,19 @@ def validate(folder):
                 assert 'prepublishOnly' in meta['scripts']
                 for required in ['LICENSE', 'TRADEMARKS.md', 'native-manifest.json', 'bin/launch.cjs']: assert (package / required).is_file()
                 assert not (package / 'native').exists(), 'Unreviewed npm native payload'
-    for m in folder.glob('*.manifest.json'):
-        assert m.name in listed, 'Unchecksummed manifest'
-        data = json.loads(m.read_text()); assert data['manifest_role'] == 'release-index'
-        candidate_manifest(data, version)
-        assert data['artifact_sha256'], 'Missing external artifact hashes'
-        for name, expected in data['artifact_sha256'].items(): assert listed.get(name) == expected, name
-        assert not data['publication_ready'] and not data['owner_publication_authorized']
-    print('Native/source/npm extraction, membership, notices, checksums, binary and source hashes: PASS')
+    assert set(embedded) == set(external), 'Missing native archive or external manifest'
+    # Only post-packaging runtime evidence and the index's role/binding may change.
+    mutable = {'manifest_role', 'artifact_sha256', 'actually_verified_platforms',
+               'platform_validation', 'platform_validation_scope',
+               'local_release_candidate_ready', 'known_limitations'}
+    for target, data in external.items():
+        assert {k: v for k, v in data.items() if k not in mutable} == {
+            k: v for k, v in embedded[target].items() if k not in mutable}, 'External/embedded manifest mismatch'
+        assert source_data and data['git_commit'] == source_data['git_commit'], 'Source commit mismatch'
+        assert data['source_inventory_sha256'] == source_data['source_inventory_sha256'], 'Cross-target normal source mismatch'
+    assert source_data == embedded[source_data['built_target']], 'Source/native provenance mismatch'
+    print(('Public 8-file set' if public else 'Candidate bundle') +
+          ' extraction, safety, checksums, manifests, binaries, embedded SBOMs and source: PASS')
 
 
 if __name__ == '__main__':
