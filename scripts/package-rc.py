@@ -62,7 +62,7 @@ def main():
         public = files(); scan(public)
         for p in public:
             rel = p.relative_to(ROOT)
-            if rel.parts[0] in {'docs', 'conformance', 'examples', 'schemas', 'skills', 'npm', 'benchmarks', 'release'} or (len(rel.parts) == 1 and p.suffix in {'.md', '.txt'}) or p.name in {'LICENSE', 'ci-verify.py', 'ci-summary.py', 'ci_summary.py', 'diff-verify.py', 'setup.py', 'demo.py', 'demo-all.sh', 'demo-behavior.sh', 'demo-sideeffect.sh', 'demo-blindtest.sh', 'readme-bench.py'}:
+            if rel.parts[0] in {'docs', 'conformance', 'examples', 'schemas', 'skills', 'npm', 'benchmarks', 'release'} or (len(rel.parts) == 1 and p.suffix in {'.md', '.txt'}) or p.name in {'LICENSE', 'ci-verify.py', 'ci-summary.py', 'ci_summary.py', 'diff-verify.py', 'setup.py', 'install-release.py', 'demo.py', 'demo-all.sh', 'demo-behavior.sh', 'demo-sideeffect.sh', 'demo-blindtest.sh', 'readme-bench.py'}:
                 if rel.as_posix() == 'release/release-manifest.json': continue
                 dest = stage / rel; dest.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(p, dest)
         # std is statically linked; use the exact installed toolchain's library notices.

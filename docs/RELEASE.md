@@ -127,3 +127,10 @@ deliberately reviewed full-workspace publication layout. The final npm package n
 `@b2ige/verify`, but npm publication is intentionally deferred until the `@b2ige` scope is
 actually controlled. GitHub Private Vulnerability Reporting is enabled. macOS 0.1.0 is
 unsigned and unnotarized; no Developer ID claim is made.
+
+## V110 source candidate installation gate
+
+[V110-C](V110-DISTRIBUTION.md) extends the existing candidate pipeline with offline
+checksum/manifest/path-validated installation before fresh installed smoke. It adds no
+release/version decision and does not mutate historical v0.2.0 artifacts. Windows
+bounded CLI smoke is a pending runner gate, not native archive/product qualification.

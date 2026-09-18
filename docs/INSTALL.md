@@ -40,14 +40,22 @@ independently run.
 
 ## Native archive
 
+The reviewed current-source [installation helper](../scripts/install-release.py) can
+install historical v0.2.0 without modifying its artifacts:
+
 ```sh
-shasum -a 256 -c SHA256SUMS
-# Substitute the archive's actual version/target file name.
-tar -xzf b2ige-0.2.0-aarch64-apple-darwin.tar.gz
-export PATH="$PWD/b2ige-0.2.0-aarch64-apple-darwin/bin:$PATH"
-b2ige --version
-b2ige-mcp --help
+python3 scripts/install-release.py --version 0.2.0 --destination /existing/new-install
+# With manually acquired trusted assets; no network:
+python3 scripts/install-release.py --offline \
+  --archive /trusted/b2ige-0.2.0-aarch64-apple-darwin.tar.gz \
+  --checksums /trusted/SHA256SUMS --destination /existing/new-install --smoke
 ```
+
+Use an existing parent and a new destination. The helper validates integrity and
+archive structure before extraction or execution. It is current-source tooling,
+not a file retroactively added to v0.2.0. See [V110-C distribution](V110-DISTRIBUTION.md)
+for exact CLI options, offline recovery, archive safety and pending platform gates.
+Add the extracted package's `bin` directory to PATH manually.
 
 Keep all binaries together. `p5-effect-fixture` is a synthetic benchmark provider required
 by `b2ige bench`; `b2ige-demo` and `b2ige-demo-effect` prepare public examples only.
@@ -97,3 +105,10 @@ a C toolchain, and Cargo dependencies (download on first build; Cargo.lock pins 
 See [release packaging](RELEASE.md). The [npm wrapper](../npm/b2ige/README.md) keeps its
 publication guard active; npm remains deferred and is not required for this 0.2.0 release.
 The historical GitHub 0.1.0 release also did not require npm.
+
+## Current source versus published release
+
+V110-A adoption commands, V110-B adoption bench and V110-C `ci init` are current-source /
+future-release work; they are absent from published v0.2.0. Candidate archives keep
+the existing package version until a separate owner release decision. See the
+[V110 distribution boundary and platform table](V110-DISTRIBUTION.md).

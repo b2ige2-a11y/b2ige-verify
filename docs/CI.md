@@ -1,13 +1,17 @@
 # Local-first GitHub Actions
 
-Copy [.github/workflows/b2ige-verify.yml.example](../.github/workflows/b2ige-verify.yml.example)
-into a chosen workflow after supplying the project-specific reviewed configs/fixtures.
-The `pull_request_target` workflow and verifier checkout come from the trusted base
-revision. Candidate Git objects are fetched only for diff inspection; candidate
-workflow, Cargo hooks, adapters, registry, configs and approvals are never executed
-or adopted by this controller. The verifier binary is built from that trusted checkout.
-No hosted B2IGE service is needed. Other repositories must likewise run a pinned
-controller/verifier checkout independently of the candidate.
+For current V110 source, use reviewed `b2ige ci init` preview and explicit `--write`;
+see [V110-C distribution and CI](V110-DISTRIBUTION.md) for exact commands, protections
+and required candidate provisioning. Public v0.2.0 does not include this command.
+The [example workflow](../.github/workflows/b2ige-verify.yml.example) intentionally
+requires replacement of its verifier-commit placeholder before it can run.
+`pull_request_target` loads the controller from the trusted project base, while a
+separate full-commit-pinned checkout supplies all verifier tooling. Candidate Git
+objects are fetched only for diff inspection. Candidate workflows/build hooks and
+project-supplied verifier scripts are never run by this controller. Project inputs
+stay in the reviewed base; the pinned `diff-verify.py --project-root DIRECTORY`
+resolves Git/config paths there and retains its own trusted `ci-verify.py` adapter.
+No hosted B2IGE service or automatic candidate approval is added.
 The setup status, diff map/selection plan and step summary are non-authoritative tooling
 messages (`schema_version: "1"` where emitted); product contracts and verified loaders
 remain the only verdict authority.
@@ -91,8 +95,8 @@ review and adoption into the trusted revision; the adapter never updates it.
 
 This comparison does not authenticate the calling script, binary, referenced file
 contents or caller-supplied pin. The workflow enforces their provenance by executing
-only the trusted base checkout. Optional diff maps must also be controller-reviewed
-inputs from that checkout. A local invocation using candidate-controlled tools or pins
+the independent pinned verifier checkout with project inputs from the trusted base.
+Optional diff maps must also be controller-reviewed inputs from the project base. A local invocation using candidate-controlled tools or pins
 is not a trusted GitHub gate. With no map it conservatively verifies every required entry.
 An optional tooling-only `diff-map` v1 has this shape:
 
@@ -139,8 +143,9 @@ pipeline `|| true`, forced zero exit or `continue-on-error` is used.
 ## Windows x64
 
 The repository workflow includes a `windows-latest` source/build job for
-`x86_64-pc-windows-msvc`: locked Cargo fetch, fmt, clippy, workspace tests and release
-build. It is deliberately separate from the Unix/Docker release smoke. This Mac run does
+`x86_64-pc-windows-msvc`: locked Cargo fetch, fmt, clippy, workspace test compilation
+and release build. V110-C adds bounded version/help/inspect/idempotent init/setup/CI
+preview runtime smoke; its Windows execution is pending external CI. It is deliberately separate from the Unix/Docker release smoke. This Mac run does
 not claim Windows runtime, product PASS, BlindTest Docker, or Windows release-archive
 evidence; the job is the CI design and its eventual run is the platform evidence.
 

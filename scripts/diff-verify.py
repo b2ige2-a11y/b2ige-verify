@@ -16,7 +16,8 @@ import sys
 from ci_summary import load_payload, render_many
 
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+TOOL_ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = TOOL_ROOT
 PRODUCTS = {"behavior", "sideeffect", "blindtest"}
 VERDICT_CODES = {"PASS": 0, "FAIL": 1, "INCONCLUSIVE": 2, "ERROR": 3}
 IDENTITY = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
@@ -299,7 +300,9 @@ def plan_payload(base, head, files, selection, reason):
 
 
 def main():
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--project-root", help="trusted project checkout; tooling remains independently pinned")
     parser.add_argument("--base", required=True, help="trusted Git base revision")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--registry", default=".b2ige/project.json")
@@ -315,6 +318,8 @@ def main():
     parser.add_argument("--summary", help="write a sanitized GitHub Actions step summary")
     parser.add_argument("--plan-only", action="store_true")
     args = parser.parse_args()
+    if args.project_root:
+        ROOT = pathlib.Path(args.project_root).resolve()
 
     try:
         entries = checked_entries(user_path(args.registry), args.trusted_revision,
@@ -366,7 +371,7 @@ def main():
         report = report_dir / f"{output_name(identity)}.json"
         command = [
             sys.executable,
-            str(ROOT / "scripts/ci-verify.py"),
+            str(TOOL_ROOT / "scripts/ci-verify.py"),
             entry["product"],
             entry["config"],
             "--b2ige",

@@ -4,6 +4,7 @@ pub mod adoption;
 pub mod agent;
 pub mod bench;
 mod blindtest;
+pub mod ci;
 pub mod integration;
 mod sideeffect;
 pub use blindtest::{BlindTestAgent, BlindTestReport};
