@@ -12,7 +12,7 @@ independent tooling-only string-version v1 JSON document, not verdict evidence.
 Its schema records scope, source byte hashes before/after, ordered commands with
 exit/completion/log identities, pending gates and publication readiness=false.
 Only BLOCKED_LOCAL or WAITING_EXTERNAL_CI_AND_PRIVATE_HOLDOUT is permitted.
-Release manifest v3 remains unchanged; the current package version is 0.2.0.
+Release manifest v3 remains unchanged; the current package version is 0.3.0 (local release candidate only).
 
 ## ExperimentPlan
 Must identify:
@@ -156,8 +156,8 @@ product-scoped run, absent Docker evidence, or a historical baseline snapshot.
 
 ## P9 packaging version decision
 
-Product/package version is 0.2.0 (published GitHub/native release; npm publication deferred/private). The new release manifest is
-independent schema v1 and does not change any authoritative product/evidence/report schema.
+Product/package version is 0.3.0 (local candidate; npm private and Cargo unpublished). Release manifest
+schema remains independent v3; only its product-version constraint advances. This does not change any authoritative product/evidence/report schema.
 Benchmark comparison rejects benchmark/schema/corpus mismatches and recomputes canonical semantic
 content hashes; stored hash fields are not comparison authority. P1–P8 verdict semantics remain unchanged.
 

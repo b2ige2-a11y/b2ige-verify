@@ -18,7 +18,7 @@ def generate():
     packages = [p for p in metadata['packages'] if p['source']]
     assert set(locked) == {(p['name'], p['version']) for p in packages}
     sources = json.loads((ROOT / 'release/license-supplements/sources.json').read_text())
-    notices = ['B2IGE Verify 0.2.0 — third-party notices\n\n'
+    notices = ['B2IGE Verify 0.3.0 — third-party notices\n\n'
                'Covers the complete Cargo.lock graph, including build/dev/foreign-target dependencies.\n'
                'Inclusion does not assert that every component is linked into every binary.\n'
                'Selected alternatives are recorded in release/dependency-licenses.json.\n']

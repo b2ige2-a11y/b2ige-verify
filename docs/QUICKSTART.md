@@ -60,8 +60,8 @@ The printed evidence path is trusted local data; do not upload it as a public is
 
 ## Use your own project
 
-For the new adoption commands, build the current source checkout (the published
-v0.2.0 archives are unchanged). Follow [Easy Adoption](ADOPTION.md):
+For the adoption commands, install the 0.3.0 local native candidate or build the
+current source checkout (published v0.2.0 archives are unchanged). Follow [Easy Adoption](ADOPTION.md):
 
 ```text
 b2ige inspect → b2ige init → b2ige prepare --product PRODUCT
@@ -85,5 +85,5 @@ The raw store must remain available; exported report JSON is not authoritative i
 
 For safe version-pinned/offline installation and reviewed `b2ige ci init` preview,
 see [V110-C distribution and CI](V110-DISTRIBUTION.md). V110 commands require the
-current reviewed source build; published v0.2.0 does not include them. Generated CI
+0.3.0 native candidate or current reviewed source build; published v0.2.0 does not include them. Generated CI
 fails closed until candidate build provisioning and controller approval are configured.

@@ -24,5 +24,5 @@ baselines from candidate output. `pass/experiment.json` is the executable exampl
 Public API: `verify_core::behavior`; byte-exact stdout/stderr/exit observations are bounded.
 
 Config identities vary per installation; generated configs avoid invalid placeholder hashes.
-Do not copy private runtime reports into the repository. Product version 0.1.0; schema versions
+Do not copy private runtime reports into the repository. Product version 0.3.0; schema versions
 remain those defined by the existing contracts.

@@ -1,4 +1,17 @@
-# Installation — B2IGE Verify 0.2.0
+# Installation — B2IGE Verify 0.3.0 candidate
+
+The 0.3.0 candidate is local only. Use exact local artifacts before publication:
+
+```sh
+python3 scripts/install-release.py --offline --version 0.3.0 \
+  --archive /trusted/b2ige-0.3.0-aarch64-apple-darwin.tar.gz \
+  --checksums /trusted/SHA256SUMS --destination /existing/new-install --smoke
+```
+
+Choose the actual host target. See [0.3.0 scope and pending gates](RELEASE-0.3.0.md).
+No 0.3.0 public download is claimed; online `--version 0.3.0` is for after publication.
+
+## Historical public 0.2.0 installation
 
 0.2.0 is published. Its [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
 is the installation source, with public archives and SHA256SUMS. The instructions below apply to
@@ -102,13 +115,14 @@ beside `b2ige`. Individual `.crate` registry publication is intentionally disabl
 workspace-external benchmark/example/test sources require the whole source distribution.
 No `cargo install verify-cli` registry command is claimed. Source builds require Rust stable,
 a C toolchain, and Cargo dependencies (download on first build; Cargo.lock pins versions).
-See [release packaging](RELEASE.md). The [npm wrapper](../npm/b2ige/README.md) keeps its
+See [current candidate packaging](RELEASE-0.3.0.md). The [npm wrapper](../npm/b2ige/README.md) keeps its
 publication guard active; npm remains deferred and is not required for this 0.2.0 release.
 The historical GitHub 0.1.0 release also did not require npm.
 
 ## Current source versus published release
 
-V110-A adoption commands, V110-B adoption bench and V110-C `ci init` are current-source /
-future-release work; they are absent from published v0.2.0. Candidate archives keep
-the existing package version until a separate owner release decision. See the
+V110-A adoption commands and V110-C `ci init` are in the 0.3.0 native candidate.
+The source archive also includes the V110-B benchmark runner and V110-D pilot tooling;
+they require a reviewed Git checkout and source build as documented. Historical
+published v0.2.0 remains unchanged. No 0.3.0 publication is claimed. See the
 [V110 distribution boundary and platform table](V110-DISTRIBUTION.md).

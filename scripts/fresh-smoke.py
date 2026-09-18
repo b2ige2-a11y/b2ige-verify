@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Extract an RC archive into a new directory and run installed executables only."""
 import argparse, importlib.util, json, os, pathlib, subprocess, sys, tempfile
+from installed_cli_smoke import check_cli
 parser = argparse.ArgumentParser()
 parser.add_argument('archive')
 parser.add_argument('--skip-benchmark', action='store_true')
@@ -9,6 +10,15 @@ args = parser.parse_args()
 archive = pathlib.Path(args.archive).resolve()
 tool_scripts = pathlib.Path(__file__).resolve().parent
 root = pathlib.Path(tempfile.mkdtemp(prefix='b2ige-install-'))
+# Absolute installed invocations must succeed even when PATH fallbacks are traps.
+poison = root / 'poison-path'
+poison.mkdir()
+marker = poison / 'fallback-used'
+for name in ['b2ige', 'b2ige-mcp', 'b2ige-demo', 'b2ige-demo-effect', 'p5-effect-fixture', 'cargo']:
+    trap = poison / name
+    trap.write_text('#!/bin/sh\n: > "' + str(marker) + '"\nexit 97\n')
+    trap.chmod(0o755)
+os.environ['PATH'] = str(poison) + os.pathsep + os.environ['PATH']
 spec = importlib.util.spec_from_file_location('install_release', pathlib.Path(__file__).with_name('install-release.py'))
 installer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(installer)
@@ -21,18 +31,20 @@ demo, run = module.demo, module.run
 os.environ.pop('B2IGE_BENCH_EFFECT_FIXTURE', None)
 os.environ.pop('B2IGE_BLINDTEST_SEALED_ROOT', None)
 os.environ.pop('B2IGE_BINARY', None)
-os.environ['PATH'] = str(bin_dir) + os.pathsep + os.environ['PATH']
+os.environ['B2IGE_BIN_DIR'] = str(bin_dir)
 work = root / 'new-project'
 work.mkdir()
 os.chdir(work)
 cli = bin_dir / 'b2ige'
-help_text = run([cli, '--help'])
-for surface in ['inspect', 'prepare', 'trust approve', 'verify ID', 'ci init']:
-    assert surface in help_text, surface
-run([cli, '--version'])
-run([cli, 'bench', '--help'])
+version = json.loads((package / 'release-manifest.json').read_text())['version']
+try:
+    check_cli(root / 'missing-bin/b2ige', version, work)
+except AssertionError as error:
+    assert 'fallback forbidden' in str(error)
+else:
+    raise AssertionError('missing installed CLI accepted')
+check_cli(cli, version, work)
 assert (package / 'scripts/install-release.py').is_file()
-run([cli, 'init', '--dry-run']); run([cli, 'init'])
 setup = package / 'scripts' / 'setup.py'
 assert setup.is_file()
 run([sys.executable, str(setup), '--binary', str(cli), '--skip-build'])
@@ -48,6 +60,9 @@ entry = {'product':'behavior','config':str(root/'behavior/pass/experiment.json')
 registry = work/'.b2ige/project.json'
 registry.write_text(json.dumps({'schema_version':'1','entries':{'hello':entry}}))
 assert json.loads(run([cli,'doctor']))['ready']
+identity = json.loads(run([cli, 'verify', 'hello', '--registry', registry,
+                          '--output', 'agent', '--protocol', '1']))
+assert identity['verdict'] == 'PASS' and identity['source']
 # Exercise CI bootstrap with a real registered product fixture from the installed demo.
 ci_args = [cli, 'ci', 'init', '--identity', 'hello', '--provider', 'github-actions',
            '--registry', str(registry), '--verifier-repo', 'b2ige2-a11y/b2ige-verify',
@@ -91,4 +106,5 @@ else:
     bench = json.loads(run([cli,'bench','--output','json']))
     assert bench['summary']['gate_pass'] and bench['complete_release_corpus']
     print('Fresh archive CLI/init/doctor/examples/reports/Docker/MCP/31-case bench: PASS')
-print('Development source tree was not used by installed commands; system Docker and /bin/sh remain prerequisites.')
+assert not marker.exists(), 'source/PATH fallback executed'
+print('Installed V110 commands and missing-binary/PATH poison controls: PASS; system Docker and /bin/sh remain prerequisites.')

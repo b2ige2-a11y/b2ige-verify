@@ -30,5 +30,5 @@ Same-host-user access is not isolated. No perfect secrecy or exhaustive proof is
 Public API: `verify_core::blindtest`. [Exact threat boundary](../../docs/THREAT-MODEL.md).
 
 Config identities vary per installation; generated configs avoid invalid placeholder hashes.
-Do not copy private runtime reports into the repository. Product version 0.1.0; schema versions
+Do not copy private runtime reports into the repository. Product version 0.3.0; schema versions
 remain those defined by the existing contracts.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 — release candidate (not published)
+
+- Easy Adoption: inspect, idempotent init, prepare, interactive trusted approval, readiness-only doctor and registered identity verification.
+- Public adoption workflow benchmark: 9 reproducible scenarios with tooling and bounded historical measurements; no P8 label or baseline changes.
+- CI bootstrap: `b2ige ci init`, immutable verifier commit pinning and hardened fail-closed controller generation.
+- Distribution: exact-version online and checksum-backed offline installer, safe archive extraction, extracted version checks and fresh install/package smoke.
+- Windows x64: source/build plus bounded CLI runtime smoke evidence from V110-C; not VERIFIED_NATIVE and no native archive. Fresh release CI remains pending.
+- External pilot framework included; V110-D actual genuine external participant evidence remains DEFERRED. No AI/internal run is external evidence; external adoption is a post-release validation objective.
+- macOS unsigned/unnotarized; npm/Cargo unpublished; Linux arm64 deferred. Bounded verification is not exhaustive proof.
+
+See [candidate procedure and release-note draft](docs/RELEASE-0.3.0.md).
+
 ## 0.2.0 — released (npm deferred)
 
 - Trust: Trust Lock and the seal/identity/receipt foundation add executable trust boundaries without assigning verdicts.

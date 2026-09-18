@@ -14,7 +14,7 @@ with tempfile.TemporaryDirectory(prefix='b2ige-cli-smoke-') as temporary:
     root = pathlib.Path(temporary).resolve()
     def run(*args):
         return subprocess.check_output([str(binary), *args], cwd=root, text=True, timeout=60)
-    assert '0.2.0' in run('--version')
+    assert run('--version').strip() == 'verify-cli 0.3.0'
     assert 'ci init' in run('--help')
     assert 'verification_performed: false' in run('inspect', str(root))
     run('init')

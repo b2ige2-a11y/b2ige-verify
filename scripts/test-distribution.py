@@ -39,17 +39,17 @@ class InstallTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = pathlib.Path(self.temp.name).resolve()
         self.target = installer.TARGETS[0]
-        self.name = installer.filename('0.2.0', self.target)
+        self.name = installer.filename('0.3.0', self.target)
         self.archive = self.root / self.name
         self.sums = self.root / 'SHA256SUMS'
         self.destination = self.root / 'installed'
         self.package = self.name[:-7]
 
     def archive_fixture(self, extra=None, mutate=None, missing=None, binary=None, manifest_data=None):
-        binary = binary or b'#!/bin/sh\nexit 0\n'
+        binary = binary or b'#!/bin/sh\necho \"verify-cli 0.3.0\"\n'
         files = {'bin/' + name: binary for name in installer.BINARIES}
         files.update({name: b'public notice' for name in ['LICENSE', 'TRADEMARKS.md', 'SECURITY.md', 'THIRD-PARTY-NOTICES.txt', 'RUST-RUNTIME-NOTICES.html']})
-        manifest = {'schema_version': '3', 'manifest_role': 'embedded', 'version': '0.2.0',
+        manifest = {'schema_version': '3', 'manifest_role': 'embedded', 'version': '0.3.0',
                     'built_target': self.target, 'supported_platforms': list(installer.TARGETS),
                     'binary_sha256': {name: hashlib.sha256(binary).hexdigest() for name in installer.BINARIES},
                     'license_notices_sha256': hashlib.sha256(b'public notice').hexdigest(),
@@ -97,6 +97,18 @@ class InstallTests(unittest.TestCase):
                                             '--destination', str(self.destination), '--smoke']), 0)
         self.assertTrue((self.destination / self.package / 'bin/b2ige').is_file())
         self.assertFalse((self.destination / '.b2ige').exists())
+
+    def test_wrong_installed_version_is_refused(self):
+        self.archive_fixture(binary=b'#!/bin/sh\necho "verify-cli 9.9.9"\n')
+        with mock.patch.object(installer, 'host_target', return_value=self.target):
+            with self.assertRaisesRegex(ValueError, 'CLI version mismatch'):
+                self.install(smoke=True)
+
+    def test_historical_exact_urls_retained(self):
+        for target in installer.TARGETS:
+            archive, sums = installer.urls('0.2.0', target)
+            self.assertEqual(archive, installer.REPOSITORY + '/v0.2.0/' + installer.filename('0.2.0', target))
+            self.assertEqual(sums, installer.REPOSITORY + '/v0.2.0/SHA256SUMS')
 
     def test_checksum_controls_no_execution(self):
         self.archive_fixture()
@@ -279,33 +291,33 @@ class InstallTests(unittest.TestCase):
 
     def test_exact_online_inventory_and_platform(self):
         for target in installer.TARGETS:
-            archive, sums = installer.urls('0.2.0', target)
-            self.assertEqual(archive, installer.REPOSITORY + '/v0.2.0/' + installer.filename('0.2.0', target))
-            self.assertEqual(sums, installer.REPOSITORY + '/v0.2.0/SHA256SUMS')
+            archive, sums = installer.urls('0.3.0', target)
+            self.assertEqual(archive, installer.REPOSITORY + '/v0.3.0/' + installer.filename('0.3.0', target))
+            self.assertEqual(sums, installer.REPOSITORY + '/v0.3.0/SHA256SUMS')
             self.assertNotIn('latest', archive)
-        for version in ['latest', 'main', 'v0.2.0', '0.3.0', '../0.2.0']:
+        for version in ['latest', 'main', 'v0.3.0', '9.9.9', '../0.3.0']:
             with self.assertRaises(ValueError):
                 installer.urls(version, installer.TARGETS[0])
         for system, machine in [('Linux', 'aarch64'), ('Windows', 'AMD64'), ('Unknown', 'x86_64')]:
             with mock.patch.object(installer.platform, 'system', return_value=system), \
                     mock.patch.object(installer.platform, 'machine', return_value=machine), self.assertRaises(ValueError):
                 installer.host_target()
-        self.assertEqual(installer.RELEASES, {'0.2.0': installer.TARGETS})
+        self.assertEqual(installer.RELEASES, {'0.2.0': installer.TARGETS, '0.3.0': installer.TARGETS})
 
     def test_online_driver_downloads_only_exact_assets(self):
         self.archive_fixture()
         archive_data, checksum_data = self.archive.read_bytes(), self.sums.read_bytes()
-        expected = installer.urls('0.2.0', self.target)
+        expected = installer.urls('0.3.0', self.target)
         def download(url, path, limit):
             self.assertIn(url, expected)
             path.write_bytes(checksum_data if url.endswith('/SHA256SUMS') else archive_data)
         with mock.patch.object(installer, 'download', side_effect=download) as network:
-            self.assertEqual(installer.main(['--version', '0.2.0', '--target', self.target,
+            self.assertEqual(installer.main(['--version', '0.3.0', '--target', self.target,
                                             '--destination', str(self.destination)]), 0)
             self.assertEqual([c.args[0] for c in network.call_args_list], [expected[1], expected[0]])
 
     def test_online_redirects_preserve_release_and_cdn_boundary(self):
-        selected = installer.urls('0.2.0', self.target)[0]
+        selected = installer.urls('0.3.0', self.target)[0]
         request = installer.urllib.request.Request(selected)
         handler = installer.HTTPSOnly(selected)
         for destination in [selected,
@@ -313,8 +325,8 @@ class InstallTests(unittest.TestCase):
                             'https://objects.githubusercontent.com/github-production-release-asset/1/asset?sig=bounded-test']:
             result = handler.redirect_request(request, None, 302, 'Found', {}, destination)
             self.assertEqual(result.full_url, destination)
-        for destination in [selected.replace('/v0.2.0/', '/v9.9.9/'),
-                            selected.replace('/download/v0.2.0/', '/latest/download/'),
+        for destination in [selected.replace('/v0.3.0/', '/v9.9.9/'),
+                            selected.replace('/download/v0.3.0/', '/latest/download/'),
                             selected.replace('b2ige2-a11y/', 'other/'),
                             selected.replace(self.name, 'SHA256SUMS'),
                             selected.replace('https://', 'http://'),
@@ -378,7 +390,7 @@ class BootstrapTests(unittest.TestCase):
         for key, values in {
             '--identity': ['unknown', '../login', 'x;touch injected', 'x\nrun: evil', '$(whoami)', '${{ github.token }}', ''],
             '--provider': ['gitlab', 'github'],
-            '--verifier-ref': ['main', 'master', 'latest', 'v0.2.0', 'abcd', 'a' * 39, 'g' * 40,
+            '--verifier-ref': ['main', 'master', 'latest', 'v0.3.0', 'abcd', 'a' * 39, 'g' * 40,
                                'A' * 40, 'a' * 40 + '\n', '${{ github.sha }}', '$(whoami)'],
             '--verifier-repo': ['owner/repo;evil', 'owner/../repo', 'x\nrun: evil', '$(whoami)/repo'],
         }.items():
