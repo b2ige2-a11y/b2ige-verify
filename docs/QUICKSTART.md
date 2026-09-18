@@ -80,3 +80,10 @@ OS-level boundary against an unrestricted process with the same host user.
 Use `--output agent --protocol 1` for integrations. Use `b2ige report` to reload an evidence-backed
 result, with `--output human|json|agent`. Human and JSON BlindTest views are trusted private views.
 The raw store must remain available; exported report JSON is not authoritative input.
+
+## Current-source installation and CI bootstrap
+
+For safe version-pinned/offline installation and reviewed `b2ige ci init` preview,
+see [V110-C distribution and CI](V110-DISTRIBUTION.md). V110 commands require the
+current reviewed source build; published v0.2.0 does not include them. Generated CI
+fails closed until candidate build provisioning and controller approval are configured.

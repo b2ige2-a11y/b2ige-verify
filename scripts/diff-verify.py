@@ -8,6 +8,7 @@ import argparse
 import fnmatch
 import hashlib
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -16,7 +17,8 @@ import sys
 from ci_summary import load_payload, render_many
 
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+TOOL_ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = TOOL_ROOT
 PRODUCTS = {"behavior", "sideeffect", "blindtest"}
 VERDICT_CODES = {"PASS": 0, "FAIL": 1, "INCONCLUSIVE": 2, "ERROR": 3}
 IDENTITY = re.compile(r"^[A-Za-z0-9_.-]{1,128}$")
@@ -154,6 +156,33 @@ def check_candidate(approval, head, entries):
             raise ValueError("candidate target identity is unavailable") from error
 
 
+def check_controller_isolation(entries):
+    """Admission for privileged CI only; native local verifiers are not sandboxes."""
+    if any(entry["product"] != "blindtest" for entry in entries.values()):
+        raise ValueError("trusted CI blocks native Behavior/SideEffect execution; a reviewed isolated runtime is required")
+    for entry in entries.values():
+        if read_json(user_path(entry["config"])).get("required_isolation") != "DOCKER_ISOLATION":
+            raise ValueError("trusted CI requires existing BlindTest DOCKER_ISOLATION")
+
+
+def publish_reports(directory, reports):
+    """Serialize only already checked Agent payloads into a fresh upload directory."""
+    for parent in (directory, *directory.parents):
+        if parent.is_symlink():
+            raise ValueError("artifact directory symlinks are refused")
+    # No reuse, including an empty preexisting directory or dangling symlink.
+    directory.mkdir()
+    for identity, payload in reports:
+        path = directory / f"{output_name(identity)}.json"
+        with path.open("x", encoding="utf-8") as stream:
+            json.dump(payload, stream, sort_keys=True)
+            stream.write("\n")
+    # The workflow cannot upload stale/partial output after any earlier failure.
+    if os.environ.get("GITHUB_OUTPUT"):
+        with pathlib.Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as stream:
+            stream.write("artifacts_ready=true\n")
+
+
 def changed_files(base, head):
     if not base:
         raise ValueError("a trusted diff base revision is required")
@@ -244,7 +273,7 @@ def output_name(identity):
 
 
 def validate_report(path, product, exit_code):
-    if not path.is_file():
+    if path.is_symlink() or not path.is_file():
         return None
     try:
         payload = load_payload(path)
@@ -299,7 +328,9 @@ def plan_payload(base, head, files, selection, reason):
 
 
 def main():
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--project-root", help="trusted project checkout; tooling remains independently pinned")
     parser.add_argument("--base", required=True, help="trusted Git base revision")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--registry", default=".b2ige/project.json")
@@ -314,11 +345,23 @@ def main():
     parser.add_argument("--report-dir", default="b2ige-agent-reports")
     parser.add_argument("--summary", help="write a sanitized GitHub Actions step summary")
     parser.add_argument("--plan-only", action="store_true")
+    parser.add_argument("--trusted-controller", action="store_true",
+                        help="privileged CI: require isolated BlindTest; native targets remain blocked")
+    parser.add_argument("--artifact-dir",
+                        help="new directory for allowlisted checked Agent output; requires --trusted-controller")
     args = parser.parse_args()
+    if args.project_root:
+        ROOT = pathlib.Path(args.project_root).resolve()
 
     try:
         entries = checked_entries(user_path(args.registry), args.trusted_revision,
                                   args.required_registry)
+        if args.trusted_controller:
+            check_controller_isolation(entries)
+            if not args.artifact_dir or args.plan_only:
+                raise ValueError("trusted CI requires fresh sanitized artifacts and actual verification")
+        elif args.artifact_dir:
+            raise ValueError("artifact staging requires trusted controller mode")
         identities = list(entries)
         base = trusted_revision(args.base, "base")
         head = trusted_revision(args.head, "head")
@@ -354,19 +397,24 @@ def main():
                 )
             except OSError:
                 pass
-        print("Diff-aware verification setup failed; no contract verdict was produced.",
+        print("Diff-aware verification setup failed; no contract verdict was produced. "
+              "Trusted CI requires approved BlindTest DOCKER_ISOLATION; native Behavior/SideEffect "
+              "remain blocked pending a reviewed isolated runtime. Build and approval alone do not isolate execution."
+              if args.trusted_controller else
+              "Diff-aware verification setup failed; no contract verdict was produced.",
               file=sys.stderr)
         return 3
 
     results = []
     summaries = []
+    artifacts = []
     codes = []
     for identity in selected:
         entry = entries[identity]
         report = report_dir / f"{output_name(identity)}.json"
         command = [
             sys.executable,
-            str(ROOT / "scripts/ci-verify.py"),
+            str(TOOL_ROOT / "scripts/ci-verify.py"),
             entry["product"],
             entry["config"],
             "--b2ige",
@@ -379,6 +427,8 @@ def main():
         if entry["authorization"] is not None:
             command.extend(["--authorization", entry["authorization"]])
         try:
+            if args.trusted_controller:
+                check_controller_isolation(entries)
             check_candidate(approval, head, entries)
             child = subprocess.run(command, cwd=ROOT, stdout=subprocess.DEVNULL,
                                    stderr=subprocess.DEVNULL, check=False)
@@ -401,6 +451,7 @@ def main():
             }))
         else:
             summaries.append((identity, payload))
+            artifacts.append((identity, payload))
         codes.append(code)
         results.append({
             "identity": identity,
@@ -410,6 +461,13 @@ def main():
         })
 
     final_code = priority(codes)
+    if args.trusted_controller:
+        try:
+            publish_reports(user_path(args.artifact_dir), artifacts)
+        except (OSError, ValueError):
+            final_code = 3
+            print("Sanitized artifact staging failed; supply a new directory under a real parent "
+                  "and a writable GitHub step-output file. No upload was authorized.", file=sys.stderr)
     plan.update({"results": results, "ci_exit_code": final_code, "gate_pass": final_code == 0})
     if args.summary:
         try:

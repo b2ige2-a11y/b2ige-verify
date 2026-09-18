@@ -1,4 +1,3 @@
-# Review and replace the commit placeholder before enabling. This example fails closed.
 name: B2IGE Verify
 on:
   pull_request_target:
@@ -21,14 +20,14 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          repository: b2ige2-a11y/b2ige-verify
-          ref: 'REPLACE_WITH_REVIEWED_FULL_V110_C_COMMIT_SHA'
+          repository: __REPO__
+          ref: '__PIN__'
           path: verifier
           persist-credentials: false
       - name: Build independently pinned verifier only
         working-directory: verifier
         run: |
-          test "$(git rev-parse HEAD)" = 'REPLACE_WITH_REVIEWED_FULL_V110_C_COMMIT_SHA'
+          test "$(git rev-parse HEAD)" = '__PIN__'
           cargo build --workspace --release --locked
       # Candidate workflows/build hooks/native targets are never executed here.
       # Native Behavior/SideEffect stay blocked pending a reviewed isolated runtime.
@@ -47,7 +46,7 @@ jobs:
           test ! -L "$RUNNER_TEMP/b2ige-agent-artifacts"
           test -f "$RUNNER_TEMP/b2ige-candidate-approval.json"
           test ! -L "$RUNNER_TEMP/b2ige-candidate-approval.json"
-          "$GITHUB_WORKSPACE/verifier/target/release/b2ige" ci init --identity login --provider github-actions --registry .b2ige/project.json --verifier-repo b2ige2-a11y/b2ige-verify --verifier-ref REPLACE_WITH_REVIEWED_FULL_V110_C_COMMIT_SHA --root "$RUNNER_TEMP"
+          "$GITHUB_WORKSPACE/verifier/target/release/b2ige" ci init --identity __IDENTITY__ --provider github-actions --registry .b2ige/project.json --verifier-repo __REPO__ --verifier-ref __PIN__ --root "$RUNNER_TEMP"
       - name: Fetch candidate objects for diff inspection only
         working-directory: project
         run: git fetch --no-tags origin "$B2IGE_CANDIDATE_REVISION"

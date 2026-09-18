@@ -9,6 +9,9 @@ use verify_evidence::store::EvidenceStore;
 const USAGE: &str = "Usage: b2ige bench [behavior|sideeffect|blindtest] [--output human|json] [--save DIRECTORY] [--reverse] [--case ID]\n       b2ige init [--dry-run]\n       b2ige setup [--dry-run]\n       b2ige doctor [--config project.json]\n       b2ige behavior verify <config.json> [--authorization FILE] [--store PATH] [--output human|json|agent] [--protocol 1]\n       b2ige blindtest doctor\n       b2ige blindtest verify <config.json> [--output human|json|agent] [--protocol 1] [--open]\n       b2ige blindtest validate-suite <validation-config.json>\n       B2IGE_BLINDTEST_SEALED_ROOT points to the trusted private suite directory; default store is its runs directory.\n        b2ige sideeffect verify <contract.json> [--store PATH] [--output human|json|agent] [--protocol 1] [--open]\n       b2ige report <artifact-id|store/id/result.json> [--store PATH] [--authorization FILE] [--output human|json|agent] [--open]\nDefaults: --store .b2ige/runs --authorization .b2ige/authorization.json\nVerdict exit codes: 0 PASS, 1 FAIL, 2 INCONCLUSIVE, 3 ERROR. Argument misuse: 64.\n--open serves localhost until interrupted; output and verdict are emitted before serving.";
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
+    if args.first().is_some_and(|s| s == "ci") {
+        return ExitCode::from(verify_cli::ci::cli(&args[1..]));
+    }
     if let Some(code) = verify_cli::adoption::cli(&args) {
         return ExitCode::from(code);
     }
@@ -33,7 +36,11 @@ fn main() -> ExitCode {
             .contains(&args[0].as_str())
             && args[1] == "--help")
     {
-        println!("{USAGE}\n{}", verify_cli::adoption::HELP);
+        println!(
+            "{USAGE}\n{}\n{}",
+            verify_cli::adoption::HELP,
+            verify_cli::ci::HELP
+        );
         return ExitCode::SUCCESS;
     }
     if args == ["blindtest", "doctor"] {

@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """Extract an RC archive into a new directory and run installed executables only."""
-import argparse, importlib.util, json, os, pathlib, subprocess, sys, tarfile, tempfile
+import argparse, importlib.util, json, os, pathlib, subprocess, sys, tempfile
 parser = argparse.ArgumentParser()
 parser.add_argument('archive')
 parser.add_argument('--skip-benchmark', action='store_true')
 parser.add_argument('--without-docker', action='store_true', help='Explicit partial platform smoke, never a full release gate')
 args = parser.parse_args()
 archive = pathlib.Path(args.archive).resolve()
+tool_scripts = pathlib.Path(__file__).resolve().parent
 root = pathlib.Path(tempfile.mkdtemp(prefix='b2ige-install-'))
-with tarfile.open(archive) as t:
-    t.extractall(root, filter='data')
-package = next(root.glob('b2ige-*'))
+spec = importlib.util.spec_from_file_location('install_release', pathlib.Path(__file__).with_name('install-release.py'))
+installer = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(installer)
+package = installer.install(archive, archive.parent / 'SHA256SUMS', root / 'installed', smoke=True)
 bin_dir = package / 'bin'
 spec = importlib.util.spec_from_file_location('installed_demo', package / 'scripts/demo.py')
 module = importlib.util.module_from_spec(spec)
@@ -24,7 +26,12 @@ work = root / 'new-project'
 work.mkdir()
 os.chdir(work)
 cli = bin_dir / 'b2ige'
-run([cli, '--help']); run([cli, '--version'])
+help_text = run([cli, '--help'])
+for surface in ['inspect', 'prepare', 'trust approve', 'verify ID', 'ci init']:
+    assert surface in help_text, surface
+run([cli, '--version'])
+run([cli, 'bench', '--help'])
+assert (package / 'scripts/install-release.py').is_file()
 run([cli, 'init', '--dry-run']); run([cli, 'init'])
 setup = package / 'scripts' / 'setup.py'
 assert setup.is_file()
@@ -41,6 +48,18 @@ entry = {'product':'behavior','config':str(root/'behavior/pass/experiment.json')
 registry = work/'.b2ige/project.json'
 registry.write_text(json.dumps({'schema_version':'1','entries':{'hello':entry}}))
 assert json.loads(run([cli,'doctor']))['ready']
+# Exercise CI bootstrap with a real registered product fixture from the installed demo.
+ci_args = [cli, 'ci', 'init', '--identity', 'hello', '--provider', 'github-actions',
+           '--registry', str(registry), '--verifier-repo', 'b2ige2-a11y/b2ige-verify',
+           '--verifier-ref', 'a' * 40]
+preview = run(ci_args)
+assert 'verification_performed: false' in preview
+assert not (work / '.github').exists()
+assert preview == run(ci_args)
+run([*ci_args, '--write'])
+assert (work / '.github/workflows/b2ige-verify.yml').read_text() == preview.split('--- workflow ---\n')[1].rstrip() + '\n'
+subprocess.run([sys.executable, str(tool_scripts / 'validate-workflows.py'),
+                str(work / '.github/workflows/b2ige-verify.yml')], check=True)
 recovery = root / 'recovery-check'
 (recovery / '.b2ige').mkdir(parents=True)
 recovery_registry = recovery / '.b2ige/project.json'
