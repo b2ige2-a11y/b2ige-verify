@@ -40,10 +40,45 @@ Bounded limitations remain:
 - bounded testing is not exhaustive proof
 - automatic paired replay and reproducible-build provenance are not added
 
+## V110-B — Real-World Adoption Bench
+
+Status: COMPLETE
+
+Merge commit:
+- `44e97906cf80fa35a61f6233a02b900c758f4213`
+
+Implementation history:
+- Initial implementation: `0fb4c21f2b0c1d548d8183514a699a5a5517fba0`
+- Independent-audit hardening: `3391b24e6a33d11234ab38e59e4670cdadde7fb7`
+- Pull request: `#4 — V110-B: real-world adoption bench`
+- Final external Candidate checks run: `35250672589` — PASS
+
+Completion evidence:
+- 9 public adoption archetype scenarios executed
+- inherited P8 classification agreement: 9/9
+- completed journeys: 9/9
+- first verification: 9/9
+- measured outcomes: PASS 4 / FAIL 3 / INCONCLUSIVE 1 / ERROR 1
+- unsafe-shortcut negative controls: 31/31 rejected
+- two fresh executions semantically equal
+- P8 corpus/baseline files unchanged before and after execution
+- actual Docker platform gate: PASS
+- macOS Apple Silicon external CI: PASS
+- macOS Intel external CI: PASS
+- Linux x86_64 actual-Docker external CI: PASS
+- Windows x64 source/build external CI: PASS
+- V100/P8 authority and V110-A trust semantics unchanged
+
+Claim boundary:
+- V110-B is bounded public adoption-workflow evidence
+- it is not third-party compatibility evidence
+- it is not external-user usability evidence
+- it is not an independent hidden holdout
+- it is not exhaustive correctness proof
+
 ## Remaining V110 packages
 
-- V110-B — Real-World Adoption Bench: NEXT
-- V110-C — Platform & Distribution: PENDING
+- V110-C — Platform & Distribution: NEXT
 - V110-D — External Adoption Evidence: PENDING
 
 V100 remains COMPLETE and its verification/evidence/isolation semantics remain frozen.
