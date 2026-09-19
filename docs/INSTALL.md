@@ -1,6 +1,8 @@
-# Installation — B2IGE Verify 0.3.0 candidate
+# Installation — B2IGE Verify 0.3.0
 
-The 0.3.0 candidate is local only. Use exact local artifacts before publication:
+The public [v0.3.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.3.0)
+is the current native distribution. Download a matching archive and `SHA256SUMS`, then verify
+the archive before extraction. For a trusted local copy:
 
 ```sh
 python3 scripts/install-release.py --offline --version 0.3.0 \
@@ -8,27 +10,20 @@ python3 scripts/install-release.py --offline --version 0.3.0 \
   --checksums /trusted/SHA256SUMS --destination /existing/new-install --smoke
 ```
 
-Choose the actual host target. See [0.3.0 scope and pending gates](RELEASE-0.3.0.md).
-No 0.3.0 public download is claimed; online `--version 0.3.0` is for after publication.
+Choose the actual host target. The [final release record](RELEASE-0.3.0-FINAL.md) documents
+the release assets and qualification boundary.
 
-## Historical public 0.2.0 installation
+## Platform support
 
-0.2.0 is published. Its [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
-is the installation source, with public archives and SHA256SUMS. The instructions below apply to
-that release archive. Final external CI and the final fresh isolated holdout completed before
-publication.
-Verify its SHA-256 against the accompanying SHA256SUMS from a trusted channel; a checksum alone
-does not authenticate the publisher.
-The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred
-until the `@b2ige` scope is actually controlled.
+The current v0.3.0 platform boundary is:
 
 | Platform | Target | Release support |
 |---|---|---|
-| macOS Apple Silicon | aarch64-apple-darwin | VERIFIED_NATIVE; documented partial no-Docker scope PASS |
-| macOS Intel | x86_64-apple-darwin | VERIFIED_NATIVE; documented partial no-Docker scope PASS |
-| Linux x86_64 | x86_64-unknown-linux-gnu | VERIFIED_NATIVE; actual Docker tests and full fixed/reverse benchmark gate PASS |
+| macOS Apple Silicon | aarch64-apple-darwin | Native release; exact-main CI and internal holdout qualified |
+| macOS Intel | x86_64-apple-darwin | Native release; documented no-Docker CI scope qualified |
+| Linux x86_64 | x86_64-unknown-linux-gnu | Native release; actual Docker tests and full benchmark CI qualified |
 | Linux arm64 | aarch64-unknown-linux-gnu | Deferred until native runner gate is verified |
-| Windows x64 | x86_64-pc-windows-msvc | SOURCE/BUILD/CI_ONLY; Windows runtime and archive evidence are not recorded locally |
+| Windows x64 | x86_64-pc-windows-msvc | Source/build plus bounded CLI smoke only; not `VERIFIED_NATIVE` |
 
 macOS requires Docker Desktop running a Linux engine for BlindTest. Linux requires a local
 Unix-socket Docker engine and permission to access it. No remote Docker TCP support is claimed.
@@ -53,29 +48,29 @@ independently run.
 
 ## Native archive
 
-The reviewed current-source [installation helper](../scripts/install-release.py) can
-install historical v0.2.0 without modifying its artifacts:
+The reviewed [installation helper](../scripts/install-release.py) installs the current
+v0.3.0 archive without modifying its artifacts:
 
 ```sh
-python3 scripts/install-release.py --version 0.2.0 --destination /existing/new-install
+python3 scripts/install-release.py --version 0.3.0 --destination /existing/new-install
 # With manually acquired trusted assets; no network:
 python3 scripts/install-release.py --offline \
-  --archive /trusted/b2ige-0.2.0-aarch64-apple-darwin.tar.gz \
+  --archive /trusted/b2ige-0.3.0-aarch64-apple-darwin.tar.gz \
   --checksums /trusted/SHA256SUMS --destination /existing/new-install --smoke
 ```
 
 Use an existing parent and a new destination. The helper validates integrity and
 archive structure before extraction or execution. It is current-source tooling,
-not a file retroactively added to v0.2.0. See [V110-C distribution](V110-DISTRIBUTION.md)
-for exact CLI options, offline recovery, archive safety and pending platform gates.
+not a file retroactively added to the v0.3.0 native archive.
+See [V110-C distribution](V110-DISTRIBUTION.md) for exact CLI options, offline recovery,
+archive safety and platform boundaries.
 Add the extracted package's `bin` directory to PATH manually.
 
 Keep all binaries together. `p5-effect-fixture` is a synthetic benchmark provider required
 by `b2ige bench`; `b2ige-demo` and `b2ige-demo-effect` prepare public examples only.
 Do not register these helpers as production verification targets accidentally.
-For the historical v0.1.0 release, macOS binaries were intentionally unsigned and unnotarized.
-The 0.2.0 release makes no Developer ID signing or notarization claim. Gatekeeper may show a
-warning; signing is a future release improvement.
+macOS binaries in the v0.3.0 release are intentionally unsigned and unnotarized. Gatekeeper
+may show a warning; signing is a future release improvement.
 See [provenance](RELEASE-PROVENANCE.md). No script removes quarantine or bypasses OS controls automatically.
 
 For a source checkout, the near-one-command bootstrap is:
@@ -115,14 +110,19 @@ beside `b2ige`. Individual `.crate` registry publication is intentionally disabl
 workspace-external benchmark/example/test sources require the whole source distribution.
 No `cargo install verify-cli` registry command is claimed. Source builds require Rust stable,
 a C toolchain, and Cargo dependencies (download on first build; Cargo.lock pins versions).
-See [current candidate packaging](RELEASE-0.3.0.md). The [npm wrapper](../npm/b2ige/README.md) keeps its
-publication guard active; npm remains deferred and is not required for this 0.2.0 release.
-The historical GitHub 0.1.0 release also did not require npm.
+See the [final release record](RELEASE-0.3.0-FINAL.md). The [npm wrapper](../npm/b2ige/README.md)
+keeps its publication guard active; npm remains deferred and is not required for this release.
 
 ## Current source versus published release
 
-V110-A adoption commands and V110-C `ci init` are in the 0.3.0 native candidate.
+V110-A adoption commands and V110-C `ci init` are in the public 0.3.0 native release.
 The source archive also includes the V110-B benchmark runner and V110-D pilot tooling;
-they require a reviewed Git checkout and source build as documented. Historical
-published v0.2.0 remains unchanged. No 0.3.0 publication is claimed. See the
+they require a reviewed Git checkout and source build as documented. Genuine V110-D
+external-user evidence remains deferred. See the
 [V110 distribution boundary and platform table](V110-DISTRIBUTION.md).
+
+## Historical v0.2.0 installation
+
+The prior [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0)
+remains available for historical reproduction. Its artifacts are unchanged and it is not the
+current download path.
