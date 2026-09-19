@@ -1,5 +1,8 @@
 # Agent distribution — B2IGE Verify 0.1.0
 
+> Historical v0.1.0 agent/MCPB distribution. This is not the current v0.3.0 native
+> distribution path; use the [current installation guide](../docs/INSTALL.md) for native archives.
+
 Don't trust done. Prove it.
 
 Independent deterministic verification for AI-written software. This distribution

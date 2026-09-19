@@ -2,137 +2,98 @@
 
 ## Don't trust "done". Prove it.
 
-**Hidden tests your coding agent can't see.**
+B2IGE Verify is deterministic verification infrastructure for AI-written software. It runs
+real programs under declared contracts, records evidence, and produces a bounded
+PASS/FAIL/INCONCLUSIVE/ERROR result without asking the coding agent to grade its own work.
+BlindTest makes the boundary concrete: hidden tests exercise the produced program without
+exposing the suite or oracle to the agent.
 
-An AI coding agent can say a task is done while a hidden edge case still breaks the contract.
-BlindTest runs sealed hidden tests against the produced program in an attested Docker boundary,
-independently of the agent's self-assessment. B2IGE Verify is deterministic verification
-infrastructure for AI-written software: actual execution and recorded evidence—not an LLM—produce
-the verdict.
+[![Latest GitHub Release](https://img.shields.io/github/v/release/b2ige2-a11y/b2ige-verify?display_name=tag&sort=semver)](https://github.com/b2ige2-a11y/b2ige-verify/releases/latest)
+[![Candidate checks](https://github.com/b2ige2-a11y/b2ige-verify/actions/workflows/check.yml/badge.svg)](https://github.com/b2ige2-a11y/b2ige-verify/actions/workflows/check.yml)
+[![Apache-2.0](https://img.shields.io/github/license/b2ige2-a11y/b2ige-verify)](LICENSE)
+[![Rust](https://img.shields.io/badge/rust-stable-dea584?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 
-```text
-Correct implementation → PASS
-Buggy implementation   → FAIL
-```
+## Latest release
 
-Start with the [30-second BlindTest demo](#30-second-blindtest-demo).
-
-**0.3.0 is a local release candidate, not published.** It packages V110-A/B/C and
-the external pilot framework. See the [candidate procedure](docs/RELEASE-0.3.0.md)
-for local installation, archive contents and pending publication gates. The public
-download links below intentionally remain pinned to the historical 0.2.0 release.
-
-The [external operator pilot kit](docs/V110-EXTERNAL-PILOT.md) prepares a bounded V110-D study; genuine external evidence remains **EVIDENCE_PENDING**.
-
-For your own project, the 0.3.0 native candidate and current source checkout provide the [Easy Adoption path](docs/ADOPTION.md):
-`inspect → init → prepare → trusted approve → doctor → verify ID`.
-These new commands are not in the unchanged v0.2.0 archives. Preparation is public and
-non-authoritative; approval belongs to an independent trusted operator.
-
-## 30-second BlindTest demo
-
-BlindTest is the fastest way to see the coding-agent use case. It runs the same visible
-valid-credential check against both implementations, then sends them through sealed hidden tests:
-the correct implementation passes, while the buggy implementation fails on an expired-credential
-case. The run is real—it executes Docker targets, records evidence, and checks the sanitized Agent
-view for private-value leakage.
-
-With the native binary and Docker image already available, expect about 30–60 seconds. The first
-Docker pull or image build can take longer. Docker is required; missing Docker or image
-prerequisites stop the demo and do not turn into PASS.
-
-### Download the v0.2.0 release
-
-The v0.2.0 GitHub Release is published. Final external CI and the final fresh isolated holdout
-completed before publication. Choose the archive for your machine from the [v0.2.0 GitHub Release](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.2.0):
+[B2IGE Verify v0.3.0](https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.3.0)
+is the current public release. The [final release record](docs/RELEASE-0.3.0-FINAL.md)
+documents its exact-main qualification, platform boundaries, and public asset set.
 
 | Platform | Native archive |
 |---|---|
-| macOS Apple Silicon | [aarch64-apple-darwin](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.2.0/b2ige-0.2.0-aarch64-apple-darwin.tar.gz) |
-| macOS Intel | [x86_64-apple-darwin](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.2.0/b2ige-0.2.0-x86_64-apple-darwin.tar.gz) |
-| Linux x86_64 | [x86_64-unknown-linux-gnu](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.2.0/b2ige-0.2.0-x86_64-unknown-linux-gnu.tar.gz) |
+| macOS Apple Silicon | [b2ige-0.3.0-aarch64-apple-darwin.tar.gz](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.3.0/b2ige-0.3.0-aarch64-apple-darwin.tar.gz) |
+| macOS Intel | [b2ige-0.3.0-x86_64-apple-darwin.tar.gz](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.3.0/b2ige-0.3.0-x86_64-apple-darwin.tar.gz) |
+| Linux x86_64 | [b2ige-0.3.0-x86_64-unknown-linux-gnu.tar.gz](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.3.0/b2ige-0.3.0-x86_64-unknown-linux-gnu.tar.gz) |
 
-Also download [SHA256SUMS](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.2.0/SHA256SUMS).
-Verify the matching archive line before extracting. The full [installation and platform guide](docs/INSTALL.md)
-has the checksum and prerequisite details.
+Also download [SHA256SUMS](https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.3.0/SHA256SUMS)
+and verify the matching archive before extracting. See [installation details](docs/INSTALL.md)
+for prerequisites and offline validation.
 
-Windows x64 is currently supported for reviewed source/build CI (`x86_64-pc-windows-msvc`),
-but no Windows runtime or native archive evidence is claimed by this Mac checkout.
+## Quick install
 
-### Download → extract → doctor → demo
+Choose the archive for the host, then verify, extract, and put `bin` on `PATH`:
 
 ```sh
-# Choose the matching archive name from the table above.
-B2IGE_RELEASE_URL=https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.2.0
-B2IGE_ARCHIVE=b2ige-0.2.0-aarch64-apple-darwin.tar.gz
+B2IGE_RELEASE_URL=https://github.com/b2ige2-a11y/b2ige-verify/releases/download/v0.3.0
+B2IGE_ARCHIVE=b2ige-0.3.0-aarch64-apple-darwin.tar.gz
 curl -fL -O "$B2IGE_RELEASE_URL/$B2IGE_ARCHIVE"
 curl -fL -O "$B2IGE_RELEASE_URL/SHA256SUMS"
 
-# Compare this digest with the matching line in SHA256SUMS.
 if command -v shasum >/dev/null 2>&1; then
-  shasum -a 256 "$B2IGE_ARCHIVE"
+  shasum -a 256 "$B2IGE_ARCHIVE"     # compare with SHA256SUMS
 else
-  sha256sum "$B2IGE_ARCHIVE"
+  sha256sum "$B2IGE_ARCHIVE"         # compare with SHA256SUMS
 fi
-
 tar -xzf "$B2IGE_ARCHIVE"
 cd "${B2IGE_ARCHIVE%.tar.gz}"
 export PATH="$PWD/bin:$PATH"
-export B2IGE_BIN_DIR="$PWD/bin"
+b2ige --version
+```
 
-# A fresh archive has no registered project, so doctor reports readiness=false.
-# It is readiness only, not a verification verdict.
-b2ige doctor
+The archive is ready for the adoption flow or the product-specific commands. Docker is
+required for BlindTest; missing prerequisites remain a readiness or non-PASS result.
+
+## 30-second BlindTest demo
+
+BlindTest asks: does the produced program actually work? It runs visible checks against a
+correct and a buggy implementation, then executes sealed hidden cases in an attested Docker
+boundary. The correct implementation passes, the buggy implementation fails, and the
+sanitized Agent view is checked for private-value leakage.
+
+From a source checkout or the source archive, with Docker available:
+
+```sh
 docker pull node:24.18.1-bookworm-slim
-b2ige blindtest doctor
 scripts/demo-blindtest.sh
 ```
 
-On a fresh archive, `b2ige doctor` exits 3 until a project is registered; that is expected for an
-empty registry. `b2ige blindtest doctor` is the Docker readiness check for this demo. For a source
-checkout, build once with `cargo build --workspace --release --locked`, pull the same Node image,
-and run `scripts/demo-blindtest.sh` from the repository root.
+The demo performs real execution and records evidence; its output is not canned terminal
+text. See the [BlindTest example](examples/blindtest/README.md) for the bounded secrecy
+boundary and the [threat model](docs/THREAT-MODEL.md) for its limits.
 
-The expected signals are:
+## Three verification products
+
+| Product | Question | What it checks |
+|---|---|---|
+| [BlindTest](examples/blindtest/README.md) | Does it actually work? | Sealed hidden tests against an agent-produced target inside the declared Docker boundary. |
+| [BehaviorSeal](examples/behavior/README.md) | Did it change? | Trusted reference/candidate behavior under equivalent deterministic experiments. |
+| [SideEffect Proof](examples/sideeffect/README.md) | Did it actually happen? | Committed local SQLite effects under retries and fault schedules, not inferred attempts. |
+
+## Easy Adoption
 
 ```text
-Coding-agent-visible valid-credential tests: PASS (correct and buggy)
-blindtest correct: PASS
-blindtest buggy: FAIL
-blindtest probe: PASS
-Agent private-value leakage: 0
+inspect → init → prepare → trust approve → doctor → verify ID
 ```
 
-These are produced by the actual demo runner, not canned terminal output. From a current repository
-checkout, capture the same real terminal session for review outside the repository (the fixed
-v0.1.0 release assets are unchanged):
-
-```sh
-scripts/record-demo-blindtest.sh /tmp/b2ige-blindtest.typescript
-```
-
-The recording helper uses the platform `script` utility and does not generate a fake GIF. No GIF is
-checked into this release documentation; convert the actual typescript recording with a trusted
-local renderer if a visual asset is needed.
-
-## Three ways to verify
-
-BlindTest is the first entry point for AI-written changes; the other products cover different
-failure questions without being removed or reduced:
-
-| Product | Question | What it does | Start |
-|---|---|---|---|
-| **BlindTest** | Does it actually work? | Independently runs sealed hidden tests against an agent-produced target inside the declared Docker boundary. | [BlindTest example](examples/blindtest/README.md) |
-| **BehaviorSeal** | Did it change? | Compares trusted baseline and candidate behavior under equivalent deterministic experiments. The compatibility CLI remains `b2ige behavior ...`. | [BehaviorSeal example](examples/behavior/README.md) |
-| **SideEffect Proof** | Did it actually happen? | Checks committed local SQLite effects under retries and fault schedules, rather than inferring success from attempts. | [SideEffect Proof example](examples/sideeffect/README.md) |
-
-The [5-minute quickstart](docs/QUICKSTART.md) covers the three product demos. The [threat boundary](docs/THREAT-MODEL.md)
-explains what BlindTest does and does not claim.
+`prepare` is non-authoritative: it discovers inputs and writes a reviewable draft. Trust
+approval remains an interactive human/trusted-controller decision. `doctor` reports readiness,
+not verification. `verify ID` resolves the approved identity and produces the real,
+evidence-backed result. Read the [adoption guide](docs/ADOPTION.md) for the full boundary.
 
 ## Measured benchmark
 
-The numbers below are the committed B2IGE Verify Bench v1 baseline on its bounded corpus. They are
-measurements, not a claim of exhaustive correctness or a replacement for product evidence.
+These are committed measurements on the bounded B2IGE Verify Bench v1 corpus, not a claim of
+exhaustive correctness or a replacement for product evidence.
 
 <!-- benchmark:start -->
 ### B2IGE Verify Bench v1 / 31 explicit cases
@@ -150,56 +111,56 @@ measurements, not a claim of exhaustive correctness or a replacement for product
 All numbers above are on the benchmark corpus only. Bounded testing cannot establish complete correctness.
 <!-- benchmark:end -->
 
-[Measured snapshot](benchmarks/baseline-v1/README.md) · [Methodology and denominators](docs/BENCHMARKS.md).
-`python3 scripts/readme-bench.py` checks this table directly against the baseline.
+See the [measured snapshot](benchmarks/baseline-v1/README.md) and [benchmark methodology](docs/BENCHMARKS.md).
+
+## Platform support
+
+| Platform | Support boundary |
+|---|---|
+| macOS Apple Silicon | Native release |
+| macOS Intel | Native release |
+| Linux x86_64 | Native release; Docker and full benchmark CI |
+| Windows x64 | Source/build plus bounded CLI smoke only; not `VERIFIED_NATIVE` |
+| Linux arm64 | Deferred |
+
+macOS binaries are unsigned and unnotarized. See [installation and platform details](docs/INSTALL.md)
+for Docker, source-build, and archive boundaries.
 
 ## What the result means
 
-- **PASS / 0:** no violation in the declared executed scope, with required evidence complete.
-- **FAIL / 1:** a violation supported by evidence.
-- **INCONCLUSIVE / 2:** evidence or execution coverage is incomplete.
-- **ERROR / 3:** verifier, configuration, isolation setup or stored-evidence failure.
+- **PASS / 0:** required evidence is complete within the declared executed scope, with no violation observed.
+- **FAIL / 1:** a violation is supported by evidence.
+- **INCONCLUSIVE / 2:** required evidence or execution coverage is incomplete.
+- **ERROR / 3:** the verifier, configuration, isolation setup, or stored evidence failed.
 
-Missing evidence cannot become PASS. A model never assigns these verdicts. Bounded testing
-cannot establish complete correctness. SideEffect currently observes local SQLite ledgers;
-BehaviorSeal executes trusted Unix programs; BlindTest isolates Linux targets in Docker.
-Hashes provide integrity checks, not authentication. Same-user host access is outside the secrecy boundary.
+Missing evidence cannot become PASS. Models do not assign verdicts. A result is bounded by the
+declared experiment, evidence, and platform scope.
 
-## Found a false PASS?
+## Trust boundary and limitations
 
-Found a case B2IGE incorrectly passed? [Open a False PASS report.](https://github.com/b2ige2-a11y/b2ige-verify/issues/new?template=false_pass.yml)
-Use synthetic or sanitized details only; never upload a sealed suite, oracle, private canary, raw
-Human evidence or credentials. The [security policy](SECURITY.md) explains when to use private
-vulnerability reporting instead.
+- Hashes provide integrity, not publisher authentication.
+- Same-user host access is outside the BlindTest secrecy boundary.
+- Bounded verification is not exhaustive proof.
+- The internal v0.3.0 holdout was AI-operated, not independent human or external validation.
+- Genuine external-user V110-D evidence is deferred; internal or synthetic evidence is not presented as external adoption.
 
-## Install and run
+Read the [threat model](docs/THREAT-MODEL.md), [contracts](docs/CONTRACTS.md), and
+[evidence model](docs/EVIDENCE.md) before relying on a result.
 
-Native archives are the authoritative first distribution. The historical v0.1.0 macOS binaries
-are intentionally unsigned and unnotarized; the 0.2.0 release makes no new Developer ID signing
-or notarization claim. See [installation and platforms](docs/INSTALL.md) for the complete policy.
+## Documentation
 
-For a source checkout, `python3 scripts/setup.py` performs the locked release build when needed
-and safely creates the empty project registry. It never invents contracts or approves baselines;
-registration and the [Codex/GitHub workflow](docs/CI.md) remain explicit trusted-operator steps.
+Use the [documentation index](docs/README.md) for getting started, product guides, trust and
+architecture, benchmarks, release history, and developer resources. The [false PASS report](https://github.com/b2ige2-a11y/b2ige-verify/issues/new?template=false_pass.yml)
+accepts only synthetic or sanitized details; never upload hidden suites, private canaries, raw
+human evidence, or credentials.
 
-The final npm package name is `@b2ige/verify`, but npm publication is intentionally deferred until
-the `@b2ige` scope is actually controlled; npm is not required for this 0.2.0 release.
-The historical GitHub 0.1.0 release likewise did not require npm.
+## Contributing
 
-## Shared core and development
-
-B2IGE Verify Core is shared OSS technology, maintained in one Rust workspace.
-Products keep separate CLI/config/docs surfaces without splitting repositories.
-[Contracts](docs/CONTRACTS.md) · [Architecture](docs/ARCHITECTURE.md) ·
-[CLI reference](crates/verify-cli/README.md) · [MCP server](docs/MCP.md) ·
-[Agent Skill](skills/b2ige-verify/SKILL.md) · [Contributing](CONTRIBUTING.md).
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [architecture](docs/ARCHITECTURE.md), and
+the [security policy](SECURITY.md). Changes to verifier authority, evidence, contracts, or schemas
+require deliberate review; missing evidence must never be converted into success.
 
 ## License
 
-Code is licensed under [Apache-2.0](LICENSE). Trademarks and product names are
-handled separately; see [TRADEMARKS.md](TRADEMARKS.md). The code license does
-not grant trademark or other brand-use rights. The current Core, CLI, BlindTest,
-BehaviorSeal, SideEffect Proof, MCP, Skill, and Bench are OSS scope; future team,
-enterprise, or managed features may be separate commercial offerings.
-
-No telemetry, hosted service, or paid API is required.
+B2IGE Verify is licensed under [Apache-2.0](LICENSE). No telemetry, hosted service, or paid API
+is required. Product names and trademarks are covered separately by [TRADEMARKS.md](TRADEMARKS.md).

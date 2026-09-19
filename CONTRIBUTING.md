@@ -10,7 +10,9 @@ cargo build --workspace --release
 python3 scripts/readme-bench.py
 ```
 
-Read [architecture](docs/ARCHITECTURE.md) and the authority order in [AGENTS.md](AGENTS.md).
+Start with the [documentation index](docs/README.md), [architecture](docs/ARCHITECTURE.md),
+and the [v0.3.0 final release record](docs/RELEASE-0.3.0-FINAL.md). Read the authority order
+in [AGENTS.md](AGENTS.md).
 No verdict semantic changes without deliberate contract/schema version review. Missing evidence
 must never become PASS; false-PASS repairs take priority. Observer failure is not a product defect.
 Never automatically approve a Behavior baseline or let an LLM assign a verdict.
@@ -28,5 +30,6 @@ PR checklist:
 - Relevant tests, full checks and release build pass; prior tests preserved.
 - Documentation/examples work; no local paths, runtime artifacts or secrets in the patch.
 
-[Release workflow](docs/RELEASE.md). Do not attach private BlindTest evidence to a public PR.
+Do not attach private BlindTest evidence to a public PR. Use the [release record](docs/RELEASE-0.3.0-FINAL.md)
+for the current public release; historical release procedures remain in the documentation index.
 Support is best-effort community support with no SLA unless a future separate commercial agreement provides one. The public channel remains unconfigured; see SECURITY.md.
