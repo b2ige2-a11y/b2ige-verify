@@ -1,5 +1,8 @@
 # B2IGE Verify 0.3.0 release candidate
 
+> Historical release-candidate procedure. B2IGE Verify 0.3.0 has since been released.
+> See `docs/RELEASE-0.3.0-FINAL.md` for the final qualified publication record.
+
 This is local release candidate preparation only, not a published release or final
 qualification. Intended local result: **V0.3.0 RELEASE CANDIDATE PREPARED LOCALLY**.
 Publication, independent release audit, fresh cross-platform PR/exact-main CI and

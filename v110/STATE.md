@@ -149,4 +149,19 @@ Release decision:
 
 No external evidence has been fabricated.
 
+## v0.3.0 publication
+
+Status: RELEASED
+
+- Release commit: `fcda2949b793a5caf6744e968a642ee7e17a56fe`
+- Annotated tag: `v0.3.0`
+- Tag object: `421b2351986a97476ce15a0aa1a29caee6da2c7a`
+- Exact-main CI: `35404711862` — PASS
+- Final V4 internal holdout: `v030-final-v4-20260918T233824Z-70652b649600` — PASS, 70/70/70
+- False PASS / false FAIL / observed leakage: `0 / 0 / 0`
+- GitHub Release: `https://github.com/b2ige2-a11y/b2ige-verify/releases/tag/v0.3.0`
+- Public release assets: 8
+- Post-publication public-set validation and Apple Silicon offline installation: PASS
+- V110-D genuine external-user evidence remains DEFERRED
+
 V100 remains COMPLETE and its verification/evidence/isolation semantics remain frozen.
